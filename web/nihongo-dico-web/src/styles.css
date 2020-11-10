@@ -1,0 +1,19 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+/*https://fonts.google.com/earlyaccess*/
+/*http://sawarabi-fonts.osdn.jp/*/
+@import url(//fonts.googleapis.com/earlyaccess/sawarabimincho.css);
+@import url(//fonts.googleapis.com/earlyaccess/sawarabigothic.css);
+
+.japanese {
+  font-family: 'Sawarabi Mincho', serif;
+}
+
+.small_japanese {
+  font-family: 'Sawarabi Gothic', sans-serif;
+}
+
+.keyword {
+  color: red;
+  font-weight: 500;
+}

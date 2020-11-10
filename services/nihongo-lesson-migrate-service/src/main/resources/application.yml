@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: nihongo-lesson-migrate-service
+
+  main:
+    banner-mode: 'off'
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://postgres:5432/${frog.database.name}?ApplicationName=${spring.application.name}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+frog:
+  database:
+    name: nihongo_lessons

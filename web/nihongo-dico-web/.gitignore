@@ -1,0 +1,9 @@
+# compiled output
+/out-tsc
+/dist
+
+# dependencies
+/node_modules
+
+.idea/
+*.iml

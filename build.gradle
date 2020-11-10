@@ -1,0 +1,61 @@
+plugins {
+    id 'io.freefair.lombok' version '5.3.0' apply false
+    id 'fr.brouillard.oss.gradle.jgitver' version '0.9.1' apply false
+    id 'org.springframework.boot' version '2.3.4.RELEASE' apply false
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
+}
+
+configure(subprojects.findAll { it.name.matches('(.*)-service') || it.name.matches('(.*)-module') }) {
+    apply plugin: 'io.freefair.lombok'
+    apply plugin: 'fr.brouillard.oss.gradle.jgitver'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenLocal()
+        jcenter()
+        maven { url 'https://jitpack.io' }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.junit:junit-bom:5.7.0'
+            mavenBom 'org.testcontainers:testcontainers-bom:1.14.3'
+            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR9'
+        }
+    }
+
+    configurations {
+        all {
+            resolutionStrategy.cacheChangingModulesFor 10, 'seconds'
+        }
+    }
+
+    lombok {
+        config['lombok.anyConstructor.addConstructorProperties'] = 'true'
+    }
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+    jgitver {
+        strategy = 'PATTERN'
+        versionPattern = '${v}-SNAPSHOT'
+        tagVersionPattern = '${v}'
+    }
+}
+
+wrapper {
+    gradleVersion = '6.7'
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+def gitBranch() {
+    def branch = ''
+    def proc = 'git rev-parse --abbrev-ref HEAD'.execute()
+    proc.in.eachLine { line -> branch = line }
+    proc.err.eachLine { line -> println line }
+    proc.waitFor()
+    branch
+}

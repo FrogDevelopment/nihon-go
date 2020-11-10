@@ -1,0 +1,20 @@
+<h2 mat-dialog-title>{{'search.settings.title' | translate}}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="settingsForm"
+        novalidate>
+    <mat-radio-group class="search-settings-radio-group"
+                     formControlName="lang">
+      <mat-radio-button class="search-settings-radio-button"
+                        color="warn"
+                        *ngFor="let language of data.languages"
+                        [value]="language.code">{{'language.' + language.code | translate}} ({{language.count | number}}
+        {{'search.settings.entries' | translate}})
+      </mat-radio-button>
+    </mat-radio-group>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="settingsForm.get('lang').value">OK</button>
+</mat-dialog-actions>

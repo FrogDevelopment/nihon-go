@@ -1,0 +1,16 @@
+frog:
+  database:
+    name: nihongo_entries
+  jmdict:
+    url: ftp://ftp.monash.edu.au/pub/nihongo/JMdict.gz
+
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:pgroonga:///${frog.database.name}
+    initialization-mode: always
+
+security:
+  jwt:
+    token:
+      signing-key: xxx

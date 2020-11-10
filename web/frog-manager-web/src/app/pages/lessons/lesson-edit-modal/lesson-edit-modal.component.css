@@ -1,0 +1,23 @@
+/*http://sawarabi-fonts.osdn.jp/*/
+@import url(//fonts.googleapis.com/earlyaccess/sawarabimincho.css);
+@import url(//fonts.googleapis.com/earlyaccess/sawarabigothic.css);
+
+.japanese-mincho {
+  font-family: 'Sawarabi Mincho', serif;
+}
+
+.japanese-gothic {
+  font-family: 'Sawarabi Gothic', sans-serif;
+}
+
+.ant-form-item {
+  margin: inherit;
+}
+
+.ant-divider-horizontal {
+  margin: 12px 0;
+}
+
+.locale-flag {
+  width: 32px;
+}

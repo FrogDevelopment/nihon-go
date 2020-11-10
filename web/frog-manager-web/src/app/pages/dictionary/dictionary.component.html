@@ -1,0 +1,62 @@
+<div class="top-bar">
+  <h1>Sync Data</h1>
+</div>
+
+<div style="background: #ECECEC;padding: 10px">
+  <div nz-row [nzGutter]="32">
+
+    <div nz-col class="gutter-row" [nzSpan]="12">
+      <nz-card style="width:300px;"
+               [nzBordered]="false"
+               [nzLoading]="dictionaryLoading"
+               nzTitle="Entries"
+               [nzExtra]="syncDictionaryTemplate">
+        <ul *ngIf="dictionaryAbout">
+          <li>Translations by lang:
+            <ul>
+              <li *ngFor="let entry of dictionaryAbout | keyvalue">{{entry.key}}: {{entry.value | number}}</li>
+            </ul>
+          </li>
+        </ul>
+      </nz-card>
+    </div>
+
+    <div nz-col class="gutter-row" [nzSpan]="12">
+      <nz-card style="width:300px;"
+               [nzBordered]="false"
+               [nzLoading]="sentencesLoading"
+               nzTitle="Sentences"
+               [nzExtra]="syncSentencesTemplate">
+        <ul *ngIf="sentencesAbout">
+          <li>Sentences by lang:
+            <ul>
+              <li *ngFor="let entry of sentencesAbout | keyvalue">{{entry.key}}: {{entry.value | number}}</li>
+            </ul>
+          </li>
+        </ul>
+      </nz-card>
+    </div>
+  </div>
+</div>
+
+<ng-template #syncDictionaryTemplate>
+  <button nz-button nz-tooltip
+          nzTooltipTitle="Synchronize"
+          nzTooltipPlacement="topCenter"
+          (click)="synchronizeDictionary()"
+          [nzType]="'primary'"><i nz-icon
+                                  [nzType]="'sync'"
+                                  [nzSpin]="dictionaryAnimate"></i>
+  </button>
+</ng-template>
+
+<ng-template #syncSentencesTemplate>
+  <button nz-button nz-tooltip
+          nzTooltipTitle="Synchronize"
+          nzTooltipPlacement="topCenter"
+          (click)="synchronizeSentences()"
+          [nzType]="'primary'"><i nz-icon
+                                  [nzType]="'sync'"
+                                  [nzSpin]="sentencesAnimate"></i>
+  </button>
+</ng-template>

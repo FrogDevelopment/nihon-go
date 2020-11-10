@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+      discovery:
+        enabled: false
+      uri:
+  application:
+    admin:
+      enabled: false
+
+eureka:
+  client:
+    enabled: false
+
+
+logging:
+  config: classpath:logback-spring-test.xml

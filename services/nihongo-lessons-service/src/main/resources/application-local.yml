@@ -1,0 +1,19 @@
+frog:
+  database:
+    name: nihongo_lessons
+  lessons:
+    last_ready:
+      en_US: 21
+      fr_FR: 21
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/${frog.database.name}?ApplicationName=${spring.application.name}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASWORD:postgres}
+
+security:
+  jwt:
+    token:
+      signing-key: xxx

@@ -1,0 +1,12 @@
+dependencies {
+    def tcPgroongaVersion = '1.0.0'
+
+    implementation 'commons-io:commons-io:2.8.0'
+    implementation 'org.apache.commons:commons-compress:1.20'
+
+    implementation 'org.apache.httpcomponents:httpclient-cache'
+    implementation 'org.apache.httpcomponents:httpmime'
+    implementation 'org.apache.httpcomponents:fluent-hc'
+
+    testImplementation "com.frog-development:testcontainers-pgroonga:$tcPgroongaVersion"
+}

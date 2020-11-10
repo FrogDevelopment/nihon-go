@@ -1,0 +1,23 @@
+frog:
+  database:
+    name: frog_authentication
+
+spring:
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:11-alpine://localhost/${frog.database.name}
+
+security:
+  jwt:
+    token:
+      signing-key: ${random.value}
+
+  hierarchy: |-
+    ROLE_SUPER_ADMIN > ROLE_ADMIN_USERS
+    ROLE_ADMIN_USERS > ROLE_USERS_LIST
+    ROLE_ADMIN_USERS > ROLE_USER_ADD
+    ROLE_ADMIN_USERS > ROLE_USER_DELETE
+    ROLE_ADMIN_USERS > ROLE_USER_UPDATE
+
+logging:
+  config: classpath:logback-spring-test.xml

@@ -1,0 +1,8 @@
+.search-settings-radio-group {
+  display: inline-flex;
+  flex-direction: column;
+}
+
+.search-settings-radio-button {
+  margin: 5px;
+}

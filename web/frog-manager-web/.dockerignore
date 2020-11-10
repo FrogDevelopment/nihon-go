@@ -1,0 +1,10 @@
+.git
+.idea/
+/e2e
+node_modules
+*.iml
+/.editorconfig
+/.gitignore
+/Dockerfile
+/_Jenkinsfile
+/README.md

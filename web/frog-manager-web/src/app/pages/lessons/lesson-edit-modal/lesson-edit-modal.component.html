@@ -1,0 +1,152 @@
+<form nz-form
+      [nzLayout]="'horizontal'"
+      [formGroup]="validateForm">
+
+  <nz-form-item>
+    <nz-form-label
+      [nzSpan]="4"
+      [nzFor]="'kanji'">Kanji
+    </nz-form-label>
+    <nz-form-control nzErrorTip="Please check the field!"
+                     [nzSpan]="15">
+      <input nz-input
+             class="japanese-mincho"
+             [formControlName]="'kanji'"
+             id="kanji">
+      <!--      <nz-form-explain-->
+      <!--        *ngIf="showExplain('kanji')">Please check the field!-->
+      <!--      </nz-form-explain>-->
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label
+      [nzSpan]="4"
+      [nzRequired]="true"
+      [nzFor]="'kana'">Kana
+    </nz-form-label>
+    <nz-form-control nzErrorTip="Please check the field!"
+                     [nzSpan]="15">
+      <input nz-input
+             class="japanese-mincho"
+             [formControlName]="'kana'"
+             id="kana">
+      <!--      <nz-form-explain-->
+      <!--        *ngIf="showExplain('kana')">Please check the field!-->
+      <!--      </nz-form-explain>-->
+    </nz-form-control>
+  </nz-form-item>
+
+  <ng-template ngFor let-translation let-i="index" [ngForOf]="translationForms">
+
+    <nz-divider></nz-divider>
+
+    <ng-template ngFor let-control let-index="index" [ngForOf]="translation.controls">
+
+      <ng-container [ngSwitch]="index">
+        <nz-form-item *ngSwitchCase="0">
+          <nz-form-label
+            [nzSpan]="4"
+            [nzRequired]="control.required"
+            [nzFor]="control.name">{{control.label}}
+          </nz-form-label>
+          <nz-form-control nzErrorTip="Required field!"
+                           [nzSpan]="20">
+            <img class="locale-flag "
+                 style="margin-right:6px;"
+                 src="{{flagByLocal[validateForm.get(control.name).value]}}"
+                 *ngIf="validateForm.get(control.name).value"/>
+            <nz-select
+              style="width: 55%; margin-right:6px;"
+              [attr.id]="control.name"
+              [formControlName]="control.name"
+              (ngModelChange)="handleLocalChanged()">
+              <nz-option *ngFor="let locale of locales"
+                         [nzValue]="locale.value"
+                         [nzLabel]="locale.label"
+                         [nzDisabled]="presentLocales.includes(locale.value)"
+                         nzCustomContent>
+                <img class="locale-flag"
+                     src="{{locale.src}}"/> {{locale.label}}
+              </nz-option>
+            </nz-select>
+            <button nz-button
+                    [disabled]="translationForms.length === 1"
+                    [nzType]="'danger'"
+                    (click)="removeTranslation(translation, i, $event)"
+                    nz-tooltip
+                    [nzTooltipTitle]="'Remove translation'">
+              <i nz-icon [nzType]="'delete'"></i>
+            </button>
+            <!--            <nz-form-explain-->
+            <!--              *ngIf="validateForm.get(control.name).dirty && validateForm.get(control.name).errors">Required field!-->
+            <!--            </nz-form-explain>-->
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item *ngSwitchCase="4">
+          <nz-form-label
+            [nzSpan]="4"
+            [nzRequired]="control.required"
+            [nzFor]="control.name">{{control.label}}
+          </nz-form-label>
+          <nz-form-control nzErrorTip="Required field!"
+                           [nzSpan]="15">
+            <nz-select
+              style="width: 100%;"
+              [nzMode]="'tags'"
+              [nzPlaceHolder]="'Add or select 1 or more tags'"
+              [formControlName]="control.name"
+              [attr.id]="control.name"> >
+              <nz-option *ngFor="let tag of tags"
+                         [nzLabel]="tag"
+                         [nzValue]="tag">
+              </nz-option>
+            </nz-select>
+            <!--            <nz-form-explain-->
+            <!--              *ngIf="validateForm.get(control.name).dirty && validateForm.get(control.name).errors">Required field!-->
+            <!--            </nz-form-explain>-->
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item *ngSwitchDefault>
+          <nz-form-label
+            [nzSpan]="4"
+            [nzRequired]="control.required"
+            [nzFor]="control.name">{{control.label}}
+          </nz-form-label>
+          <nz-form-control nzErrorTip="Required field!"
+                           [nzSpan]="15">
+            <input nz-input
+                   [formControlName]="control.name"
+                   [attr.id]="control.name">
+            <!--            <nz-form-explain-->
+            <!--              *ngIf="validateForm.get(control.name).dirty && validateForm.get(control.name).errors">Required field!-->
+            <!--            </nz-form-explain>-->
+          </nz-form-control>
+        </nz-form-item>
+
+      </ng-container>
+
+    </ng-template>
+  </ng-template>
+
+  <nz-form-item>
+    <nz-form-control [nzXs]="{span:24,offset:0}" [nzSm]="{span:20,offset:4}">
+      <button nz-button
+              [nzType]="'dashed'"
+              style="width:60%"
+              (click)="addTranslation($event)"><i nz-icon [nzType]="'plus'"></i> Add translation
+      </button>
+    </nz-form-control>
+  </nz-form-item>
+</form>
+
+<nz-alert
+  *ngIf="errorMessage"
+  [nzType]="'error'"
+  [nzCloseable]="true"
+  [nzMessage]="errorMessage"
+  [nzDescription]="errorDescription"
+  (nzOnClose)="afterErrorClose()">
+</nz-alert>

@@ -1,0 +1,21 @@
+frog:
+  database:
+    name: frog_authentication
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/${frog.database.name}?ApplicationName=${spring.application.name}
+    username: postgres
+    password: postgres
+
+security:
+  jwt:
+    token:
+      signing-key: ${random.uuid}
+      # in seconds
+      access-token-expiration: 120
+      # in hours
+      refresh-token-expiration: 1
+      # in hours
+      id-token-expiration: 1

@@ -1,0 +1,68 @@
+/* SearchDetailComponent's private CSS styles */
+label {
+  display: inline-block;
+  width: 3em;
+  margin: .5em 0;
+  color: #607D8B;
+  font-weight: bold;
+}
+
+input {
+  height: 2em;
+  font-size: 1em;
+  padding-left: .4em;
+}
+
+button {
+  margin-top: 10px;
+  font-family: Arial, serif;
+  background-color: #eee;
+  border: none;
+  padding: 5px 5px;
+  border-radius: 4px;
+  cursor: hand;
+}
+
+button:hover {
+  background-color: #cfd8dc;
+}
+
+button:disabled {
+  background-color: #eee;
+  color: #ccc;
+  cursor: auto;
+}
+
+.details-content {
+  top: 65px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+}
+
+.details-kanji {
+  font-size: 60px;
+}
+
+.details-kana {
+  font-size: 40px;
+}
+
+.details-reading {
+  font-size: 30px;
+  font-style: italic;
+}
+
+.details-vocabulary {
+  font-size: 20px;
+}
+
+.details-sentences {
+  overflow: auto;
+  position: absolute;
+  top: 425px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
