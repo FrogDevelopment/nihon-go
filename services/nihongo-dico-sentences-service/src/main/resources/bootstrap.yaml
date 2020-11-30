@@ -1,0 +1,46 @@
+spring:
+  profiles:
+    include: postgres
+  application:
+    name: nihongo-dico-sentences-service
+
+  main:
+    banner-mode: 'off'
+
+  cloud:
+    config:
+      name: ${spring.application.name}
+      discovery:
+        service-id: support-config-server
+        enabled: true
+      username: ${docker-secrets.frog_admin_user}
+      password: ${docker-secrets.frog_admin_password}
+
+eureka:
+  instance:
+    appname: ${spring.application.name}
+    hostname: ${spring.application.name}
+    metadata-map:
+      user.name: ${docker-secrets.frog_admin_user}
+      user.password: ${docker-secrets.frog_admin_password}
+  client:
+    service-url:
+      defaultZone: http://${docker-secrets.frog_admin_user}:${docker-secrets.frog_admin_password}@support-registry:8080/eureka/
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  application:
+    admin:
+      enabled: false
+  cloud:
+    config:
+      enabled: false
+      discovery:
+        enabled: false
+
+eureka:
+  client:
+    enabled: false

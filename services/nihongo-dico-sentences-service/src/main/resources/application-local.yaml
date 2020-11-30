@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+frog:
+  database:
+    name: nihongo_sentences
+  tatoeba:
+    url:
+      japanese-indices: http://downloads.tatoeba.org/exports/jpn_indices.tar.bz2
+      sentences: http://downloads.tatoeba.org/exports/sentences.tar.bz2
+      links: http://downloads.tatoeba.org/exports/links.tar.bz2
+  export:
+    path: /opt/export/sentences
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${spring.application.name}
+    username: postgres
+    password: postgres
+
+  flyway:
+    multi-schema: true
+
+security:
+  jwt:
+    token:
+      signing-key: xxx
+
+logging:
+  config: classpath:logback-spring.xml
+
+  level:
+    root: INFO
+    com.frogdevelopment: WARN
+    com.frogdevelopment.nihongo.sentences: debug

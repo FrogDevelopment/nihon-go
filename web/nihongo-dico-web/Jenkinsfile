@@ -1,3 +1,0 @@
-@Library('frog_library') _
-
-buildWeb('frogdevelopment/nihongo-dico-web')

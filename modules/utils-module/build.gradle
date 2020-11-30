@@ -1,0 +1,8 @@
+dependencies {
+    api project(':modules:multi-schema-module')
+
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-jdbc'
+
+    api 'commons-io:commons-io:2.8.0'
+}

@@ -1,0 +1,28 @@
+frog:
+  database:
+    name: nihongo_entries
+  jmdict:
+    url: ftp://ftp.monash.edu.au/pub/nihongo/JMdict.gz
+  clean: false
+  export:
+    path: /opt/export/entries
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${spring.application.name}
+    username: postgres
+    password: postgres
+
+  flyway:
+    multi-schema: true
+
+security:
+  jwt:
+    token:
+      signing-key: xxx
+logging:
+  level:
+    root: INFO
+    com.frogdevelopment: WARN
+    com.frogdevelopment.nihongo.entries: debug

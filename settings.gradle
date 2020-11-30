@@ -1,8 +1,10 @@
-include 'services:authentication-service',
+include 'modules:multi-schema-module',
+        'modules:utils-module',
+//        'services:authentication-service',
         'services:nihongo-dico-entries-service',
         'services:nihongo-dico-sentences-service',
-        'services:nihongo-lesson-migrate-service',
-        'services:nihongo-lessons-service',
+//        'services:nihongo-lesson-migrate-service',
+//        'services:nihongo-lessons-service',
 //        'web:frog-manager-web',
 //        'web:nihongo-dico-web'
 
