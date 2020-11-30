@@ -1,7 +1,7 @@
 .git
 .idea/
 node_modules
-/Jenkinsfile
+/.browserslistrc
 /.gitignore
 /.editorconfig
 /Dockerfile

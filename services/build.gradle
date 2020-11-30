@@ -1,7 +1,7 @@
 plugins {
 //    id 'org.sonarqube' version '3.0' apply false
-    id 'com.google.cloud.tools.jib' version '2.6.0' apply false
-    id 'org.springframework.cloud.contract' version '2.2.4.RELEASE' apply false
+    id 'com.google.cloud.tools.jib' version '2.7.1' apply false
+    id 'org.springframework.cloud.contract' version '3.0.1' apply false
 }
 
 subprojects {
@@ -11,8 +11,8 @@ subprojects {
     apply plugin: 'com.google.cloud.tools.jib'
     apply plugin: 'org.springframework.cloud.contract'
 
-    sourceCompatibility = JavaVersion.VERSION_14
-    targetCompatibility = JavaVersion.VERSION_14
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
 
     dependencies {
         def authorizationJwtVersion = '1.2.0'
@@ -20,6 +20,8 @@ subprojects {
 
         annotationProcessor 'org.springframework:spring-context-indexer'
         annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+        implementation 'org.jetbrains:annotations:20.1.0'
 
         implementation "com.frog-development:authorization-jwt-module:$authorizationJwtVersion"
         implementation "com.frog-development:docker-secrets-module:$dockerSecretsVersion"
@@ -34,6 +36,7 @@ subprojects {
         implementation 'org.springframework.boot:spring-boot-starter-jdbc'
         implementation 'org.springframework.boot:spring-boot-starter-security'
         implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
         implementation 'org.springframework.cloud:spring-cloud-starter-config'
         implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
         implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
@@ -41,7 +44,7 @@ subprojects {
         implementation 'com.github.ben-manes.caffeine:caffeine:2.8.5'
 
         implementation 'org.jolokia:jolokia-core'
-        implementation 'net.logstash.logback:logstash-logback-encoder:6.4'
+        implementation 'net.logstash.logback:logstash-logback-encoder:6.5'
 
         implementation 'javax.validation:validation-api'
         implementation 'org.apache.commons:commons-lang3'
@@ -67,7 +70,7 @@ subprojects {
 
         useJUnitPlatform {
             includeTags 'unitTest'
-            excludeTags 'integrationTest'
+            includeTags 'integrationTest'
         }
     }
 
@@ -98,17 +101,17 @@ subprojects {
 
     jib {
         from {
-            image = 'frogdevelopment/docker-adoptopenjdk14-curl:latest'
+            image = 'frogdevelopment/docker-adoptopenjdk15-curl:latest'
         }
         to {
             afterEvaluate {
-                image = "assoplus/${name}"
+                image = "frognihongo/${name}"
                 tags = [version.toString(), gitBranch()]
             }
         }
         container {
-            jvmFlags = ['-Xmx64m']
-            volumes = ["/tmp"]
+            jvmFlags = ['-Xmx256m']
+            volumes = ["/tmp", "/opt"]
             creationTime = 'USE_CURRENT_TIMESTAMP'
             afterEvaluate {
                 labels = [

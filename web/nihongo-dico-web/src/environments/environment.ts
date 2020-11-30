@@ -5,5 +5,6 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'https://gateway.frog-development.com/api/nihongo/dico'
+  // baseUrl: 'https://gateway.frog-development.com/api/nihongo/dico'
+  baseUrl: 'http://localhost:4200/api'
 };

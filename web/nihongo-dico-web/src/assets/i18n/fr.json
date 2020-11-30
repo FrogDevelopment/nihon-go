@@ -1,0 +1,30 @@
+{
+  "about": {
+    "title": "À propos",
+    "jmdict": {
+      "date": "Date de mise à jour",
+      "entries": "Nombre d'entrées",
+      "by_languages": "Entrées par langue"
+    }
+  },
+  "language": {
+    "eng": "Anglais",
+    "ger": "Allemand",
+    "dut": "Néerlandais",
+    "hun": "Hongrois",
+    "rus": "Russe",
+    "spa": "Espagnol",
+    "fra": "French",
+    "slv": "Slovène",
+    "swe": "Suédois"
+  },
+  "search": {
+    "button": "Chercher",
+    "settings": {
+      "button": "Paramètres",
+      "title": "Paramètres de recherche",
+      "entries": "entrées"
+    },
+    "back": "Retour"
+  }
+}
