@@ -1,4 +1,5 @@
-include 'services:authentication-service',
+include 'modules:multi-schema-module',
+        'services:authentication-service',
         'services:nihongo-dico-entries-service',
         'services:nihongo-dico-sentences-service',
         'services:nihongo-lesson-migrate-service',
