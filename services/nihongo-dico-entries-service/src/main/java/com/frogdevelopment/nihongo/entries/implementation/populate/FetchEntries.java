@@ -32,8 +32,8 @@ public class FetchEntries {
         stopWatch.start();
         try {
             var date = fetchJmDict.execute();
-            saveData.call();
-            aboutDao.insert(date);
+            var map = saveData.call();
+            aboutDao.insert(date, map);
             deleteDownloadedFiles.call();
             exportByLang.call();
         } catch (IOException | URISyntaxException e) {

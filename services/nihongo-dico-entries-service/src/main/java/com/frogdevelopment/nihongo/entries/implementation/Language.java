@@ -5,13 +5,14 @@ import lombok.Getter;
 public enum Language {
     ENG("eng"),
     DUT("dut"),
-    FRE("fre"),
+    FRA("fra"),
     GER("ger"),
     HUN("hun"),
     RUS("rus"),
     SPA("spa"),
     SWE("swe"),
-    SLV("slv");
+    SLV("slv"),
+    ITA("ita");
 
     @Getter
     private final String code;

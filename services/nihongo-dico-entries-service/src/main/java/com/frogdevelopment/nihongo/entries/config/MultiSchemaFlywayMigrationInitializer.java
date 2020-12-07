@@ -7,13 +7,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.Ordered;
 
 import java.util.Arrays;
-import java.util.Set;
 
 @RequiredArgsConstructor
 public class MultiSchemaFlywayMigrationInitializer implements InitializingBean, Ordered {
 
     private final FluentConfiguration configuration;
-    private final Set<String> schemas;
 
     private int order = 0;
 

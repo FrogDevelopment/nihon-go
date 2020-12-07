@@ -1,16 +1,18 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
-import org.junit.jupiter.api.Disabled;
+import com.frogdevelopment.nihongo.entries.implementation.Language;
+import com.frogdevelopment.nihongo.entries.implementation.about.AboutDao;
+import com.frogdevelopment.nihongo.entries.implementation.populate.SaveData;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -21,16 +23,20 @@ import java.util.Scanner;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled("fixme ")
+//@Disabled("fixme ")
+@Rollback
 @Transactional
 @SpringBootTest
 @ActiveProfiles("test")
 @Tag("integrationTest")
-@ExtendWith(SpringExtension.class)
-public class FetchJMDictTest {
+class FetchJMDictTest {
 
     @Autowired
     private FetchJMDict fetchJmDict;
+    @Autowired
+    private SaveData saveData;
+    @Autowired
+    private AboutDao aboutDao;
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -38,113 +44,186 @@ public class FetchJMDictTest {
     private Resource data;
 
     @Test
-    public void test() throws IOException {
-
-        try (Scanner scanner = new Scanner(data.getInputStream(), UTF_8)) {
-            fetchJmDict.read(scanner);
+    void test() throws IOException {
+        // given
+        var date = "";
+        try (var scanner = new Scanner(data.getInputStream(), UTF_8)) {
+            date = fetchJmDict.read(scanner);
         }
 
-        List<Map<String, Object>> entries = jdbcTemplate.queryForList("SELECT * FROM entries");
-        assertThat(entries).isNotEmpty();
+        // when
+        var map = saveData.call();
+        aboutDao.insert(date, map);
 
-        List<Map<String, Object>> senses = jdbcTemplate.queryForList("SELECT * FROM senses");
-        assertThat(senses).isNotEmpty();
+        // then
+        assertThat(date).isEqualTo("2019-02-01");
+        thenEntriesAreCorrectlySaved();
+        thenSensesAreCorrectlySaved();
+        thenGlossesAreCorrectlySaved();
 
-        List<Map<String, Object>> glosses = jdbcTemplate.queryForList("SELECT * FROM glosses");
-        assertThat(glosses).isNotEmpty();
-//        List<Entry> entries = entryArgumentCaptor.getAllValues();
-//
-//        assertThat(entries).hasSize(1);
-//        Entry entry = entries.get(0);
-//        assertThat(entry.getSeq()).isEqualTo(1594720);
-//        assertThat(entry.getKanji()).isEqualTo("収集");
-//        assertThat(entry.getKanjis()).containsExactly("収集", "蒐集", "拾集", "収輯");
-//        assertThat(entry.getReading()).isEqualTo("しゅうしゅう");
-//
-//        List<Sense> senses = entry.getSenses();
-//        assertThat(senses).hasSize(12);
-//
-//        assertThat(senses.get(0).getField()).isEmpty();
-//        assertThat(senses.get(0).getPos()).hasSize(2);
-//        assertThat(senses.get(0).getPos()).containsExactly("n", "vs");
-//        assertThat(senses.get(0).getMisc()).isEmpty();
-//        assertThat(senses.get(0).getInfo()).isNull();
-//        assertThat(senses.get(0).getDial()).isEmpty();
-//        assertThat(senses.get(0).getGloss()).hasSize(3);
-//        assertThat(senses.get(0).getGloss().get(0).getLang()).isEqualTo("eng");
-//        assertThat(senses.get(0).getGloss().get(0).getValue()).isEqualTo("gathering up");
-//        assertThat(senses.get(0).getGloss().get(1).getLang()).isEqualTo("eng");
-//        assertThat(senses.get(0).getGloss().get(1).getValue()).isEqualTo("collection");
-//        assertThat(senses.get(0).getGloss().get(2).getLang()).isEqualTo("eng");
-//        assertThat(senses.get(0).getGloss().get(2).getValue()).isEqualTo("accumulation");
-//
-//        assertThat(senses.get(1).getField()).isEmpty();
-//        assertThat(senses.get(1).getPos()).isEmpty();
-//        assertThat(senses.get(1).getMisc()).isEmpty();
-//        assertThat(senses.get(1).getInfo()).isNull();
-//        assertThat(senses.get(1).getDial()).isEmpty();
-//        assertThat(senses.get(1).getGloss()).hasSize(8);
-//        assertThat(senses.get(1).getGloss().get(0).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(0).getValue()).isEqualTo("verzamelen");
-//        assertThat(senses.get(1).getGloss().get(1).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(1).getValue()).isEqualTo("bijeenbrengen");
-//        assertThat(senses.get(1).getGloss().get(2).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(2).getValue()).isEqualTo("samenbrengen");
-//        assertThat(senses.get(1).getGloss().get(3).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(3).getValue()).isEqualTo("vergaren");
-//        assertThat(senses.get(1).getGloss().get(4).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(4).getValue()).isEqualTo("{veroud.} vergaderen");
-//        assertThat(senses.get(1).getGloss().get(5).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(5).getValue()).isEqualTo("inzamelen");
-//        assertThat(senses.get(1).getGloss().get(6).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(6).getValue()).isEqualTo("{ごみを} ophalen");
-//        assertThat(senses.get(1).getGloss().get(7).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(1).getGloss().get(7).getValue()).isEqualTo("schooien");
-//
-//        assertThat(senses.get(2).getField()).isEmpty();
-//        assertThat(senses.get(2).getPos()).isEmpty();
-//        assertThat(senses.get(2).getMisc()).isEmpty();
-//        assertThat(senses.get(2).getInfo()).isNull();
-//        assertThat(senses.get(2).getDial()).isEmpty();
-//        assertThat(senses.get(2).getGloss()).hasSize(3);
-//        assertThat(senses.get(2).getGloss().get(0).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(2).getGloss().get(0).getValue()).isEqualTo("collectioneren");
-//        assertThat(senses.get(2).getGloss().get(1).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(2).getGloss().get(1).getValue()).isEqualTo("verzamelen");
-//        assertThat(senses.get(2).getGloss().get(2).getLang()).isEqualTo("dut");
-//        assertThat(senses.get(2).getGloss().get(2).getValue()).isEqualTo("sparen");
-//
-//        assertThat(senses.get(5).getField()).isEmpty();
-//        assertThat(senses.get(5).getPos()).isEmpty();
-//        assertThat(senses.get(5).getMisc()).isEmpty();
-//        assertThat(senses.get(5).getInfo()).isNull();
-//        assertThat(senses.get(5).getDial()).isEmpty();
-//        assertThat(senses.get(5).getGloss()).hasSize(2);
-//        assertThat(senses.get(5).getGloss().get(0).getLang()).isEqualTo("fra");
-//        assertThat(senses.get(5).getGloss().get(0).getValue()).isEqualTo("collection");
-//        assertThat(senses.get(5).getGloss().get(1).getLang()).isEqualTo("fra");
-//        assertThat(senses.get(5).getGloss().get(1).getValue()).isEqualTo("récolte");
-//
-//        assertThat(senses.get(9).getField()).isEmpty();
-//        assertThat(senses.get(9).getPos()).isEmpty();
-//        assertThat(senses.get(9).getMisc()).isEmpty();
-//        assertThat(senses.get(9).getInfo()).isNull();
-//        assertThat(senses.get(9).getDial()).isEmpty();
-//        assertThat(senses.get(9).getGloss()).hasSize(4);
-//        assertThat(senses.get(9).getGloss().get(0).getLang()).isEqualTo("rus");
-//        assertThat(senses.get(9).getGloss().get(0).getValue()).isEqualTo("сбор");
-//        assertThat(senses.get(9).getGloss().get(1).getLang()).isEqualTo("rus");
-//        assertThat(senses.get(9).getGloss().get(1).getValue()).isEqualTo("собирать, коллекционировать");
-//        assertThat(senses.get(9).getGloss().get(2).getLang()).isEqualTo("rus");
-//        assertThat(senses.get(9).getGloss().get(2).getValue()).isEqualTo("собирание, коллекционирование");
-//        assertThat(senses.get(9).getGloss().get(3).getLang()).isEqualTo("rus");
-//        assertThat(senses.get(9).getGloss().get(3).getValue()).isEqualTo("{～する} собирать, коллекционировать");
+        var about = jdbcTemplate.queryForList("SELECT * FROM about");
+        assertThat(about).hasSize(1);
+        assertThat(about.get(0))
+                .containsEntry("jmdict_date", "2019-02-01")
+                .containsEntry("nb_entries", 1);
+        assertThat(about.get(0).get("languages")).isInstanceOf(PGobject.class);
+        var languages = (PGobject) about.get(0).get("languages");
+        assertThat(languages.getType()).isEqualTo("json");
+        assertThat(languages.getValue()).isEqualTo("{\"hun\":2,\"swe\":0,\"rus\":4,\"dut\":21,\"fra\":2,\"ger\":4,\"spa\":12,\"ita\":6,\"slv\":2,\"eng\":3}");
+    }
 
-//        List<Map<String, Object>> maps = jdbcTemplate.queryForList("SELECT * FROM jmdict_info");
-//        assertThat(maps).hasSize(1);
-//        Map<String, Object> data = maps.get(0);
-//        assertThat(data.get("date_created")).isEqualTo("2019-02-01");
-//        assertThat(data.get("nb_entries")).isEqualTo(1);
-//        assertThat(data.get("languages")).isEqualTo("dut=21;spa=12;ita=6;ger=4;rus=4;eng=3;fra=2;hun=2;slv=2");
+    private void thenEntriesAreCorrectlySaved() {
+        var entries = jdbcTemplate.queryForList("SELECT * FROM jpn.entries");
+        assertThat(entries).hasSize(1);
+        var entry = entries.get(0);
+        assertThat(entry)
+                .containsEntry("entry_seq", 1594720)
+                .containsEntry("kanji", "収集")
+                .containsEntry("kana", "しゅうしゅう")
+                .containsEntry("reading", "shuushuu");
+//        assertThat(entry.get("kanjis")).containsExactly("収集", "蒐集", "拾集", "収輯");
+    }
+
+    private void thenSensesAreCorrectlySaved() {
+        var senses = jdbcTemplate.queryForList("SELECT * FROM jpn.senses");
+        assertThat(senses).hasSize(12);
+        for (var i = 0; i < 12; i++) {
+            var sense = senses.get(i);
+            assertThat(sense)
+                    .containsEntry("sense_seq", "1594720_" + (i + 1))
+                    .containsEntry("entry_seq", 1594720)
+                    .containsEntry("pos", "n;vs")
+                    .containsEntry("field", null)
+                    .containsEntry("misc", null)
+                    .containsEntry("info", null)
+                    .containsEntry("dial", null);
+        }
+    }
+
+    private void thenGlossesAreCorrectlySaved() {
+        thenGlosses_DUT_AreCorrectlySaved();
+        thenGlosses_ENG_AreCorrectlySaved();
+        thenGlosses_FRA_AreCorrectlySaved();
+        thenGlosses_GER_AreCorrectlySaved();
+        thenGlosses_HUN_AreCorrectlySaved();
+        thenGlosses_ITA_AreCorrectlySaved();
+        thenGlosses_RUS_AreCorrectlySaved();
+        thenGlosses_SLV_AreCorrectlySaved();
+        thenGlosses_SPA_AreCorrectlySaved();
+        thenGlosses_SWE_AreCorrectlySaved();
+    }
+
+    private void thenGlosses_DUT_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.DUT);
+        assertThat(glosses).hasSize(21);
+        thenGlossContains(glosses.get(0), "1594720_2", "verzamelen");
+        thenGlossContains(glosses.get(1), "1594720_2", "bijeenbrengen");
+        thenGlossContains(glosses.get(2), "1594720_2", "samenbrengen");
+        thenGlossContains(glosses.get(3), "1594720_2", "vergaren");
+        thenGlossContains(glosses.get(4), "1594720_2", "{veroud.} vergaderen");
+        thenGlossContains(glosses.get(5), "1594720_2", "inzamelen");
+        thenGlossContains(glosses.get(6), "1594720_2", "{ごみを} ophalen");
+        thenGlossContains(glosses.get(7), "1594720_2", "schooien");
+        thenGlossContains(glosses.get(8), "1594720_3", "collectioneren");
+        thenGlossContains(glosses.get(9), "1594720_3", "verzamelen");
+        thenGlossContains(glosses.get(10), "1594720_3", "sparen");
+        thenGlossContains(glosses.get(11), "1594720_4", "verzameling");
+        thenGlossContains(glosses.get(12), "1594720_4", "bijeenbrenging");
+        thenGlossContains(glosses.get(13), "1594720_4", "samenbrenging");
+        thenGlossContains(glosses.get(14), "1594720_4", "vergaring");
+        thenGlossContains(glosses.get(15), "1594720_4", "{veroud.} vergadering");
+        thenGlossContains(glosses.get(16), "1594720_4", "inzameling");
+        thenGlossContains(glosses.get(17), "1594720_4", "{ごみの} ophaling");
+        thenGlossContains(glosses.get(18), "1594720_5", "verzameling");
+        thenGlossContains(glosses.get(19), "1594720_5", "collectie");
+        thenGlossContains(glosses.get(20), "1594720_5", "bestand");
+    }
+
+    private void thenGlosses_ENG_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.ENG);
+        assertThat(glosses).hasSize(3);
+        thenGlossContains(glosses.get(0), "1594720_1", "gathering up");
+        thenGlossContains(glosses.get(1), "1594720_1", "collection");
+        thenGlossContains(glosses.get(2), "1594720_1", "accumulation");
+    }
+
+    private void thenGlosses_FRA_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.FRA);
+        assertThat(glosses).hasSize(2);
+        thenGlossContains(glosses.get(0), "1594720_6", "collection");
+        thenGlossContains(glosses.get(1), "1594720_6", "récolte");
+    }
+
+    private void thenGlosses_GER_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.GER);
+        assertThat(glosses).hasSize(4);
+        thenGlossContains(glosses.get(0), "1594720_7", "sammeln");
+        thenGlossContains(glosses.get(1), "1594720_7", "(f) Sammlung");
+        thenGlossContains(glosses.get(2), "1594720_7", "(f) Kollektion");
+        thenGlossContains(glosses.get(3), "1594720_7", "(n) Sammeln");
+    }
+
+    private void thenGlosses_HUN_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.HUN);
+        assertThat(glosses).hasSize(2);
+        thenGlossContains(glosses.get(0), "1594720_8", "gyűjtemény");
+        thenGlossContains(glosses.get(1), "1594720_8", "gyűjtés");
+    }
+
+    private void thenGlosses_ITA_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.ITA);
+        assertThat(glosses).hasSize(6);
+        thenGlossContains(glosses.get(0), "1594720_9", "accumulare");
+        thenGlossContains(glosses.get(1), "1594720_9", "collezionare");
+        thenGlossContains(glosses.get(2), "1594720_9", "raccogliere");
+        thenGlossContains(glosses.get(3), "1594720_9", "il riunire");
+        thenGlossContains(glosses.get(4), "1594720_9", "collezione");
+        thenGlossContains(glosses.get(5), "1594720_9", "il raccogliere");
+    }
+
+    private void thenGlosses_RUS_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.RUS);
+        assertThat(glosses).hasSize(4);
+        thenGlossContains(glosses.get(0), "1594720_10", "сбор");
+        thenGlossContains(glosses.get(1), "1594720_10", "собирать, коллекционировать");
+        thenGlossContains(glosses.get(2), "1594720_10", "собирание, коллекционирование");
+        thenGlossContains(glosses.get(3), "1594720_10", "{～する} собирать, коллекционировать");
+    }
+
+    private void thenGlosses_SLV_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.SLV);
+        assertThat(glosses).hasSize(2);
+        thenGlossContains(glosses.get(0), "1594720_11", "zbiranje");
+        thenGlossContains(glosses.get(1), "1594720_11", "zbirati");
+    }
+
+    private void thenGlosses_SPA_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.SPA);
+        assertThat(glosses).hasSize(12);
+        thenGlossContains(glosses.get(0), "1594720_12", "coleccionar");
+        thenGlossContains(glosses.get(1), "1594720_12", "recopilar");
+        thenGlossContains(glosses.get(2), "1594720_12", "hacer colección de");
+        thenGlossContains(glosses.get(3), "1594720_12", "recoger");
+        thenGlossContains(glosses.get(4), "1594720_12", "colección");
+        thenGlossContains(glosses.get(5), "1594720_12", "amontonamiento");
+        thenGlossContains(glosses.get(6), "1594720_12", "hacinamiento");
+        thenGlossContains(glosses.get(7), "1594720_12", "acumulamiento");
+        thenGlossContains(glosses.get(8), "1594720_12", "colección");
+        thenGlossContains(glosses.get(9), "1594720_12", "recopilación");
+        thenGlossContains(glosses.get(10), "1594720_12", "recolecta");
+        thenGlossContains(glosses.get(11), "1594720_12", "recogida");
+    }
+
+    private void thenGlosses_SWE_AreCorrectlySaved() {
+        var glosses = fetchGlosses(Language.SWE);
+        assertThat(glosses).isEmpty();
+    }
+
+    private List<Map<String, Object>> fetchGlosses(Language language) {
+        return jdbcTemplate.queryForList("SELECT * FROM " + language.getCode() + ".glosses");
+    }
+
+    private static void thenGlossContains(Map<String, Object> actual, String senseSeq, String vocabulary) {
+        assertThat(actual).containsEntry("sense_seq", senseSeq).containsEntry("vocabulary", vocabulary);
     }
 }

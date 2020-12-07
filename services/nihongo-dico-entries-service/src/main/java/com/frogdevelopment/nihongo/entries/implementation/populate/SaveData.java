@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -18,16 +19,18 @@ public class SaveData {
     private final InsertData insertData;
     private final UpdateVectorsIndex updateVectorsIndex;
 
-    public void call() {
+    public Map<String, Object> call() {
         try (var connection = dataSource.getConnection()) {
             log.info("****** Clear database");
             clearData.call(connection);
 
             log.info("****** Insert data to database");
-            insertData.call(connection);
+            var map = insertData.call(connection);
 
             log.info("****** Updating the vectors");
             updateVectorsIndex.call(connection);
+
+            return map;
         } catch (IOException | SQLException e) {
             throw new IllegalStateException(e);
         }

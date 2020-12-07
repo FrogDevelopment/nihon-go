@@ -15,8 +15,8 @@ class ClearData {
         try (var statement = connection.createStatement()) {
 
             for (Language language : Language.values()) {
+                log.info("- clearing glosses for {}", language);
                 String schema = language.getCode();
-                log.info("- clearing glosses for {}", schema);
                 statement.executeUpdate("TRUNCATE " + schema + ".glosses");
                 statement.executeUpdate("DROP INDEX IF EXISTS " + schema + ".pgroonga_glosses_index");
             }

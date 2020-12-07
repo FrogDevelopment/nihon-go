@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 import static org.mockito.BDDMockito.given;
 
@@ -48,7 +49,7 @@ class FetchEntriesTest {
         var inOrder = Mockito.inOrder(fetchJmDict, saveData, aboutDao, deleteDownloadedFiles, exportByLang);
         inOrder.verify(fetchJmDict).execute();
         inOrder.verify(saveData).call();
-        inOrder.verify(aboutDao).insert("2015-06-18");
+        inOrder.verify(aboutDao).insert("2015-06-18", new HashMap<>());
         inOrder.verify(deleteDownloadedFiles).call();
         inOrder.verify(exportByLang).call();
     }

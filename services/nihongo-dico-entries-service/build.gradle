@@ -1,5 +1,5 @@
 dependencies {
-    def tcPgroongaVersion = '1.0.0'
+    def tcPgroongaVersion = '1.1.0'
 
     implementation 'commons-io:commons-io:2.8.0'
     implementation 'org.apache.commons:commons-compress:1.20'

@@ -20,6 +20,9 @@ public class ExportByLang {
     public void call() {
         fileSystemResourceLoader.clearResourceCaches();
 
-        Arrays.stream(Language.values()).map(Language::getCode).forEach(exportDao::export);
+        Arrays.stream(Language.values())
+                .parallel()
+                .map(Language::getCode)
+                .forEach(exportDao::export);
     }
 }

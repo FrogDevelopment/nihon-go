@@ -5,6 +5,7 @@ import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity
 import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Sense;
 import com.frogdevelopment.nihongo.entries.implementation.populate.utils.FileUtils;
 import com.frogdevelopment.nihongo.entries.implementation.search.utils.KanaToRomaji;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -18,6 +19,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.deleteIfExists;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
+@Slf4j
 public class CsvWriter implements AutoCloseable {
 
     private static final String ENTRIES_CSV = "entries.csv";
@@ -94,10 +96,14 @@ public class CsvWriter implements AutoCloseable {
         for (var j = 0; j < sense.getGloss().size(); j++) {
             var gloss = sense.getGloss().get(j);
             var lang = handleMultipleIsoLang(gloss.getLang());
-            var line = senseSeq + "\t"
-                    + escapeTrailingBackslash(gloss.getValue());
-            glossesWriters.get(lang).write(line);
-            glossesWriters.get(lang).newLine();
+            if (glossesWriters.containsKey(lang)) {
+                var line = senseSeq + "\t"
+                        + escapeTrailingBackslash(gloss.getValue());
+                glossesWriters.get(lang).write(line);
+                glossesWriters.get(lang).newLine();
+            } else {
+                log.warn("Missing Glosses Writer for [{}]", lang);
+            }
         }
     }
 
