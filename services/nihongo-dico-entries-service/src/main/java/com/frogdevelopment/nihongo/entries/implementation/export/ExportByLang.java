@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 @Component
@@ -17,8 +18,9 @@ public class ExportByLang {
     private final ExportDao exportDao;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void call() {
+    public void call() throws IOException {
         fileSystemResourceLoader.clearResourceCaches();
+        ExportWriter.initExportDirectories();
 
         Arrays.stream(Language.values())
                 .parallel()

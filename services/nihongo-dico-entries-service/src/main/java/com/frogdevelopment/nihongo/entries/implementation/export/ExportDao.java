@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.sql.ResultSet;
 
@@ -18,11 +17,6 @@ import java.sql.ResultSet;
 public class ExportDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    @PostConstruct
-    private void init() throws IOException {
-        ExportWriter.initExportDirectories();
-    }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Boolean export(String lang) {
