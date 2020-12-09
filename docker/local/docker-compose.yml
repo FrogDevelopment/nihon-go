@@ -1,0 +1,73 @@
+version: "3.7"
+
+services:
+
+  ########### TOOLS ###########
+  pgroonga:
+    container_name: pgroonga
+    image: groonga/pgroonga:2.2.7-alpine-13-slim
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    ports:
+      - 2345:5432
+    environment:
+      TZ: Europe/Paris
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    volumes:
+      - pgroonga_data:/var/lib/postgresql/data
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./secrets/postgres_user:/run/secrets/postgres_user:ro
+      - ./secrets/postgres_password:/run/secrets/postgres_password:ro
+
+    ########### SUPPORTS ###########
+  support-registry:
+    container_name: support-registry
+    image: springsupports/support-registry:$SUPPORT_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: always
+    ports:
+      - 8888:8080
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: local
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+  support-config-server:
+    container_name: support-config
+    image: springsupports/support-config-server:$SUPPORT_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: 'no'
+    depends_on:
+      - support-registry
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: git,secrets,local
+      GIT_LABEL: $CONFIG_VERSION
+    volumes:
+      - /home/ben/.ssh:/root/.ssh:ro
+      - ./secrets/git_uri:/run/secrets/git_uri:ro
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+      - ./secrets/repository_application:/run/secrets/repository/application:ro
+      - ./secrets/repository_application-postgres:/run/secrets/repository/application-postgres:ro
+
+
+volumes:
+  pgroonga_data:
