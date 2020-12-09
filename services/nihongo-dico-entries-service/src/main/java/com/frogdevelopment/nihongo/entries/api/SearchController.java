@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,17 +23,17 @@ public class SearchController {
     private final Search search;
     private final SearchDao searchDao;
 
-    @GetMapping
+    @GetMapping("{query}")
     @PreAuthorize("permitAll()")
-    public Collection<SearchResult> search(@RequestParam String lang,
-                                           @RequestParam String query) {
+    public Collection<SearchResult> search(@PathVariable String query,
+                                           @RequestParam String lang) {
         return search.call(lang, query);
     }
 
-    @GetMapping("/details")
+    @GetMapping("/details/{senseSeq}")
     @PreAuthorize("permitAll()")
-    public SearchDetails getDetails(@RequestParam String lang,
-                                    @RequestParam String senseSeq) {
+    public SearchDetails getDetails(@PathVariable String senseSeq,
+                                    @RequestParam String lang) {
         return searchDao.getDetails(lang, senseSeq);
     }
 }
