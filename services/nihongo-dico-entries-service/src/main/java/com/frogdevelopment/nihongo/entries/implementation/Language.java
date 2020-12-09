@@ -11,8 +11,7 @@ public enum Language {
     RUS("rus"),
     SPA("spa"),
     SWE("swe"),
-    SLV("slv"),
-    ITA("ita");
+    SLV("slv");
 
     @Getter
     private final String code;

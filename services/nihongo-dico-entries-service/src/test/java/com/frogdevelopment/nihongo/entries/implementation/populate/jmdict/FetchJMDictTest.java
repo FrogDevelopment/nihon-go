@@ -69,7 +69,7 @@ class FetchJMDictTest {
         assertThat(about.get(0).get("languages")).isInstanceOf(PGobject.class);
         var languages = (PGobject) about.get(0).get("languages");
         assertThat(languages.getType()).isEqualTo("json");
-        assertThat(languages.getValue()).isEqualTo("{\"hun\":2,\"swe\":0,\"rus\":4,\"dut\":21,\"fra\":2,\"ger\":4,\"spa\":12,\"ita\":6,\"slv\":2,\"eng\":3}");
+        assertThat(languages.getValue()).isEqualTo("{\"hun\":2,\"swe\":0,\"rus\":4,\"dut\":21,\"fra\":2,\"ger\":4,\"spa\":12,\"slv\":2,\"eng\":3}");
     }
 
     private void thenEntriesAreCorrectlySaved() {
@@ -106,7 +106,6 @@ class FetchJMDictTest {
         thenGlosses_FRA_AreCorrectlySaved();
         thenGlosses_GER_AreCorrectlySaved();
         thenGlosses_HUN_AreCorrectlySaved();
-        thenGlosses_ITA_AreCorrectlySaved();
         thenGlosses_RUS_AreCorrectlySaved();
         thenGlosses_SLV_AreCorrectlySaved();
         thenGlosses_SPA_AreCorrectlySaved();
@@ -168,17 +167,6 @@ class FetchJMDictTest {
         assertThat(glosses).hasSize(2);
         thenGlossContains(glosses.get(0), "1594720_8", "gyűjtemény");
         thenGlossContains(glosses.get(1), "1594720_8", "gyűjtés");
-    }
-
-    private void thenGlosses_ITA_AreCorrectlySaved() {
-        var glosses = fetchGlosses(Language.ITA);
-        assertThat(glosses).hasSize(6);
-        thenGlossContains(glosses.get(0), "1594720_9", "accumulare");
-        thenGlossContains(glosses.get(1), "1594720_9", "collezionare");
-        thenGlossContains(glosses.get(2), "1594720_9", "raccogliere");
-        thenGlossContains(glosses.get(3), "1594720_9", "il riunire");
-        thenGlossContains(glosses.get(4), "1594720_9", "collezione");
-        thenGlossContains(glosses.get(5), "1594720_9", "il raccogliere");
     }
 
     private void thenGlosses_RUS_AreCorrectlySaved() {
