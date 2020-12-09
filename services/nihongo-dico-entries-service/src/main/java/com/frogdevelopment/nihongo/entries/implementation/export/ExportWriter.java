@@ -1,7 +1,7 @@
 package com.frogdevelopment.nihongo.entries.implementation.export;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.ResultSetExtractor;
+import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -16,35 +16,30 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Slf4j
 class ExportWriter implements AutoCloseable {
 
-    static final String EXPORT_FORMAT = "/export/%s.json";
+    static final String EXPORT_PATH = "/opt/export";
+    static final String EXPORT_FORMAT = "%s.json";
 
     private final String fileName;
     private final BufferedWriter writer;
 
-    static ResultSetExtractor<Boolean> exportToFile(String lang) {
-        return rs -> {
-            try (var writer = new ExportWriter(lang)) {
-                while (rs.next()) {
-                    writer.write(rs);
-                }
-            } catch (IOException e) {
-                log.error("Error while writing file export for " + lang, e);
-                return false;
-            }
-
-            return true;
-        };
+    static void initExportDirectories() throws IOException {
+        var path = Paths.get(EXPORT_PATH);
+        if (path.toFile().exists()) {
+            FileUtils.cleanDirectory(path.toFile());
+        } else {
+            Files.createDirectories(path);
+        }
     }
 
-    private ExportWriter(String lang) throws IOException {
+    ExportWriter(String lang) throws IOException {
         fileName = String.format(EXPORT_FORMAT, lang);
-        var path = Paths.get(fileName);
+        var path = Paths.get(EXPORT_PATH, fileName);
         Files.deleteIfExists(path);
         writer = new BufferedWriter(new FileWriter(path.toFile(), UTF_8));
         log.info("Starting file {}", fileName);
     }
 
-    private void write(ResultSet rs) throws SQLException, IOException {
+    void write(ResultSet rs) throws SQLException, IOException {
         writer.write(rs.getString(1));
         writer.newLine();
     }
