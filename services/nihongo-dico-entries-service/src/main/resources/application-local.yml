@@ -22,4 +22,4 @@ security:
 logging:
   level:
     root: INFO
-    fr.frogdevelopment: INFO
+    com.frogdevelopment: WARN

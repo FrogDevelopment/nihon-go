@@ -49,7 +49,7 @@ public class SearchDao {
                     + " INNER JOIN jpn.senses s ON e.entry_seq = s.entry_seq AND s.sense_seq IN ("
                     + "       SELECT g.sense_seq"
                     + "       FROM %1$s.glosses g"
-                    + "       AND vocabulary @@ :query)"
+                    + "       WHERE vocabulary @@ :query)"
                     + " INNER JOIN %1$s.glosses g ON g.sense_seq = s.sense_seq"
                     + " GROUP BY e.entry_seq, e.kanji, e.reading, s.sense_seq;";
 
