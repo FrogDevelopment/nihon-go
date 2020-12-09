@@ -11,9 +11,9 @@ CREATE TABLE senses
     sense_seq TEXT PRIMARY KEY,
     entry_seq INTEGER NOT NULL REFERENCES entries (entry_seq),
     pos       VARCHAR(50),
-    field     VARCHAR(20),
-    misc      VARCHAR(20),
+    field     VARCHAR(50),
+    misc      VARCHAR(50),
     info      VARCHAR(250),
-    dial      VARCHAR(20)
+    dial      VARCHAR(50)
 );
 
