@@ -47,11 +47,11 @@ public class ExportDao {
                              ARRAY_AGG(g.vocabulary) AS vocabulary
                       FROM jpn.entries e
                                INNER JOIN jpn.senses s ON e.entry_seq = s.entry_seq
-                               INNER JOIN " + lang + ".glosses g ON g.sense_seq = s.sense_seq 
+                               INNER JOIN %s.glosses g ON g.sense_seq = s.sense_seq 
                       GROUP BY e.entry_seq, e.kanji, e.reading, s.sense_seq, s.pos, s.field, s.misc, s.info, s.dial) f
                 """;
 
-        return jdbcTemplate.query(sql, exportToFile(lang));
+        return jdbcTemplate.query(String.format(sql, lang), exportToFile(lang));
     }
 
     private static ResultSetExtractor<Boolean> exportToFile(String lang) {
