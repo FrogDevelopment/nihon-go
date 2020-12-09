@@ -1,6 +1,7 @@
 package com.frogdevelopment.nihongo.entries.api;
 
 import com.frogdevelopment.nihongo.entries.implementation.export.LoadAsResource;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,13 +14,10 @@ import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 
 @RestController
 @RequestMapping(path = "export")
+@RequiredArgsConstructor
 public class ExportController {
 
     private final LoadAsResource loadAsResource;
-
-    public ExportController(LoadAsResource loadAsResource) {
-        this.loadAsResource = loadAsResource;
-    }
 
     @GetMapping
     @PreAuthorize("permitAll()")

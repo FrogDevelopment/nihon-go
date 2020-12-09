@@ -4,7 +4,7 @@ import com.frogdevelopment.nihongo.entries.implementation.search.Search;
 import com.frogdevelopment.nihongo.entries.implementation.search.SearchDao;
 import com.frogdevelopment.nihongo.entries.implementation.search.entity.SearchDetails;
 import com.frogdevelopment.nihongo.entries.implementation.search.entity.SearchResult;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,17 +16,11 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping(path = "search", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class SearchController {
 
     private final Search search;
     private final SearchDao searchDao;
-
-    @Autowired
-    public SearchController(Search search,
-                            SearchDao searchDao) {
-        this.searchDao = searchDao;
-        this.search = search;
-    }
 
     @GetMapping
     @PreAuthorize("permitAll()")
