@@ -23,14 +23,17 @@ import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict
 @Component
 class InsertData {
 
-    private static final String COPY_ENTRIES = "COPY jpn.entries (entry_seq, kanji, kana, reading)"
-            + " FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')";
+    private static final String COPY_ENTRIES = """
+            COPY jpn.entries (entry_seq, kanji, kana, reading) FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')
+            """;
 
-    private static final String COPY_SENSES = "COPY jpn.senses (sense_seq, entry_seq, pos, field, misc, info, dial)"
-            + " FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')";
+    private static final String COPY_SENSES = """
+            COPY jpn.senses (sense_seq, entry_seq, pos, field, misc, info, dial) FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')
+            """;
 
-    private static final String COPY_GLOSSES = "COPY %s.glosses (sense_seq, vocabulary)"
-            + " FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')";
+    private static final String COPY_GLOSSES = """
+            COPY %s.glosses (sense_seq, vocabulary) FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')
+            """;
 
     Map<String, Object> call(Connection connection) throws IOException, SQLException {
         var pgConnection = connection.unwrap(PGConnection.class);

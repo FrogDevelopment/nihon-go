@@ -43,11 +43,12 @@ public class AboutDao {
 
     @Transactional(propagation = REQUIRED)
     public String getLast() {
-        var sql =
-                "SELECT JSON_BUILD_OBJECT('jmdict_date', jmdict_date, 'nb_entries', nb_entries, 'languages', languages) "
-                        + "FROM about "
-                        + "ORDER BY about_id DESC "
-                        + "LIMIT 1";
+        var sql = """
+                SELECT JSON_BUILD_OBJECT('jmdict_date', jmdict_date, 'nb_entries', nb_entries, 'languages', languages)
+                FROM about
+                ORDER BY about_id DESC
+                LIMIT 1
+                """;
 
         try {
             return namedParameterJdbcTemplate.getJdbcTemplate().queryForObject(sql, String.class);
@@ -58,10 +59,12 @@ public class AboutDao {
 
     @Transactional(propagation = REQUIRED)
     public String getLanguages() {
-        String sql = "SELECT languages" +
-                " FROM about" +
-                " ORDER BY about_id" +
-                " DESC LIMIT 1";
+        String sql = """
+                SELECT languages
+                FROM about
+                ORDER BY about_id
+                DESC LIMIT 1
+                """;
 
         try {
             return namedParameterJdbcTemplate.getJdbcTemplate().queryForObject(sql, String.class);

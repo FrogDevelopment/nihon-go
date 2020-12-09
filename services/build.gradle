@@ -11,8 +11,8 @@ subprojects {
     apply plugin: 'com.google.cloud.tools.jib'
     apply plugin: 'org.springframework.cloud.contract'
 
-    sourceCompatibility = JavaVersion.VERSION_14
-    targetCompatibility = JavaVersion.VERSION_14
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
 
     dependencies {
         def authorizationJwtVersion = '1.2.0'
@@ -98,7 +98,7 @@ subprojects {
 
     jib {
         from {
-            image = 'frogdevelopment/docker-adoptopenjdk14-curl:latest'
+            image = 'frogdevelopment/docker-adoptopenjdk15-curl:latest'
         }
         to {
             afterEvaluate {

@@ -1,26 +1,28 @@
 package fr.frogdevelopment.authentication.application.hierarchy;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("unitTest")
 class getTreeFromRolesTest {
 
-    private static final String HIERARCHY = ""
-                                            + "0 > 0-0\n"
-                                            + "0-0 > 0-0-0\n"
-                                            + "0-0 > 0-0-1\n"
-                                            + "0-0-1 > 0-0-1-0\n"
-                                            + "0-0-1 > 0-0-1-1\n"
-                                            + "0-0 > 0-0-2\n"
-                                            + "0 > 0-1\n"
-                                            + "0-1 > 0-1-0\n"
-                                            + "0-1 > 0-1-1\n"
-                                            + "0 > 0-2\n"
-                                            + "1 > 1-0 > 1-0-0";
+    private static final String HIERARCHY = """
+            0 > 0-0
+            0-0 > 0-0-0
+            0-0 > 0-0-1
+            0-0-1 > 0-0-1-0
+            0-0-1 > 0-0-1-1
+            0-0 > 0-0-2
+            0 > 0-1
+            0-1 > 0-1-0
+            0-1 > 0-1-1
+            0 > 0-2
+            1 > 1-0 > 1-0-0
+            """;
 
     private final GetTreeFromRoles getHierarchy = new GetTreeFromRoles(HIERARCHY);
 

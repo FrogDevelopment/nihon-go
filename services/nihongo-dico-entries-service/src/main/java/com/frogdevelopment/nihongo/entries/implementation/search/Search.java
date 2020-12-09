@@ -3,7 +3,6 @@ package com.frogdevelopment.nihongo.entries.implementation.search;
 import com.frogdevelopment.nihongo.entries.implementation.search.entity.SearchResult;
 import com.frogdevelopment.nihongo.entries.implementation.search.utils.ComputeSimilarity;
 import com.frogdevelopment.nihongo.entries.implementation.search.utils.Input;
-import com.frogdevelopment.nihongo.entries.implementation.search.utils.InputUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import static com.frogdevelopment.nihongo.entries.implementation.search.utils.InputUtils.containsKanji;
+import static com.frogdevelopment.nihongo.entries.implementation.search.utils.InputUtils.isOnlyKana;
 import static java.lang.Character.isWhitespace;
 import static java.util.Comparator.comparingDouble;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -37,9 +38,9 @@ public class Search {
 
     private static Input getInputType(String query) {
         Input input;
-        if (InputUtils.containsKanji(query)) {
+        if (containsKanji(query)) {
             input = Input.KANJI;
-        } else if (InputUtils.isOnlyKana(query)) {
+        } else if (isOnlyKana(query)) {
             input = Input.KANA;
         } else {
             input = Input.ROMAJI;

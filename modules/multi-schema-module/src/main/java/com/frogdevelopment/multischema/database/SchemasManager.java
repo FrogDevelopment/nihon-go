@@ -19,10 +19,12 @@ import java.util.Optional;
 @Slf4j
 public class SchemasManager implements InitializingBean {
 
-    private static final String SQL_LIST_REALM_SCHEMAS = "SELECT schema_name"
-            + " FROM information_schema.schemata"
-            + " WHERE schema_name != 'information_schema'"
-            + " AND schema_name NOT LIKE 'pg_%';";
+    private static final String SQL_LIST_REALM_SCHEMAS = """
+            SELECT schema_name
+            FROM information_schema.schemata
+            WHERE schema_name != 'information_schema'
+            AND schema_name NOT LIKE 'pg_%';
+            """;
 
     private final String applicationName;
     private final DataSourceProperties dataSourceProperties;
