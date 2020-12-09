@@ -1,8 +1,8 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
-import com.frogdevelopment.nihongo.entries.implementation.Language;
 import com.frogdevelopment.nihongo.entries.implementation.about.AboutDao;
 import com.frogdevelopment.nihongo.entries.implementation.populate.SaveData;
+import com.frogdevelopment.nihongo.multischema.Language;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGobject;

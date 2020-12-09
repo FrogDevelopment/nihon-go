@@ -1,6 +1,6 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate;
 
-import com.frogdevelopment.nihongo.entries.implementation.Language;
+import com.frogdevelopment.nihongo.multischema.Language;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

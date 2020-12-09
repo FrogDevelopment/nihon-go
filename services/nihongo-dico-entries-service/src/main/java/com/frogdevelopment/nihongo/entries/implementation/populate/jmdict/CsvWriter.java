@@ -1,10 +1,10 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
-import com.frogdevelopment.nihongo.entries.implementation.Language;
 import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Entry;
 import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Sense;
 import com.frogdevelopment.nihongo.entries.implementation.populate.utils.FileUtils;
 import com.frogdevelopment.nihongo.entries.implementation.search.utils.KanaToRomaji;
+import com.frogdevelopment.nihongo.multischema.Language;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedWriter;

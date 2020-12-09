@@ -1,6 +1,5 @@
-package com.frogdevelopment.nihongo.entries.config;
+package com.frogdevelopment.nihongo.multischema;
 
-import com.frogdevelopment.nihongo.entries.implementation.Language;
 import lombok.RequiredArgsConstructor;
 import org.flywaydb.core.api.configuration.FluentConfiguration;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,7 +18,13 @@ public class MultiSchemaFlywayMigrationInitializer implements InitializingBean, 
     public void afterPropertiesSet() {
         Arrays.stream(Language.values())
                 .map(Language::getCode)
-                .forEach(language -> this.configuration.schemas(language).load().migrate());
+                .forEach(this::migrate);
+    }
+
+    private int migrate(String language) {
+        return this.configuration.schemas(language)
+                .load()
+                .migrate();
     }
 
     @Override

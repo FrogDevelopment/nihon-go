@@ -1,6 +1,6 @@
 package com.frogdevelopment.nihongo.entries.implementation.export;
 
-import com.frogdevelopment.nihongo.entries.implementation.Language;
+import com.frogdevelopment.nihongo.multischema.Language;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.stereotype.Component;

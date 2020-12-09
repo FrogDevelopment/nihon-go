@@ -1,4 +1,4 @@
-package com.frogdevelopment.nihongo.entries.implementation;
+package com.frogdevelopment.nihongo.multischema;
 
 import lombok.Getter;
 

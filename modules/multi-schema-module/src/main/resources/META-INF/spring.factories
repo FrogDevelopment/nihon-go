@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.frogdevelopment.multischema.MultiSchemaAutoConfiguration
+com.frogdevelopment.nihongo.multischema.MultiSchemaFlywayAutoConfiguration
