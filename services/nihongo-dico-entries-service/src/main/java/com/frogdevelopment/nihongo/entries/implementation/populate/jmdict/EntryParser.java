@@ -1,6 +1,7 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
 import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Entry;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 class EntryParser {
 
     static final String ENTRY_START = "<entry>";
@@ -23,14 +25,6 @@ class EntryParser {
     private final KanjiParser kanjiParser;
     private final ReadingParser readingParser;
     private final SenseParser senseParser;
-
-    EntryParser(KanjiParser kanjiParser,
-                ReadingParser readingParser,
-                SenseParser senseParser) {
-        this.kanjiParser = kanjiParser;
-        this.readingParser = readingParser;
-        this.senseParser = senseParser;
-    }
 
     Entry execute(Scanner scanner) {
         var entryBuilder = Entry.builder();

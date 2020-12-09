@@ -1,5 +1,6 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -10,16 +11,13 @@ import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JMDictParser {
 
     static final String JMDICT_START = "<JMdict>";
     private static final String JMDICT_END = "</JMdict>";
 
     private final EntryParser entryParser;
-
-    public JMDictParser(EntryParser entryParser) {
-        this.entryParser = entryParser;
-    }
 
     void execute(Scanner scanner) {
         log.info("- scanning entries");
