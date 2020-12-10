@@ -1,11 +1,10 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {EntriesService} from '../_services/entries.service';
-import {Search} from './Search';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {PlatformLocation} from '@angular/common';
-import {MatDialog} from '@angular/material';
+import {MatDialog} from '@angular/material/dialog';
 import {SearchSettingsComponent} from '../search-settings/search-settings.component';
+import {EntriesService, Search} from '../../services/entries';
 
 @Component({
   selector: 'app-search',
@@ -22,18 +21,18 @@ export class SearchComponent implements OnInit {
 
   scrollPosition: number;
 
-  @ViewChild('list_content', {static: false, read: ElementRef}) public listContent: ElementRef;
+  @ViewChild('list_content', {read: ElementRef}) public listContent: ElementRef;
 
-  constructor(private dialog: MatDialog,
-              private searchService: EntriesService,
-              private fb: FormBuilder,
+  constructor(private matDialog: MatDialog,
+              private entriesService: EntriesService,
+              private formBuilder: FormBuilder,
               private router: Router,
-              private location: PlatformLocation) {
-    this.searchForm = this.fb.group({
+              private platformLocation: PlatformLocation) {
+    this.searchForm = this.formBuilder.group({
       query: ['']
     });
 
-    location.onPopState(() => {
+    platformLocation.onPopState(() => {
       setTimeout(() => {
         this.listContent.nativeElement.scrollTop = this.scrollPosition;
       });
@@ -42,7 +41,7 @@ export class SearchComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.searchService.getLanguages().subscribe(
+    this.entriesService.getLanguages().subscribe(
       languages => {
         this.languages = [];
         if (languages) {
@@ -61,7 +60,7 @@ export class SearchComponent implements OnInit {
   }
 
   showSettings(): void {
-    const dialogRef = this.dialog.open(SearchSettingsComponent, {
+    const dialogRef = this.matDialog.open(SearchSettingsComponent, {
       width: '400px',
       data: {
         languages: this.languages,
@@ -85,7 +84,7 @@ export class SearchComponent implements OnInit {
     }
 
     this.showLoading = true;
-    this.searchService.search(this.searchLang, query).subscribe(data => {
+    this.entriesService.search(this.searchLang, query).subscribe(data => {
       this.showLoading = false;
       setTimeout(() => this.listContent.nativeElement.scrollTop = 0);
       return this.results = data;

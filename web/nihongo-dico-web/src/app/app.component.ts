@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
-import {MatDialog, MatIconRegistry} from '@angular/material';
-import {AboutComponent} from './about/about.component';
+import {MatDialog} from '@angular/material/dialog';
+import {MatIconRegistry} from '@angular/material/icon';
+import {AboutComponent} from './pages/about/about.component';
 import {TranslateService} from '@ngx-translate/core';
 import {DomSanitizer} from '@angular/platform-browser';
 

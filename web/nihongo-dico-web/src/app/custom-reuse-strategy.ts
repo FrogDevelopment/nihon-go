@@ -2,8 +2,10 @@
 // cf https://github.com/manfredsteyer/angular-2-reuse-strategy-sample/blob/master/app/shared/router/custom-reuse-strategy.ts
 // This impl. bases upon one that can be found in the router's test cases.
 import {ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy} from '@angular/router';
+import {Injectable} from '@angular/core';
 
 
+@Injectable()
 export class CustomReuseStrategy implements RouteReuseStrategy {
 
   handlers: { [key: string]: DetachedRouteHandle } = {};

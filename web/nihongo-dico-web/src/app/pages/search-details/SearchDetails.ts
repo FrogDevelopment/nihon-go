@@ -1,4 +1,4 @@
-import {Sentence} from './Sentence';
+import {Sentence} from '../../services/sentences/sentence';
 
 export class SearchDetails {
 
