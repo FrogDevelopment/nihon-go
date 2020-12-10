@@ -10,11 +10,22 @@ frog:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/${frog.database.name}?ApplicationName=${spring.application.name}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASWORD:postgres}
+    url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${spring.application.name}
+    username: postgres
+    password: postgres
+
+  flyway:
+    multi-schema: true
 
 security:
   jwt:
     token:
       signing-key: xxx
+
+logging:
+  config: classpath:logback-spring.xml
+
+  level:
+    root: INFO
+    com.frogdevelopment: WARN
+    com.frogdevelopment.nihongo.sentences: debug
