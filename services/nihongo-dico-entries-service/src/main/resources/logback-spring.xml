@@ -12,11 +12,12 @@
     </springProfile>
 
     <springProfile name="production">
-        <springProperty name="LOG_FILE" source="logging.file.name"/>
-        <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
+        <appender name="LOGSTASH" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        </appender>
 
         <root level="INFO">
-            <appender-ref ref="FILE"/>
+            <appender-ref ref="LOGSTASH"/>
         </root>
     </springProfile>
 </configuration>
