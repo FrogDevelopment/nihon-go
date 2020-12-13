@@ -13,7 +13,7 @@ export class SentencesService {
   constructor(private http: HttpClient) {
   }
 
-  search(lang: string, kanji: string, kana: string): Observable<Sentence[]> {
-    return this.http.get<Sentence[]>(`${this.searchUrl}/${kanji}/${kana}/${lang}`);
+  search(lang: string, kanji: string, kana: string, gloss: string): Observable<Sentence[]> {
+    return this.http.get<Sentence[]>(`${this.searchUrl}?lang=${lang}&kanji=${kanji}&kana=${kana}&gloss=${gloss}`);
   }
 }

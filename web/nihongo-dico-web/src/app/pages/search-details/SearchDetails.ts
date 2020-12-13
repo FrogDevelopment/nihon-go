@@ -1,4 +1,4 @@
-import {Sentence} from '../../services/sentences/sentence';
+import {Sentence} from '../../services/sentences';
 
 export class SearchDetails {
 
@@ -10,7 +10,7 @@ export class SearchDetails {
   misc: string[];
   info: string;
   dial: string[];
-  gloss: string[];
+  gloss: string;
 
   sentences: Sentence[];
 }

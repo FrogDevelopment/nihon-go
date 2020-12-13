@@ -7,7 +7,6 @@ import {SearchSettingsComponent} from '../search-settings/search-settings.compon
 import {EntriesService, Search} from '../../services/entries';
 
 @Component({
-  selector: 'app-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })
@@ -49,13 +48,13 @@ export class SearchComponent implements OnInit {
             this.languages.push({code: key, count: +languages[key]});
           });
         } else {
-          this.languages.push({code: 'eng', count: 0});
+          this.languages.push({code: 'en', count: 0});
         }
         this.languages.sort((a, b) => a.count > b.count ? -1 : a.count < b.count ? 1 : 0);
 
         return this.languages;
       },
-      () => this.languages.push({code: 'eng', count: 0})
+      () => this.languages.push({code: 'en', count: 0})
     );
   }
 

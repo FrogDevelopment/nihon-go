@@ -17,15 +17,15 @@ export class AppComponent {
               private matIconRegistry: MatIconRegistry,
               private domSanitizer: DomSanitizer) {
 
-    const langs = ['eng', 'fra'];
+    const langs = ['en', 'fr'];
     translate.addLangs(langs);
 
     // this language will be used as a fallback when a translation isn't found in the current language
-    translate.setDefaultLang('eng');
+    translate.setDefaultLang('en');
 
     // the lang to use, if the lang isn't available, it will use the current loader to get them
     const browserLang = translate.getBrowserLang();
-    translate.use(browserLang.match(/eng|fra/) ? browserLang : 'eng');
+    translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
 
     // fixme add credit for icons => https://www.iconfinder.com/iconsets/ensign-11
     // langs.forEach(value => {

@@ -2,16 +2,16 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, Resolve, RouterStateSnapshot} from '@angular/router';
 
 import {SearchDetails} from './SearchDetails';
-import {catchError, mergeMap, take} from 'rxjs/operators';
-import {EMPTY, Observable, of} from 'rxjs';
+import {catchError, map, switchMap, take, tap} from 'rxjs/operators';
+import {EMPTY, Observable} from 'rxjs';
 import {EntriesService} from '../../services/entries';
-
-// cf https://angular.io/guide/router#fetch-data-before-navigating
+import {Sentence, SentencesService} from '../../services/sentences';
 
 @Injectable()
 export class SearchDetailResolver implements Resolve<SearchDetails> {
 
-  constructor(private searchService: EntriesService) {
+  constructor(private searchService: EntriesService,
+              private sentencesService: SentencesService) {
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<SearchDetails> {
@@ -19,9 +19,13 @@ export class SearchDetailResolver implements Resolve<SearchDetails> {
     const lang = route.paramMap.get('lang');
     const senseSeq = route.paramMap.get('senseSeq');
 
+    let resolvedDetails: SearchDetails;
     return this.searchService.getDetails(lang, senseSeq).pipe(
       take(1),
-      mergeMap(details => of(details)),
+      tap((details: SearchDetails) => resolvedDetails = details),
+      switchMap((details: SearchDetails) => this.sentencesService.search(lang, details.kanji, details.kana, details.gloss)),
+      tap((sentences: Sentence[]) => resolvedDetails.sentences = sentences),
+      map(() => resolvedDetails),
       catchError(() => EMPTY)
     );
   }

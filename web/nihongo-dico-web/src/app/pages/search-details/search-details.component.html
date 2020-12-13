@@ -10,9 +10,7 @@
          class="details-reading">{{details.reading}}
     </div>
     <div class="details-vocabulary">
-    <span *ngFor="let gloss of details.gloss; let last = last">
-      {{gloss}}<span *ngIf="!last">, </span>
-    </span>
+      {{details.gloss}}
     </div>
 
     <button mat-raised-button (click)="goBack();">BACK</button>

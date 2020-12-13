@@ -1,26 +1,20 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {SearchComponent} from './pages/search/search.component';
-import {SearchDetailsComponent} from './pages/search-details/search-details.component';
-import {SearchDetailResolver} from './pages/search-details/search-details-resolver.service';
 
 const routes: Routes = [
   {
     path: '',
-    component: SearchComponent
+    loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule),
   },
   {
     path: 'details/:senseSeq/:lang',
-    component: SearchDetailsComponent,
-    resolve: {
-      details: SearchDetailResolver
-    }
+    loadChildren: () => import('./pages/search-details/search-details.module').then(m => m.SearchDetailsModule)
   }
 ];
 
 @NgModule({
   exports: [RouterModule],
-  imports: [RouterModule.forRoot(routes, {relativeLinkResolution: 'legacy'})]
+  imports: [RouterModule.forRoot(routes)]
 })
 export class AppRoutingModule {
 }
