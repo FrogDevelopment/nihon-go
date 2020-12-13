@@ -7,6 +7,7 @@ import {MatListModule} from '@angular/material/list';
 import {SafeHtmlPipeModule} from '../../pipes/safe-html/safe-html-pipe.module';
 import {SearchDetailsRoutingModule} from './search-details-routing.module';
 import {EntriesService} from '../../services/entries';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -14,7 +15,8 @@ import {EntriesService} from '../../services/entries';
     CommonModule,
     SafeHtmlPipeModule,
     MatButtonModule,
-    MatListModule
+    MatListModule,
+    TranslateModule
   ],
   declarations: [SearchDetailsComponent],
   exports: [SearchDetailsComponent],

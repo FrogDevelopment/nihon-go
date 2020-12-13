@@ -33,11 +33,12 @@
       <button mat-raised-button
               matTooltip="{{'search.settings.button' | translate}}"
               (click)="showSettings()">
-        <mat-icon>settings</mat-icon>
+        <mat-icon>tune</mat-icon>
       </button>
 
       <button mat-raised-button
               matTooltip="{{'search.button' | translate}}"
+              color="warn"
               (click)="search()">
         <mat-icon>search</mat-icon>
       </button>
@@ -45,10 +46,10 @@
   </div>
 
   <div #list_content class="list-content" *ngIf="results && results.length > 0">
-    <mat-list>
-      <mat-list-item *ngFor="let result of results; let last = last"
-                     class="clickable"
-                     (click)="onShowDetails(result)">
+    <mat-selection-list [multiple]="false">
+      <mat-list-option *ngFor="let result of results; let last = last"
+                       class="clickable"
+                       (click)="onShowDetails(result)">
         <p matLine>
           <span *ngIf="result.kanji" class="japanese search_kanji" [innerHTML]="result.kanji | safeHtml"></span>
           <span *ngIf="result.kanji"> - </span>
@@ -59,8 +60,8 @@
           <span [innerHTML]="result.vocabulary | safeHtml"></span>
         </p>
         <mat-divider *ngIf="!last" [inset]="true"></mat-divider>
-      </mat-list-item>
-    </mat-list>
+      </mat-list-option>
+    </mat-selection-list>
   </div>
 
   <!--<div class="help-content"-->

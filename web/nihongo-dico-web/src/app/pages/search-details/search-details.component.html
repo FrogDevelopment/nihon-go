@@ -13,16 +13,16 @@
       {{details.gloss}}
     </div>
 
-    <button mat-raised-button (click)="goBack();">BACK</button>
+    <button (click)="goBack();" mat-raised-button>{{'search.back' | translate}}</button>
 
   </div>
   <div class="details-sentences">
     <mat-list>
       <mat-list-item *ngFor="let sentence of details.sentences; let last = last">
         <p matLine>
-          <span class="small_japanese search_kanji" [innerHTML]="sentence.japanese | safeHtml"></span>
+          <span [innerHTML]="sentence.japanese | safeHtml" class="small_japanese search_kanji"></span>
         </p>
-        <span matLine [innerHTML]="sentence.translation | safeHtml"></span>
+        <span [innerHTML]="sentence.translation | safeHtml" matLine></span>
         <mat-divider *ngIf="!last" [inset]="true"></mat-divider>
       </mat-list-item>
     </mat-list>
