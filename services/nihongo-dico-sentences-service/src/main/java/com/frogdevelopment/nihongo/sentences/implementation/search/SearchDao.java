@@ -29,14 +29,14 @@ class SearchDao {
         var queryJapanese = getQuery(kanji, kana);
 
         var sql = "SELECT i.linking,"
-                  + "j.sentence AS japanese,"
-                  + "t.sentence AS translation"
-                  + " FROM sentences j"
-                  + " INNER JOIN links_japanese_translation l ON l.japanese_id = j.sentence_id"
-                  + " INNER JOIN sentences t ON t.sentence_id = l.translation_id AND t.lang = ? AND t.sentence &@~ ?"
-                  + " INNER JOIN japanese_indices i ON i.japanese_id = j.sentence_id AND i.linking &@~ ?";
+                + "japanese.sentence AS japanese,"
+                + "translation.sentence AS translation"
+                + " FROM jpn.sentences japanese"
+                + " INNER JOIN " + lang + ".links_japanese_translation link ON link.japanese_id = japanese.sentence_id"
+                + " INNER JOIN " + lang + ".sentences translation ON translation.sentence_id = link.translation_id AND translation.sentence &@~ ?"
+                + " INNER JOIN jpn.japanese_indices i ON i.japanese_id = japanese.sentence_id AND i.linking &@~ ?";
 
-        String[] params = {lang, queryGloss, queryJapanese};
+        String[] params = {queryGloss, queryJapanese};
 
         return jdbcTemplate.query(sql, params, (rs, rowNum) -> Sentence.builder()
                 .japanese(rs.getString("japanese"))
