@@ -13,6 +13,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {AboutModule} from './pages/about/about.module';
 import {MatIconModule} from '@angular/material/icon';
 import en from '@angular/common/locales/en';
+import {RouteReuseStrategy} from '@angular/router';
+import {CustomRouteReuseStrategy} from './router/custom-route-reuse-strategy';
 
 registerLocaleData(en);
 
@@ -44,10 +46,10 @@ export function createTranslateLoader(http: HttpClient) {
     AboutModule
   ],
   providers: [
-    // {
-    //   provide: RouteReuseStrategy,
-    //   useClass: CustomRouteReuseStrategy
-    // },
+    {
+      provide: RouteReuseStrategy,
+      useClass: CustomRouteReuseStrategy
+    },
     {
       provide: LOCALE_ID,
       useValue: 'en_US'

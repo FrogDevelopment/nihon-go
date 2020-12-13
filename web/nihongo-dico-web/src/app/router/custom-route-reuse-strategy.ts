@@ -7,23 +7,23 @@ export class CustomRouteReuseStrategy implements RouteReuseStrategy {
   private readonly storedRoutes = new Map<string, DetachedRouteHandle>();
 
   shouldDetach(route: ActivatedRouteSnapshot): boolean {
-    return route.routeConfig.path === '';
+    return !!route.data && route.data.reuse;
   }
 
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-    this.storedRoutes.set(route.routeConfig.path, handle);
+    this.storedRoutes.set(route.data.reuse, handle);
   }
 
   shouldAttach(route: ActivatedRouteSnapshot): boolean {
-    return !!route.routeConfig && !!this.storedRoutes.get(route.routeConfig.path);
+    return !!route.data && !!this.storedRoutes.get(route.data.reuse);
   }
 
   retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
-    return this.storedRoutes.get(route.routeConfig.path);
+    return this.storedRoutes.get(route.data.reuse);
   }
 
   shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-    return future.routeConfig === curr.routeConfig;
+    return false;
   }
 
 }

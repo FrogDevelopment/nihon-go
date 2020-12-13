@@ -5,6 +5,9 @@ const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./pages/search/search.module').then(m => m.SearchModule),
+    data: {
+      reuse: 'search',
+    }
   },
   {
     path: 'details/:senseSeq/:lang',
