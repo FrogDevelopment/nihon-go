@@ -22,7 +22,6 @@ public class ExportController {
     @GetMapping
     @PreAuthorize("permitAll()")
     public ResponseEntity<Resource> exportForLanguage(@RequestParam String lang) {
-        //write all users to csv file
         Resource file = loadAsResource.call(lang);
         return ResponseEntity.ok()
                 .header(CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")

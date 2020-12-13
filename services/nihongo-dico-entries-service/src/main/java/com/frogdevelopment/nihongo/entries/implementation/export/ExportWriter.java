@@ -31,6 +31,10 @@ class ExportWriter implements AutoCloseable {
         }
     }
 
+    public static String getLocation(String lang) {
+        return EXPORT_FORMAT + String.format(EXPORT_FORMAT, lang);
+    }
+
     ExportWriter(String lang) throws IOException {
         fileName = String.format(EXPORT_FORMAT, lang);
         var path = Paths.get(EXPORT_PATH, fileName);

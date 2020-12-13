@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResourceLoader;
 
 @Configuration
-public class ExportConfig {
+public class ApplicationConfiguration {
 
     @Bean
     FileSystemResourceLoader fileSystemResourceLoader() {
@@ -15,7 +15,7 @@ public class ExportConfig {
     }
 
     @Bean
-    public JwtProcessTokenFilter jwtProcessTokenFilter(ResolveTokenToAuthentication tokenToAuthentication){
+    public JwtProcessTokenFilter jwtProcessTokenFilter(ResolveTokenToAuthentication tokenToAuthentication) {
         return new JwtProcessTokenFilter(tokenToAuthentication);
     }
 }

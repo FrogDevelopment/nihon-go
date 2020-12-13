@@ -13,7 +13,7 @@ public class LoadAsResource {
     private final FileSystemResourceLoader fileSystemResourceLoader;
 
     public Resource call(String lang) {
-        var location = String.format(ExportWriter.EXPORT_FORMAT, lang);
+        var location = ExportWriter.getLocation(lang);
         var resource = fileSystemResourceLoader.getResource("file:" + location);
         if (resource.exists()) {
             return resource;

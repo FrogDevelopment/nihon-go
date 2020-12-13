@@ -19,7 +19,7 @@ public class PopulateController {
 
     @PostMapping
     @ResponseStatus(ACCEPTED)
-//    @PreAuthorize("hasAnyRole('ADMIN')")
+//    @PreAuthorize("hasAnyRole('ADMIN')") fixme
     @PreAuthorize("permitAll()")
     public void fetch() {
         fetchEntries.call();
