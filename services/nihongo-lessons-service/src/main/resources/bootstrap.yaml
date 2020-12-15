@@ -1,9 +1,7 @@
 spring:
-  profiles:
-    active: postgres
-
   application:
-    name: authentication-service
+    name: nihongo-lessons-service
+
   main:
     banner-mode: 'off'
 
@@ -11,10 +9,10 @@ spring:
     config:
       name: ${spring.application.name}
       discovery:
-        service-id: service-config
+        service-id: support-config-server
         enabled: true
-      username: ${docker-secrets.frog_admin_user}
-      password: ${docker-secrets.frog_admin_password}
+      username: ${FROG_ADMIN_USER}
+      password: ${FROG_ADMIN_PWD}
 
 eureka:
   instance:
@@ -22,7 +20,7 @@ eureka:
     hostname: ${spring.application.name}
   client:
     service-url:
-      defaultZone: http://${docker-secrets.frog_admin_user}:${docker-secrets.frog_admin_password}@service-registry:8080/eureka/
+      defaultZone: http://${FROG_ADMIN_USER}:${FROG_ADMIN_PWD}@support-registry:8080/eureka/
 
 ---
 spring:

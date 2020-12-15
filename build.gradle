@@ -57,5 +57,5 @@ def gitBranch() {
     proc.in.eachLine { line -> branch = line }
     proc.err.eachLine { line -> println line }
     proc.waitFor()
-    branch
+    branch.replaceAll("/", "_")
 }

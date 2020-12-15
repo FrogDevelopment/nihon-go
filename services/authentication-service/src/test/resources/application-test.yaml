@@ -1,6 +1,6 @@
 frog:
   database:
-    name: frog_authentication
+    name: nihongo_authentication
 
 spring:
   datasource:

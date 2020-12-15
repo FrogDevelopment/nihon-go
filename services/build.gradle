@@ -102,7 +102,7 @@ subprojects {
         }
         to {
             afterEvaluate {
-                image = "nihongo/${name}"
+                image = "frognihongo/${name}"
                 tags = [version.toString(), gitBranch()]
             }
         }

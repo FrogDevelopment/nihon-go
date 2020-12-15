@@ -30,7 +30,15 @@ public class SentencesDao {
 
     public void prepareImportedData(Connection connection) throws SQLException {
         try (var statement = connection.createStatement()) {
-            log.info("- remove sentences without sentence or with un-handle lang");
+            log.info("- remove sentences without translation");
+            statement.executeUpdate("""
+                    DELETE FROM i_sentences s
+                    WHERE NOT EXISTS(SELECT 1 FROM i_links links
+                    WHERE (links.sentence_id = s.sentence_id AND s.lang = 'jpn')
+                     OR links.translation_id = s.sentence_id AND s.lang != 'jpn');
+                    """);
+
+            log.info("- remove empty sentences or with un-handle lang");
             var langs = Arrays.stream(Language.values())
                     .map(Language::getCode)
                     .collect(Collectors.toSet());
