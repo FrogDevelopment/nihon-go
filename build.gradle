@@ -20,7 +20,7 @@ configure(subprojects.findAll { it.name.matches('(.*)-service') || it.name.match
     dependencyManagement {
         imports {
             mavenBom 'org.junit:junit-bom:5.7.0'
-            mavenBom 'org.testcontainers:testcontainers-bom:1.14.3'
+            mavenBom 'org.testcontainers:testcontainers-bom:1.15.1'
             mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Hoxton.SR9'
         }
     }
