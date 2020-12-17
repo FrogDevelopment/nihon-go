@@ -44,7 +44,7 @@ public class AboutDao {
     @Transactional(propagation = REQUIRED)
     public String getLast() {
         String sql = """
-                SELECT JSON_BUILD_OBJECT('date_import', date_import, 'nb_entries', nb_entries, 'languages', languages)
+                SELECT JSON_BUILD_OBJECT('date_import', date_import, 'languages', languages)
                 FROM about
                 ORDER BY about_id DESC
                 LIMIT 1
