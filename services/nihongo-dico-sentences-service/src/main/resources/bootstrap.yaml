@@ -1,7 +1,6 @@
 spring:
   profiles:
-    active: postgres
-
+    include: postgres
   application:
     name: nihongo-dico-sentences-service
 

@@ -1,9 +1,9 @@
 spring:
   profiles:
-    active: postgres
-
+    include: postgres
   application:
     name: authentication-service
+
   main:
     banner-mode: 'off'
 
