@@ -68,6 +68,56 @@ services:
       - ./secrets/repository_application:/run/secrets/repository/application:ro
       - ./secrets/repository_application-postgres:/run/secrets/repository/application-postgres:ro
 
+    ########### SERVICES ###########
+
+  authentication-service:
+    container_name: authentication-service_2
+    image: frognihongo/authentication-service:feature_multi-schema
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: console
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+
+  nihongo-dico-entries-service:
+    container_name: nihongo-dico-entries-service
+    image: frognihongo/nihongo-dico-entries-service:feature_multi-schema
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: local
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+  nihongo-dico-sentences-service:
+    container_name: nihongo-dico-sentences-service
+    image: frognihongo/nihongo-dico-sentences-service:feature_multi-schema
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: local
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
 
 volumes:
   pgroonga_data:
