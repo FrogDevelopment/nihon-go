@@ -75,13 +75,13 @@ public class PopulateDatabase {
                 log.info("****** cleaning imported data");
                 sentencesDao.prepareImportedData(connection);
 
-//                log.info("****** construct final data");
-//                var data = sentencesDao.insertSentences(connection);
-//                sentencesDao.insertTranslationsLinks(connection);
-//                sentencesDao.insertJapaneseIndices(connection);
+               log.info("****** construct final data");
+               var data = sentencesDao.insertSentences(connection);
+               sentencesDao.insertTranslationsLinks(connection);
+               sentencesDao.insertJapaneseIndices(connection);
 
-//                log.info("****** clearing tables import");
-//                clearImportTables(connection);
+               log.info("****** clearing tables import");
+               clearImportTables(connection);
 
                 return null;
             }
