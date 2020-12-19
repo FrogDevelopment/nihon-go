@@ -35,7 +35,7 @@ public class FetchEntries {
             var map = saveData.call();
             aboutDao.insert(date, map);
             deleteDownloadedFiles.call();
-            exportByLang.call();
+//            exportByLang.call();
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException(e);
         } finally {
