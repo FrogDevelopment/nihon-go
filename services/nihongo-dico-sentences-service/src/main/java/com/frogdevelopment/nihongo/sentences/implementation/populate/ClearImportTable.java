@@ -10,7 +10,7 @@ class ClearImportTable {
 
     void call(Connection connection, String tableName) throws SQLException {
         try (var statement = connection.createStatement()) {
-            statement.executeUpdate("TRUNCATE " + tableName);
+            statement.executeUpdate("TRUNCATE " + tableName + ";");
         }
     }
 
