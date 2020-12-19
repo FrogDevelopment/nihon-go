@@ -32,8 +32,8 @@ public class SentencesDao {
         try (var statement = connection.createStatement()) {
 //             log.info("- remove sentences without translation");
 //             statement.executeUpdate("""
-//                     DELETE FROM i_sentences s
-//                     WHERE NOT EXISTS(SELECT 1 FROM i_links links
+//                     DELETE FROM tmp_sentences s
+//                     WHERE NOT EXISTS(SELECT 1 FROM tmp_links links
 //                     WHERE (links.sentence_id = s.sentence_id AND s.lang = 'jpn')
 //                      OR links.translation_id = s.sentence_id AND s.lang != 'jpn');
 //                     """);
@@ -47,14 +47,14 @@ public class SentencesDao {
                     .map(l -> "'" + l + "'")
                     .collect(joining(","));
 
-            statement.executeUpdate("DELETE FROM i_sentences "
+            statement.executeUpdate("DELETE FROM tmp_sentences "
                     + "WHERE sentence IS NULL "
                     + "OR lang IS NULL "
                     + "OR lang NOT IN (" + languagesToKeep + ");");
 
             log.info("- handle lang with multiple iso3 code");
             statement.executeUpdate("""
-                    UPDATE i_sentences SET lang =
+                    UPDATE tmp_sentences SET lang =
                     CASE
                         WHEN lang ='nld' THEN 'dut'
                         WHEN lang ='fre' THEN 'fra'
@@ -64,10 +64,10 @@ public class SentencesDao {
                     """);
 
             log.info("- remove indices without linking or translation");
-            statement.executeUpdate("DELETE FROM i_japanese_indices WHERE linking IS NULL");
+            statement.executeUpdate("DELETE FROM tmp_japanese_indices WHERE linking IS NULL");
             statement.executeUpdate("""
-                    DELETE FROM i_japanese_indices i
-                    WHERE NOT EXISTS(SELECT 1 FROM i_sentences s WHERE s.sentence_id = i.sentence_id);
+                    DELETE FROM tmp_japanese_indices i
+                    WHERE NOT EXISTS(SELECT 1 FROM tmp_sentences s WHERE s.sentence_id = i.sentence_id);
                     """);
         }
     }
@@ -89,8 +89,8 @@ public class SentencesDao {
 
                 log.info("- inserting new sentences");
                 var nbInserted = statement.executeUpdate("INSERT INTO sentences(sentence_id, sentence)"
-                        + " SELECT i.sentence_id, i.sentence FROM public.i_sentences i"
-                        + " WHERE i.lang = '" + lang + "';");
+                        + " SELECT tmp.sentence_id, tmp.sentence FROM tmp_sentences tmp"
+                        + " WHERE tmp.lang = '" + lang + "';");
                 data.put(lang, nbInserted);
                 log.info("-> {} sentences inserted", nbInserted);
 
@@ -115,9 +115,9 @@ public class SentencesDao {
                 var sql = """
                         INSERT INTO links_japanese_translation (japanese_id, translation_id)
                         SELECT japanese.sentence_id, translation.sentence_id
-                        FROM public.i_links l
-                        INNER JOIN jpn.sentences japanese ON japanese.sentence_id = l.sentence_id
-                        INNER JOIN sentences translation ON translation.sentence_id = l.translation_id;
+                        FROM tmp_links tmp
+                        INNER JOIN jpn.sentences japanese ON japanese.sentence_id = tmp.sentence_id
+                        INNER JOIN sentences translation ON translation.sentence_id = tmp.translation_id;
                         """;
                 statement.executeUpdate(sql);
             }
@@ -135,7 +135,7 @@ public class SentencesDao {
             log.info("- inserting links for japanese entries");
             statement.executeUpdate("""
                     INSERT INTO japanese_indices
-                    SELECT i.sentence_id, i.linking FROM public.i_japanese_indices i
+                    SELECT tmp.sentence_id, tmp.linking FROM tmp_japanese_indices tmp
                     ON CONFLICT DO NOTHING;
                     """);
 

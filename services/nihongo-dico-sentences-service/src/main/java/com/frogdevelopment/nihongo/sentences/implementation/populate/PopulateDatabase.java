@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -27,18 +26,18 @@ public class PopulateDatabase {
     private String sentencesUrl;
 
     private final DownloadFile downloadFile;
-    private final ClearImportTable clearImportTable;
+    private final CreateTemporaryImportTables createTemporaryImportTables;
     private final CopyFromPath copyFromPath;
     private final DataSource dataSource;
     private final SentencesDao sentencesDao;
 
     public PopulateDatabase(DownloadFile downloadFile,
-                            ClearImportTable clearImportTable,
+                            CreateTemporaryImportTables createTemporaryImportTables,
                             CopyFromPath copyFromPath,
                             DataSource dataSource,
                             SentencesDao sentencesDao) {
         this.downloadFile = downloadFile;
-        this.clearImportTable = clearImportTable;
+        this.createTemporaryImportTables = createTemporaryImportTables;
         this.copyFromPath = copyFromPath;
         this.dataSource = dataSource;
         this.sentencesDao = sentencesDao;
@@ -60,40 +59,31 @@ public class PopulateDatabase {
             log.info(">>>>>>>>>> Start populating database");
             try (var connection = dataSource.getConnection()) {
 
-                log.info("****** clearing tables import");
-                clearImportTables(connection);
+                log.info("****** creating temporary import tables");
+                createTemporaryImportTables.call(connection);
 
                 log.info("****** copy tatoeba sentence");
-                copyFromPath.call(connection, sentencesPath, "i_sentences", "sentence_id, lang, sentence");
+                copyFromPath.call(connection, sentencesPath, "tmp_sentences", "sentence_id, lang, sentence");
 
                 log.info("****** copy links between tatoeba sentence");
-                copyFromPath.call(connection, linksPath, "i_links", "sentence_id, translation_id");
+                copyFromPath.call(connection, linksPath, "tmp_links", "sentence_id, translation_id");
 
                 log.info("****** copy links between JMDict & Tatoeba sentence");
-                copyFromPath.call(connection, indicesPath, "i_japanese_indices", "sentence_id, meaning_id, linking");
+                copyFromPath.call(connection, indicesPath, "tmp_japanese_indices", "sentence_id, meaning_id, linking");
 
                 log.info("****** cleaning imported data");
                 sentencesDao.prepareImportedData(connection);
 
-               log.info("****** construct final data");
-               var data = sentencesDao.insertSentences(connection);
-               sentencesDao.insertTranslationsLinks(connection);
-               sentencesDao.insertJapaneseIndices(connection);
+                log.info("****** construct final data");
+                var data = sentencesDao.insertSentences(connection);
+                sentencesDao.insertTranslationsLinks(connection);
+                sentencesDao.insertJapaneseIndices(connection);
 
-               log.info("****** clearing tables import");
-               clearImportTables(connection);
-
-                return null;
+                return data;
             }
         } catch (SQLException | IOException | URISyntaxException e) {
             throw new IllegalStateException(e);
         }
-    }
-
-    private void clearImportTables(Connection connection) throws SQLException {
-        clearImportTable.call(connection, "public.i_japanese_indices");
-        clearImportTable.call(connection, "public.i_sentences");
-        clearImportTable.call(connection, "public.i_links");
     }
 
 }
