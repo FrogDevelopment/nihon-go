@@ -45,10 +45,10 @@ jobs:
 
       - name: Containerize
         run: ./gradlew jib \
-        -Djib.to.auth.username=${{ secrets.DOCKER_USR }} \
-        -Djib.to.auth.password=${{ secrets.DOCKER_PSW }} \
-        -Djib.console='plain' \
-        -x bootBuildInfo
+          -Djib.to.auth.username=${{ secrets.DOCKER_USR }} \
+          -Djib.to.auth.password=${{ secrets.DOCKER_PSW }} \
+          -Djib.console='plain' \
+          -x bootBuildInfo
 
   #      - name: Analyse
   #        if: github.ref == 'refs/heads/master'
