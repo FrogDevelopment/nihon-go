@@ -51,7 +51,7 @@ class FetchEntriesTest {
         inOrder.verify(saveData).call();
         inOrder.verify(aboutDao).insert("2015-06-18", new HashMap<>());
         inOrder.verify(deleteDownloadedFiles).call();
-        inOrder.verify(exportByLang).call();
+//        inOrder.verify(exportByLang).call();
     }
 
 }
