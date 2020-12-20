@@ -97,8 +97,9 @@ jobs:
       - name: Publish Docker
         uses: elgohr/Publish-Docker-Github-Action@2.11
         with:
-          name: docker-registry.frog-development.com/asso-plus/asso-plus-web
+#          fixme dynamic
+          name: frognihongo/nihongo-dico-web
           username: ${{ secrets.DOCKER_USR }}
           password: ${{ secrets.DOCKER_PSW }}
-          dockerfile: Dockerfile
+          dockerfile: ${{ matrix.project }}/Dockerfile
           tag_names: true
