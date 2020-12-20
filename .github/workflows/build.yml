@@ -7,9 +7,9 @@ on:
     tags-ignore:
       - '**'
 
-env:
-  GITHUB_ACTOR: ${{ github.actor }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#env:
+#  GITHUB_ACTOR: ${{ github.actor }}
+#  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   build-services:
