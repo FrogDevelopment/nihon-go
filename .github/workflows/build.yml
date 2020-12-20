@@ -7,9 +7,11 @@ on:
     tags-ignore:
       - '**'
 
-#env:
-#  GITHUB_ACTOR: ${{ github.actor }}
-#  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+env:
+  GITHUB_ACTOR: ${{ github.actor }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  DOCKER_USR: ${{ secrets.DOCKER_USR }}
+  DOCKER_PSW: ${{ secrets.DOCKER_PSW }}
 
 jobs:
   build-services:
@@ -45,8 +47,8 @@ jobs:
 
       - name: Containerize
         run: ./gradlew jib \
-          -Djib.to.auth.username=${{ secrets.DOCKER_USR }} \
-          -Djib.to.auth.password=${{ secrets.DOCKER_PSW }} \
+          -Djib.to.auth.username="${{ DOCKER_USR }}" \
+          -Djib.to.auth.password="${{ DOCKER_PSW }}" \
           -Djib.console='plain' \
           -x bootBuildInfo
 
@@ -97,9 +99,9 @@ jobs:
       - name: Publish Docker
         uses: elgohr/Publish-Docker-Github-Action@2.11
         with:
-#          fixme dynamic
+          #          fixme dynamic
           name: frognihongo/nihongo-dico-web
-          username: ${{ secrets.DOCKER_USR }}
-          password: ${{ secrets.DOCKER_PSW }}
+          username: ${{ DOCKER_USR }}
+          password: ${{ DOCKER_PSW }}
           dockerfile: ${{ matrix.project }}/Dockerfile
           tag_names: true
