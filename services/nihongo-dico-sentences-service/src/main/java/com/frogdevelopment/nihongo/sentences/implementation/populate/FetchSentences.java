@@ -27,8 +27,8 @@ public class FetchSentences {
         stopWatch.start();
         try {
             var data = populateDatabase.call();
-//            aboutDao.generate(data);
-//            deleteDownloadedFiles.call();
+            aboutDao.generate(data);
+            deleteDownloadedFiles.call();
         } finally {
             stopWatch.stop();
             log.info("<<<<<<<<<< Finish fetching on {}s", stopWatch.getTime(SECONDS));
