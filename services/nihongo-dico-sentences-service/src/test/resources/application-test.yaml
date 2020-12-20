@@ -13,6 +13,9 @@ spring:
     url: jdbc:tc:pgroonga://localhost/${frog.database.name}
     initialization-mode: always
 
+  flyway:
+    multi-schema: true
+
 security:
   jwt:
     token:
