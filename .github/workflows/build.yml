@@ -47,8 +47,8 @@ jobs:
 
       - name: Containerize
         run: ./gradlew jib \
-          -Djib.to.auth.username="${{ DOCKER_USR }}" \
-          -Djib.to.auth.password="${{ DOCKER_PSW }}" \
+          -Djib.to.auth.username="$DOCKER_USR" \
+          -Djib.to.auth.password="$DOCKER_PSW" \
           -Djib.console='plain' \
           -x bootBuildInfo
 
@@ -101,7 +101,7 @@ jobs:
         with:
           #          fixme dynamic
           name: frognihongo/nihongo-dico-web
-          username: ${{ DOCKER_USR }}
-          password: ${{ DOCKER_PSW }}
+          username: $DOCKER_USR
+          password: $DOCKER_PSW
           dockerfile: ${{ matrix.project }}/Dockerfile
           tag_names: true
