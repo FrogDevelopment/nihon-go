@@ -7,7 +7,6 @@ import com.frogdevelopment.authentication.application.user.GetUserDetails;
 import com.frogdevelopment.authentication.application.user.ListUsers;
 import com.frogdevelopment.authentication.application.user.UpdateUser;
 import com.frogdevelopment.authentication.application.user.UserDto;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -336,7 +335,6 @@ class UsersControllerTest {
         return jsonUserDto.write(USER_DTO).getJson();
     }
 
-    @NotNull
     private MockHttpServletRequestBuilder givenAddRequest(String content) {
         return post(URL_TEMPLATE)
                 .contentType(APPLICATION_JSON)
@@ -345,7 +343,6 @@ class UsersControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf());
     }
 
-    @NotNull
     private MockHttpServletRequestBuilder givenUpdateRequest(String content) {
         return put(URL_TEMPLATE)
                 .contentType(APPLICATION_JSON)
@@ -354,7 +351,6 @@ class UsersControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf());
     }
 
-    @NotNull
     private MockHttpServletRequestBuilder givenDeleteRequest() {
         return delete(URL_TEMPLATE)
                 .param("username", USERNAME)
@@ -363,7 +359,6 @@ class UsersControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf());
     }
 
-    @NotNull
     private MockHttpServletRequestBuilder givenListRequest() {
         return get(URL_TEMPLATE)
                 .contentType(APPLICATION_JSON)
@@ -371,7 +366,6 @@ class UsersControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf());
     }
 
-    @NotNull
     private MockHttpServletRequestBuilder givenGetRequest() {
         return get(URL_TEMPLATE + "/{username}", USERNAME)
                 .contentType(APPLICATION_JSON)
