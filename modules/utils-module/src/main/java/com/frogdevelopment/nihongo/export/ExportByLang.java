@@ -1,6 +1,7 @@
 package com.frogdevelopment.nihongo.export;
 
-import com.frogdevelopment.nihongo.multischema.Language;
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,10 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import com.frogdevelopment.nihongo.multischema.Language;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,9 +25,17 @@ final class ExportByLang {
         final var location = pathExportManager.getPathForLang(code);
         exportDao.export(code, rs -> {
             try (final var writer = new ExportWriter(location)) {
+                writer.start();
+                var isFirst = true;
                 while (rs.next()) {
-                    writer.write(rs);
+                    if (isFirst) {
+                        isFirst = false;
+                    } else {
+                        writer.separate();
+                    }
+                    writer.add(rs.getString(1));
                 }
+                writer.end();
             } catch (final IOException e) {
                 log.error("Error while writing export file for lang " + code, e);
             }
@@ -38,29 +45,38 @@ final class ExportByLang {
     }
 
     @Slf4j
-    static final class ExportWriter implements AutoCloseable {
+    private static final class ExportWriter implements AutoCloseable {
 
         private final String fileName;
         private final BufferedWriter writer;
 
-        ExportWriter(final Path path) throws IOException {
+        private ExportWriter(final Path path) throws IOException {
             this.fileName = path.getFileName().toString();
 
             Files.deleteIfExists(path);
             log.info("Exporting into file {}", fileName);
 
             this.writer = new BufferedWriter(new FileWriter(path.toFile(), UTF_8));
-            this.writer.write("[");
         }
 
-        void write(final ResultSet rs) throws SQLException, IOException {
-            this.writer.write(rs.getString(1));
-            this.writer.write(",");
+        private void start() throws IOException {
+            this.add("[");
+        }
+
+        private void add(String string) throws IOException {
+            this.writer.write(string);
+        }
+
+        private void separate() throws IOException {
+            this.add(",");
+        }
+
+        private void end() throws IOException {
+            this.add("]");
         }
 
         @Override
         public void close() throws IOException {
-            this.writer.write("]");
             log.debug("Closing file {}", fileName);
             this.writer.close();
         }
