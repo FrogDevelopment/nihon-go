@@ -6,6 +6,8 @@ frog:
       japanese-indices: http://downloads.tatoeba.org/exports/jpn_indices.tar.bz2
       sentences: http://downloads.tatoeba.org/exports/sentences.tar.bz2
       links: http://downloads.tatoeba.org/exports/links.tar.bz2
+  export:
+    path: ${java.io.tmpdir}/export
 
 spring:
   datasource:
