@@ -15,7 +15,7 @@ import com.frogdevelopment.nihongo.multischema.Language;
 
 @Slf4j
 @RequiredArgsConstructor
-final class ExportByLang {
+class ExportByLang {
 
     private final PathExportManager pathExportManager;
     private final ExportDao exportDao;
@@ -47,14 +47,11 @@ final class ExportByLang {
     @Slf4j
     private static final class ExportWriter implements AutoCloseable {
 
-        private final String fileName;
         private final BufferedWriter writer;
 
         private ExportWriter(final Path path) throws IOException {
-            this.fileName = path.getFileName().toString();
-
             Files.deleteIfExists(path);
-            log.info("Exporting into file {}", fileName);
+            log.info("Exporting into file {}", path);
 
             this.writer = new BufferedWriter(new FileWriter(path.toFile(), UTF_8));
         }
@@ -77,7 +74,6 @@ final class ExportByLang {
 
         @Override
         public void close() throws IOException {
-            log.debug("Closing file {}", fileName);
             this.writer.close();
         }
     }

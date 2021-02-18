@@ -3,6 +3,8 @@ frog:
     name: nihongo_entries
   jmdict:
     url: ftp://ftp.monash.edu.au/pub/nihongo/JMdict.gz
+  export:
+    path: ${java.io.tmpdir}/export
 
 spring:
   datasource:

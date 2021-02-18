@@ -1,16 +1,18 @@
 package com.frogdevelopment.nihongo.export;
 
-import com.frogdevelopment.nihongo.multischema.Language;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.FileSystemResourceLoader;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.springframework.core.io.FileSystemResourceLoader;
+
+import com.frogdevelopment.nihongo.multischema.Language;
+
 @Slf4j
 @RequiredArgsConstructor
-public final class ExportData {
+public class ExportData {
 
     private final PathExportManager pathExportManager;
     private final FileSystemResourceLoader fileSystemResourceLoader;

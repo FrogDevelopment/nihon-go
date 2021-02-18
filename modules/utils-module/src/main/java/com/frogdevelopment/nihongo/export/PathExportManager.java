@@ -1,14 +1,14 @@
 package com.frogdevelopment.nihongo.export;
 
-import org.apache.commons.io.FileUtils;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class PathExportManager {
+import org.apache.commons.io.FileUtils;
+
+public class PathExportManager {
 
     static final String EXPORT_FORMAT = "%s.json";
 
