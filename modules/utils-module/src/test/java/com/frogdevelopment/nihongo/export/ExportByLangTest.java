@@ -1,68 +1,62 @@
 package com.frogdevelopment.nihongo.export;
 
+import static com.frogdevelopment.nihongo.multischema.Language.ENG;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.readAllLines;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.answerVoid;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.anyString;
+import static org.mockito.BDDMockito.doAnswer;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.mock;
+
+import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
-import java.util.Iterator;
-import java.util.List;
-import lombok.SneakyThrows;
+import java.util.stream.IntStream;
+
+import org.intellij.lang.annotations.Language;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.Answer;
 import org.mockito.stubbing.VoidAnswer2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
-import static com.frogdevelopment.nihongo.multischema.Language.ENG;
-import static org.mockito.AdditionalAnswers.answerVoid;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
-
-//@Transactional
-//@SpringBootTest
-//@Tag("integrationTest")
-//@ActiveProfiles("test")
+@Tag("unitTest")
+@ExtendWith(MockitoExtension.class)
 class ExportByLangTest {
 
-    @Autowired
+    @InjectMocks
     private ExportByLang exportByLang;
-    @MockBean
+    @Mock
     private PathExportManager pathExportManager;
-    @MockBean
+    @Mock
     private ExportDao exportDao;
 
     @Test
-    void shouldExportForGivenLang(@TempDir Path tempDir) {
+    void shouldExportForGivenLang(@TempDir Path tempDir) throws IOException, JSONException {
         // given
+        var exportFile = Paths.get(tempDir.toString(), "export.json");
         given(pathExportManager
                 .getPathForLang(ENG.getCode()))
-                .willReturn(tempDir);
+                .willReturn(exportFile);
 
+        var nbItems = 10;
         doAnswer(answerVoid((VoidAnswer2<String, ResultSetExtractor<Void>>) (lang, rse) -> {
-            var iterator = List.of(
-                    "{line_1}",
-                    "{line_2}",
-                    "{line_3}",
-                    "{line_4}"
-            ).iterator();
-
+            var iterator = IntStream.range(0, nbItems)
+                    .mapToObj(count -> generateItem(lang, count))
+                    .iterator();
             ResultSet resultSet = mock(ResultSet.class);
-            given(resultSet.getString(1)).willReturn(iterator.next());
-            given(resultSet.next()).willReturn(iterator.hasNext());
+            given(resultSet.getString(1)).will(invocation -> iterator.next());
+            given(resultSet.next()).will(invocation -> iterator.hasNext());
 
             rse.extractData(resultSet);
         })).when(exportDao).export(anyString(), any());
@@ -71,7 +65,23 @@ class ExportByLangTest {
         exportByLang.call(ENG);
 
         // then
+        var allLines = readAllLines(exportFile, UTF_8);
+        assertThat(allLines).hasSize(1);
 
+        var jsonArray = new JSONArray(allLines.get(0));
+        assertThat(jsonArray.length()).isEqualTo(nbItems);
+        for (int value = 0; value < nbItems; value++) {
+            assertThat(jsonArray.getJSONObject(value).getString("lang")).isEqualTo(ENG.getCode());
+            assertThat(jsonArray.getJSONObject(value).getString("item")).isEqualTo(String.valueOf(value));
+            assertThat(jsonArray.getJSONObject(value).getString("data")).isEqualTo("some data for " + ENG.getCode());
+        }
+    }
+
+    private String generateItem(String lang, int count) {
+        @Language("JSON")
+        String json = """
+                {"lang": "%1$s","item": "%2$s","data": "some data for %1$s"}""".formatted(lang, count);
+        return json;
     }
 
 
