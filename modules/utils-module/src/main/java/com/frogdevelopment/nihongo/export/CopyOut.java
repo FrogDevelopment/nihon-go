@@ -32,7 +32,7 @@ class CopyOut {
             final var copyManager = pgConnection.getCopyAPI();
 
             Arrays.stream(Language.values())
-//                        .parallel() // fixme to test the impact on performance
+                    .parallel()
                     .map(Language::getCode)
                     .forEach(lang -> copyOut(copyManager, copySqlSupplier.apply(lang), pathExportManager.getPathForLang(lang)));
         } catch (final SQLException e) {
@@ -41,7 +41,7 @@ class CopyOut {
     }
 
     private static void copyOut(final CopyManager copyManager, final String sql, final Path path) {
-        log.info("****** Export to {}", path);
+        log.info("- Export to {}", path);
         try (final var out = new BufferedWriter(new FileWriter(path.toFile(), UTF_8))) {
             copyManager.copyOut(sql, out);
         } catch (IOException | SQLException e) {
