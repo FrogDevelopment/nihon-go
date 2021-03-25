@@ -25,4 +25,4 @@ logging:
   level:
     root: INFO
     com.frogdevelopment: WARN
-    com.frogdevelopment.nihongo.entries: debug
+    com.frogdevelopment.nihongo: debug

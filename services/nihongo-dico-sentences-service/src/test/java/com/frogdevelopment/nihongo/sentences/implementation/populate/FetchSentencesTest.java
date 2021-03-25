@@ -11,8 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.frogdevelopment.nihongo.export.ExportData;
 import com.frogdevelopment.nihongo.sentences.implementation.about.AboutDao;
+import com.frogdevelopment.nihongo.sentences.implementation.export.ExportSentences;
 
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +28,7 @@ class FetchSentencesTest {
     @Mock
     private DeleteDownloadedFiles deleteDownloadedFiles;
     @Mock
-    private ExportData exportData;
+    private ExportSentences exportSentences;
 
     @Test
     void shouldCallFetcher() {
@@ -39,7 +39,7 @@ class FetchSentencesTest {
         then(populateDatabase).should().call();
         then(aboutDao).should().generate(Map.of());
         then(deleteDownloadedFiles).should().call();
-        then(exportData).should().call();
+        then(exportSentences).should().call();
     }
 
 }
