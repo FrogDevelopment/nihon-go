@@ -1,13 +1,14 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate;
 
-import com.frogdevelopment.nihongo.multischema.Language;
-import lombok.extern.slf4j.Slf4j;
-import org.postgresql.PGConnection;
-import org.postgresql.copy.CopyManager;
-import org.springframework.stereotype.Component;
+import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.CsvWriter.getEntries;
+import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.CsvWriter.getGlosses;
+import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.CsvWriter.getSenses;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -15,22 +16,27 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.CsvWriter.getEntries;
-import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.CsvWriter.getGlosses;
-import static com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.CsvWriter.getSenses;
+import org.postgresql.PGConnection;
+import org.postgresql.copy.CopyManager;
+import org.springframework.stereotype.Component;
+
+import com.frogdevelopment.nihongo.multischema.Language;
 
 @Slf4j
 @Component
 class InsertData {
 
+    @org.intellij.lang.annotations.Language("SQL")
     private static final String COPY_ENTRIES = """
             COPY jpn.entries (entry_seq, kanji, kana, reading) FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')
             """;
 
+    @org.intellij.lang.annotations.Language("SQL")
     private static final String COPY_SENSES = """
             COPY jpn.senses (sense_seq, entry_seq, pos, field, misc, info, dial) FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')
             """;
 
+    @org.intellij.lang.annotations.Language("SQL")
     private static final String COPY_GLOSSES = """
             COPY %s.glosses (sense_seq, vocabulary) FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')
             """;
@@ -58,7 +64,7 @@ class InsertData {
     }
 
     private static long copyIn(final CopyManager copyManager, final String sql, final Path path) throws IOException, SQLException {
-        try (final var in = new BufferedInputStream(new FileInputStream(path.toFile()))) {
+        try (final var in = new BufferedReader(new FileReader(path.toFile(), UTF_8))) {
             final var nbInserted = copyManager.copyIn(sql, in);
             log.info("\t{} lines inserted", nbInserted);
             return nbInserted;

@@ -4,26 +4,28 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.function.Function;
 
 import org.springframework.core.io.FileSystemResourceLoader;
 
-import com.frogdevelopment.nihongo.multischema.Language;
-
 @Slf4j
 @RequiredArgsConstructor
-public class ExportData {
+public final class ExportData {
 
     private final PathExportManager pathExportManager;
     private final FileSystemResourceLoader fileSystemResourceLoader;
-    private final ExportByLang exportByLang;
+    private final CopyOut copyOut;
 
-    public void call() throws IOException {
-        fileSystemResourceLoader.clearResourceCaches();
-        pathExportManager.clearExportDirectories();
+    public void call(final Function<String, String> copySqlSupplier) {
+        try {
+            log.info("****** Clear export resources");
+            fileSystemResourceLoader.clearResourceCaches();
+            pathExportManager.clearExportDirectories();
 
-        Arrays.stream(Language.values())
-                .parallel()
-                .forEach(exportByLang::call);
+            copyOut.call(copySqlSupplier);
+        } catch (final IOException e) {
+            throw new IllegalStateException(e);
+        }
+        log.info("****** Export done");
     }
 }

@@ -1,6 +1,10 @@
 package com.frogdevelopment.nihongo.export;
 
-import com.frogdevelopment.nihongo.multischema.Language;
+import static org.mockito.BDDMockito.then;
+
+import java.io.IOException;
+import java.util.function.Function;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,29 +13,27 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.io.FileSystemResourceLoader;
 
-import java.io.IOException;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
-
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
 class ExportDataTest {
 
     @InjectMocks
     private ExportData exportData;
+
     @Mock
     private PathExportManager pathExportManager;
     @Mock
     private FileSystemResourceLoader fileSystemResourceLoader;
     @Mock
-    private ExportByLang exportByLang;
+    private CopyOut copyOut;
 
     @Test
-    void shouldClearResourceCacheThenExportForEachLang() throws IOException {
+    void shouldClearResourceCacheThenExport() throws IOException {
+        // given
+        final Function<String, String> sqlSupplier = lang -> "SQL_COPY";
+
         // when
-        exportData.call();
+        exportData.call(sqlSupplier);
 
         // then
         then(fileSystemResourceLoader)
@@ -40,8 +42,8 @@ class ExportDataTest {
         then(pathExportManager)
                 .should()
                 .clearExportDirectories();
-        then(exportByLang)
-                .should(times(Language.values().length))
-                .call(any(Language.class));
+        then(copyOut)
+                .should()
+                .call(sqlSupplier);
     }
 }
