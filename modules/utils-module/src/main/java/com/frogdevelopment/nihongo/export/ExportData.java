@@ -22,6 +22,7 @@ public final class ExportData {
             fileSystemResourceLoader.clearResourceCaches();
             pathExportManager.clearExportDirectories();
 
+            log.info("****** Export data");
             copyOut.call(copySqlSupplier);
         } catch (final IOException e) {
             throw new IllegalStateException(e);

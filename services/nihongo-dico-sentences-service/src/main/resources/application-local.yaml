@@ -33,4 +33,4 @@ logging:
   level:
     root: INFO
     com.frogdevelopment: WARN
-    com.frogdevelopment.nihongo.sentences: debug
+    com.frogdevelopment.nihongo: debug
