@@ -2,7 +2,7 @@ frog:
   database:
     name: nihongo_entries
   jmdict:
-    url: ftp://ftp.monash.edu.au/pub/nihongo/JMdict.gz
+    url: ftp://ftp.edrdg.org/pub/Nihongo/JMdict.gz
   clean: false
   export:
     path: /opt/export/entries
