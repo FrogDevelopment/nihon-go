@@ -1,10 +1,6 @@
 frog:
   database:
     name: nihongo_lessons
-  lessons:
-    last_ready:
-      en_US: 21
-      fr_FR: 21
 
 spring:
   datasource:
@@ -12,6 +8,9 @@ spring:
     url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${spring.application.name}
     username: postgres
     password: postgres
+
+  flyway:
+    enabled: false
 
 security:
   jwt:
