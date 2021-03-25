@@ -1,11 +1,12 @@
 package com.frogdevelopment.nihongo.export;
 
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.Resource;
 
 @RequiredArgsConstructor
-public final class LoadAsResource {
+public final class LoadExportAsResource {
 
     private final PathExportManager pathExportManager;
     private final FileSystemResourceLoader fileSystemResourceLoader;

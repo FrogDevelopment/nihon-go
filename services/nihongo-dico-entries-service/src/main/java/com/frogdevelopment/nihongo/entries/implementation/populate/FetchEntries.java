@@ -1,18 +1,20 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate;
 
-import com.frogdevelopment.nihongo.entries.implementation.about.AboutDao;
-import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.FetchJMDict;
-import com.frogdevelopment.nihongo.export.ExportData;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.time.StopWatch;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import org.apache.commons.lang3.time.StopWatch;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
+
+import com.frogdevelopment.nihongo.entries.implementation.about.AboutDao;
+import com.frogdevelopment.nihongo.entries.implementation.export.ExportEntries;
+import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.FetchJMDict;
 
 @Slf4j
 @Component
@@ -23,7 +25,7 @@ public class FetchEntries {
     private final SaveData saveData;
     private final AboutDao aboutDao;
     private final DeleteDownloadedFiles deleteDownloadedFiles;
-    private final ExportData exportData;
+    private final ExportEntries exportEntries;
 
     @Async
     public void call() {
@@ -35,7 +37,7 @@ public class FetchEntries {
             final var map = saveData.call();
             aboutDao.insert(date, map);
             deleteDownloadedFiles.call();
-            exportData.call();
+            exportEntries.call();
         } catch (final IOException | URISyntaxException e) {
             throw new IllegalStateException(e);
         } finally {
