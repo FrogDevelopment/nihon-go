@@ -1,5 +1,7 @@
 package com.frogdevelopment.nihongo.export;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,26 +16,27 @@ public class ExportConfiguration {
     }
 
     @Bean
-    public PathExportManager pathExportManager(@Value("${frog.export.path:/opt/export}") final String exportPath) {
+    public PathExportManager pathExportManager(@Value("${frog.export.path}") final String exportPath) {
         return new PathExportManager(exportPath);
     }
 
     @Bean
-    public LoadAsResource loadAsResource(final PathExportManager pathExportManager,
-                                         final FileSystemResourceLoader fileSystemResourceLoader) {
-        return new LoadAsResource(pathExportManager, fileSystemResourceLoader);
+    public LoadExportAsResource loadAsResource(final PathExportManager pathExportManager,
+                                               final FileSystemResourceLoader fileSystemResourceLoader) {
+        return new LoadExportAsResource(pathExportManager, fileSystemResourceLoader);
+    }
+
+    @Bean
+    public CopyOut copyOut(final DataSource dataSource,
+                           final PathExportManager pathExportManager) {
+        return new CopyOut(dataSource, pathExportManager);
     }
 
     @Bean
     public ExportData exportData(final PathExportManager pathExportManager,
                                  final FileSystemResourceLoader fileSystemResourceLoader,
-                                 final ExportByLang exportByLang) {
-        return new ExportData(pathExportManager, fileSystemResourceLoader, exportByLang);
+                                 final CopyOut copyOut) {
+        return new ExportData(pathExportManager, fileSystemResourceLoader, copyOut);
     }
 
-    @Bean
-    public ExportByLang exportByLang(final PathExportManager pathExportManager,
-                                     final ExportDao exportDao) {
-        return new ExportByLang(pathExportManager, exportDao);
-    }
 }
