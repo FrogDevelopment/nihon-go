@@ -23,18 +23,20 @@ public class LessonDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public List<Input> getLesson(final String locale, final String lesson) {
-        final var sql = "SELECT j.kanji,"
-                + "       j.kana,"
-                + "       t.sort_letter,"
-                + "       t.input,"
-                + "       t.details,"
-                + "       t.example,"
-                + "       ARRAY_TO_STRING(t.tags,',') AS tags"
-                + " FROM japaneses j"
-                + "         INNER JOIN translations t"
-                + "                    ON j.japanese_id = t.japanese_id"
-                + "                        AND t.locale = :locale"
-                  + "                        AND ARRAY_TO_STRING(t.tags,',') LIKE :lesson;";
+        final var sql = """
+                SELECT j.kanji,
+                       j.kana,
+                       t.sort_letter,
+                       t.input,
+                       t.details,
+                       t.example,
+                       ARRAY_TO_STRING(t.tags,',') AS tags
+                 FROM japaneses j
+                 INNER JOIN translations t
+                            ON j.japanese_id = t.japanese_id
+                            AND t.locale = :locale
+                            AND ARRAY_TO_STRING(t.tags,',') LIKE :lesson;
+                """;
 
         final var paramSource = new MapSqlParameterSource();
         paramSource.addValue("locale", locale);
@@ -59,27 +61,29 @@ public class LessonDao {
     }
 
     public List<InputDto> fetch(final int pageIndex, final int pageSize, final String sortField, final String sortOrder) {
-        final var sqlJapanese = "SELECT json_build_object("
-                + "               'japanese', json_build_object("
-                + "                'id', j.japanese_id,"
-                + "                'kanji', j.kanji,"
-                + "                'kana', j.kana),"
-                + "               'translations', array_agg(json_build_object("
-                + "                'id', t.translation_id,"
-                + "                'japaneseId', t.japanese_id,"
-                + "                'locale', t.locale,"
-                + "                'input', t.input,"
-                + "                'sortLetter', t.sort_letter,"
-                          + "                'details', t.details,"
-                          + "                'example', t.example,"
-                          + "                'tags', t.tags"
-                          + "            ))"
-                          + "           )"
-                          + " FROM japaneses j"
-                          + "    INNER JOIN translations t ON t.japanese_id = j.japanese_id"
-                          + " GROUP BY j.japanese_id, j.kanji, j.kana"
-                          + " ORDER BY j." + sortField + " " + sortOrder
-                          + " LIMIT :pageSize OFFSET :offset";
+        final var sqlJapanese = """
+                SELECT json_build_object(
+                               'japanese', json_build_object(
+                                    'id', j.japanese_id,
+                                    'kanji', j.kanji,
+                                    'kana', j.kana),
+                               'translations', array_agg(json_build_object(
+                                    'id', t.translation_id,
+                                    'japaneseId', t.japanese_id,
+                                    'locale', t.locale,
+                                    'input', t.input,
+                                    'sortLetter', t.sort_letter,
+                                    'details', t.details,
+                                    'example', t.example,
+                                    'tags', t.tags
+                                ))
+                           )
+                 FROM japaneses j
+                    INNER JOIN translations t ON t.japanese_id = j.japanese_id
+                 GROUP BY j.japanese_id, j.kanji, j.kana
+                 ORDER BY j.? ?
+                 LIMIT :pageSize OFFSET :offset
+                """;
 
         final var paramSource = new MapSqlParameterSource();
         paramSource.addValue("pageSize", pageSize);
@@ -97,7 +101,7 @@ public class LessonDao {
     }
 
     public List<String> getTags() {
-        final var sql = "SELECT DISTINCT UNNEST(tags) FROM translations ORDER BY UNNEST(tags)";
+        final var sql = "SELECT DISTINCT UNNEST(tags) FROM translations ORDER BY 1";
 
         return namedParameterJdbcTemplate.getJdbcTemplate().queryForList(sql, String.class);
     }
