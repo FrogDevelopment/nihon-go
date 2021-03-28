@@ -1,42 +1,34 @@
 package com.frogdevelopment.nihongo.export;
 
-import javax.sql.DataSource;
-
+import com.frogdevelopment.nihongo.FtpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.FileSystemResourceLoader;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class ExportConfiguration {
 
     @Bean
-    FileSystemResourceLoader fileSystemResourceLoader() {
-        return new FileSystemResourceLoader();
+    public FtpClient ftpClient(@Value("${frog.ftp.hostname}") final String server,
+                               @Value("${frog.ftp.port:21}") final int port,
+                               @Value("${frog.ftp.username}") final String user,
+                               @Value("${frog.ftp.password}") final String password) {
+        return new FtpClient(server, port, user, password);
     }
 
     @Bean
-    public PathExportManager pathExportManager(@Value("${frog.export.path}") final String exportPath) {
-        return new PathExportManager(exportPath);
+    public CopyOut copyOut() {
+        return new CopyOut();
     }
 
     @Bean
-    public LoadExportAsResource loadAsResource(final PathExportManager pathExportManager,
-                                               final FileSystemResourceLoader fileSystemResourceLoader) {
-        return new LoadExportAsResource(pathExportManager, fileSystemResourceLoader);
-    }
-
-    @Bean
-    public CopyOut copyOut(final DataSource dataSource,
-                           final PathExportManager pathExportManager) {
-        return new CopyOut(dataSource, pathExportManager);
-    }
-
-    @Bean
-    public ExportData exportData(final PathExportManager pathExportManager,
-                                 final FileSystemResourceLoader fileSystemResourceLoader,
+    public ExportData exportData(@Value("${frog.ftp.remote-path}") final String remotePath,
+                                 final DataSource dataSource,
+                                 final FtpClient ftpClient,
                                  final CopyOut copyOut) {
-        return new ExportData(pathExportManager, fileSystemResourceLoader, copyOut);
+        return new ExportData(remotePath, dataSource, ftpClient, copyOut);
     }
 
 }

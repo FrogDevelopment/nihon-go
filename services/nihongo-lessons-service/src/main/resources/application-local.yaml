@@ -10,7 +10,8 @@ frog:
     old:
       file-name: nihon_go/NihonGo_All.tsv
       url: http://legall.benoit.free.fr/nihon_go/ + ${frog.migrate.file-name}
-
+    username: # legall.benoit
+    password: # b3E12h210N
 
 spring:
   datasource:
