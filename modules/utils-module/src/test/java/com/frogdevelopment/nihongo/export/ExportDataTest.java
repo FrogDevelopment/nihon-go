@@ -26,7 +26,7 @@ class ExportDataTest {
         final Function<String, String> sqlSupplier = lang -> "SQL_COPY";
 
         // when
-        exportData.call(sqlSupplier);
+//        exportData.call(sqlSupplier);
 
         // then
 //        then(copyOut)
