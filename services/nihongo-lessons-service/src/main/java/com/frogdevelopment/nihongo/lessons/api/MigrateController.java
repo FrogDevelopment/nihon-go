@@ -1,6 +1,6 @@
-package com.frogdevelopment.nihongo.lessons.migrate.api;
+package com.frogdevelopment.nihongo.lessons.api;
 
-import com.frogdevelopment.nihongo.lessons.migrate.implementation.MigrateLessons;
+import com.frogdevelopment.nihongo.lessons.implementation.migrate.OldMigrateLessons;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MigrateController {
 
-    private final MigrateLessons migrateLessons;
+    private final OldMigrateLessons oldMigrateLessons;
 
-    @PostMapping
+    @PostMapping("/import_old")
     @PreAuthorize("permitAll()")
-    public void migrate() {
-        migrateLessons.call();
+    public void importOld() {
+        oldMigrateLessons.call();
     }
 }

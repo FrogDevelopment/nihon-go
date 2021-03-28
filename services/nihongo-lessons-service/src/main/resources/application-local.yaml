@@ -5,6 +5,12 @@ frog:
     last_ready:
       en_US: 21
       fr_FR: 21
+  migrate:
+    base-url: http://legall.benoit.free.fr/
+    old:
+      file-name: nihon_go/NihonGo_All.tsv
+      url: http://legall.benoit.free.fr/nihon_go/ + ${frog.migrate.file-name}
+
 
 spring:
   datasource:

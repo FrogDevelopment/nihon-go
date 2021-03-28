@@ -1,4 +1,4 @@
-package com.frogdevelopment.nihongo.lessons.migrate.implementation;
+package com.frogdevelopment.nihongo.lessons.dao;
 
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-class MigrateDao {
+public class MigrateDao {
 
     private final SimpleJdbcInsert japaneseJdbcInsert;
     private final SimpleJdbcInsert translationJdbcInsert;
 
-    MigrateDao(final DataSource dataSource) {
+    public MigrateDao(final DataSource dataSource) {
         japaneseJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("japaneses")
                 .usingGeneratedKeyColumns("japanese_id");
@@ -25,7 +25,7 @@ class MigrateDao {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    void insertWord(final Map<String, String> japanese, final List<Map<String, Object>> translations) {
+    public void insertWord(final Map<String, String> japanese, final List<Map<String, Object>> translations) {
         final var key = japaneseJdbcInsert.executeAndReturnKey(japanese);
         final var japaneseId = key.intValue();
 

@@ -1,10 +1,11 @@
-package com.frogdevelopment.nihongo.lessons.migrate.implementation;
+package com.frogdevelopment.nihongo.lessons.implementation.migrate;
 
-import lombok.RequiredArgsConstructor;
+import com.frogdevelopment.nihongo.lessons.dao.MigrateDao;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,12 +25,7 @@ import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor
-public class MigrateLessons {
-
-    private static final String BASE_URL = "http://legall.benoit.free.fr/nihon_go/";
-    private static final String LESSONS_FILE = "NihonGo_All.tsv";
-    private static final String URL = BASE_URL + LESSONS_FILE;
+public class OldMigrateLessons {
 
     private static final String COL_INPUT_EN_US = "en_US_input";
     private static final String COL_DETAILS_EN_US = "en_US_details";
@@ -38,7 +34,14 @@ public class MigrateLessons {
     private static final String COL_DETAILS_FR_FR = "fr_FR_details";
     private static final String COL_EXAMPLE_FR_FR = "fr_FR_example";
 
+    private final String url;
     private final MigrateDao migrateDao;
+
+    public OldMigrateLessons(@Value("${frog.migrate.old.url}") final String url,
+                             final MigrateDao migrateDao) {
+        this.url = url;
+        this.migrateDao = migrateDao;
+    }
 
     @Transactional(propagation = REQUIRED)
     public void call() {
@@ -47,9 +50,12 @@ public class MigrateLessons {
         final var english = new HashMap<String, Object>(6);
         final var french = new HashMap<String, Object>(6);
 
-        try (final var in = new BufferedInputStream(new URL(URL).openStream());
+        try (final var in = new BufferedInputStream(new URL(url).openStream());
              final var reader = new InputStreamReader(in);
-             final var parse = CSVFormat.TDF.withHeader().withSkipHeaderRecord().parse(reader)) {
+             final var parse = CSVFormat.TDF
+                     .withHeader()
+                     .withSkipHeaderRecord()
+                     .parse(reader)) {
 
             for (final var record : parse.getRecords()) {
                 japanese.clear();
