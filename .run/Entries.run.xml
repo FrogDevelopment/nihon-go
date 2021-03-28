@@ -10,14 +10,6 @@
                 <option name="name" value="spring.profiles.active"/>
                 <option name="value" value="local,console"/>
             </param>
-            <param>
-                <option name="enabled" value="true"/>
-                <option name="name" value="frog.ftp.username"/>
-                <option name="value" value="benoit.legall"/>
-            </param>
-            <param>
-                <option name="enabled" value="true"/>
-            </param>
         </additionalParameters>
         <method v="2">
             <option name="Make" enabled="true"/>

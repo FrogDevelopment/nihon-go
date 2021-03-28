@@ -18,24 +18,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 
+import static com.frogdevelopment.nihongo.export.ExportData.Export;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
 @RequiredArgsConstructor
 class CopyOut {
 
-    Path call(final CopyManager copyManager, final String sql, final String lang) {
+    Path call(final CopyManager copyManager, final Export export) {
+        final String fileName = export.getFileName();
         try {
             final Path tempDirectory = Files.createTempDirectory("export");
-            final Path tarPath = Path.of(tempDirectory.toString(), "%s.tar".formatted(lang));
+            final Path tarPath = Path.of(tempDirectory.toString(), "%s.tar".formatted(fileName));
             log.info("- Creating archive {}", tarPath);
             try (final OutputStream fo = Files.newOutputStream(tarPath);
                  final OutputStream gzo = new GzipCompressorOutputStream(fo);
                  final ArchiveOutputStream archiveOutputStream = new TarArchiveOutputStream(gzo)) {
-                final Path path = Path.of(tempDirectory.toString(), "%s.json".formatted(lang));
+                final Path path = Path.of(tempDirectory.toString(), "%s.csv".formatted(fileName));
                 final File file = path.toFile();
                 try (final var fileWriter = new BufferedWriter(new FileWriter(file, UTF_8))) {
-                    copyManager.copyOut(sql, fileWriter);
+                    copyManager.copyOut(export.getCopySql(), fileWriter);
                 }
                 archiveOutputStream.putArchiveEntry(archiveOutputStream.createArchiveEntry(file, file.getName()));
                 try (final InputStream inputStream = Files.newInputStream(path)) {
@@ -49,7 +51,7 @@ class CopyOut {
             return tarPath;
 
         } catch (final IOException | SQLException e) {
-            log.error("Unexpected error while creating archive for " + lang, e);
+            log.error("Unexpected error while creating archive for " + fileName, e);
             return null;
         }
     }

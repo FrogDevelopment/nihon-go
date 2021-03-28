@@ -1,12 +1,15 @@
 package com.frogdevelopment.nihongo.entries.implementation.export;
 
+import com.frogdevelopment.nihongo.export.ExportData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.intellij.lang.annotations.Language;
 import org.springframework.stereotype.Component;
 
-import com.frogdevelopment.nihongo.export.ExportData;
+import java.util.Arrays;
+
+import static com.frogdevelopment.nihongo.export.ExportData.Export.of;
+import static com.frogdevelopment.nihongo.multischema.Language.values;
 
 @Slf4j
 @Component
@@ -47,7 +50,7 @@ public class ExportEntries {
     private final ExportData exportData;
 
     public void call() {
-        exportData.call(SQL_COPY::formatted);
+        exportData.call(Arrays.stream(values()).map(language -> of(language.getCode() + "-entries", SQL_COPY.formatted(language.getCode()))));
     }
 
 }
