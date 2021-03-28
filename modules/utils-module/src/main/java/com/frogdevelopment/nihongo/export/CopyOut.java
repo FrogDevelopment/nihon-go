@@ -1,51 +1,57 @@
 package com.frogdevelopment.nihongo.export;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.sql.DataSource;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.function.Function;
-
-import org.postgresql.PGConnection;
+import org.apache.commons.compress.archivers.ArchiveOutputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.io.IOUtils;
 import org.postgresql.copy.CopyManager;
 
-import com.frogdevelopment.nihongo.multischema.Language;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.SQLException;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
 @RequiredArgsConstructor
 class CopyOut {
 
-    private final DataSource dataSource;
-    private final PathExportManager pathExportManager;
+    Path call(final CopyManager copyManager, final String sql, final String lang) {
+        try {
+            final Path tempDirectory = Files.createTempDirectory("export");
+            final Path tarPath = Path.of(tempDirectory.toString(), "%s.tar".formatted(lang));
+            log.info("- Creating archive {}", tarPath);
+            try (final OutputStream fo = Files.newOutputStream(tarPath);
+                 final OutputStream gzo = new GzipCompressorOutputStream(fo);
+                 final ArchiveOutputStream archiveOutputStream = new TarArchiveOutputStream(gzo)) {
+                final Path path = Path.of(tempDirectory.toString(), "%s.json".formatted(lang));
+                final File file = path.toFile();
+                try (final var fileWriter = new BufferedWriter(new FileWriter(file, UTF_8))) {
+                    copyManager.copyOut(sql, fileWriter);
+                }
+                archiveOutputStream.putArchiveEntry(archiveOutputStream.createArchiveEntry(file, file.getName()));
+                try (final InputStream inputStream = Files.newInputStream(path)) {
+                    IOUtils.copy(inputStream, archiveOutputStream);
+                }
+                archiveOutputStream.closeArchiveEntry();
+                archiveOutputStream.finish();
+                Files.delete(path);
+            }
 
-    void call(final Function<String, String> copySqlSupplier) {
-        try (final var connection = dataSource.getConnection()) {
-            final var pgConnection = connection.unwrap(PGConnection.class);
-            final var copyManager = pgConnection.getCopyAPI();
+            return tarPath;
 
-            Arrays.stream(Language.values())
-                    .parallel()
-                    .map(Language::getCode)
-                    .forEach(lang -> copyOut(copyManager, copySqlSupplier.apply(lang), pathExportManager.getPathForLang(lang)));
-        } catch (final SQLException e) {
-            throw new IllegalStateException(e);
+        } catch (final IOException | SQLException e) {
+            log.error("Unexpected error while creating archive for " + lang, e);
+            return null;
         }
     }
 
-    private static void copyOut(final CopyManager copyManager, final String sql, final Path path) {
-        log.info("- Export to {}", path);
-        try (final var out = new BufferedWriter(new FileWriter(path.toFile(), UTF_8))) {
-            copyManager.copyOut(sql, out);
-        } catch (IOException | SQLException e) {
-            log.error("Unexpected error while exporting to " + path, e);
-        }
-    }
 }

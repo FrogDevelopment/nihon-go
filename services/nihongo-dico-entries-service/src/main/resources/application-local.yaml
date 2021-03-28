@@ -6,6 +6,12 @@ frog:
   clean: false
   export:
     path: /opt/export/entries
+  ftp:
+    hostname: ftpperso.free.fr
+    port: 21
+    username: XXXXX
+    password: XXXXX
+    remote-path: /nihongo/dico
 
 spring:
   datasource:
