@@ -27,14 +27,12 @@ public class JapaneseDao {
                 .usingGeneratedKeyColumns("japanese_id");
     }
 
-    public void create(final Japanese japanese) {
+    public int create(final Japanese japanese) {
         final var parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("kanji", trimToNull(japanese.getKanji()));
         parameterSource.addValue("kana", trim(japanese.getKana()));
 
-        final var japaneseId = simpleJdbcInsert.executeAndReturnKey(parameterSource);
-
-        japanese.setId(japaneseId.intValue());
+        return simpleJdbcInsert.executeAndReturnKey(parameterSource).intValue();
     }
 
     public void update(final Japanese japanese) {

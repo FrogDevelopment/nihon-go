@@ -1,23 +1,27 @@
 package com.frogdevelopment.nihongo.lessons.implementation.export;
 
 import com.frogdevelopment.nihongo.export.ExportData;
+import com.frogdevelopment.nihongo.export.ExportData.Export;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.intellij.lang.annotations.Language;
-import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 
-import java.util.Set;
-
-import static com.frogdevelopment.nihongo.export.ExportData.Export.of;
-import static java.util.stream.IntStream.rangeClosed;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ExportLessons {
 
-    private static final Set<String> LOCALES = Set.of("fr_FR", "en_US"); // fixme dynamic
+    @Language("SQL")
+    private static final String SQL_LESSONS = """
+            SELECT lesson, locale
+            FROM exportable_lessons
+            WHERE exportable = true;
+            """;
 
     @Language("SQL")
     private static final String SQL_COPY = """
@@ -32,21 +36,33 @@ public class ExportLessons {
                  INNER JOIN translations t
                             ON j.japanese_id = t.japanese_id
                             AND t.locale = '%1$s'
-                            AND ARRAY_TO_STRING(t.tags,',') LIKE '%%%2$s%%')
+                            AND lesson = %2$s)
+            TO STDOUT;
+            """;
+
+    @Language("SQL")
+    private static final String SQL_COPY_EXPORTABLE = """
+            COPY ( SELECT json_build_object( 
+            'lesson', lesson,
+            'locale', locale,
+            'update_datetime', update_datetime
+            )
+                 FROM exportable_lessons
+                 WHERE exportable = true)
             TO STDOUT WITH (FORMAT CSV, HEADER);
             """;
 
     private final ExportData exportData;
-    private final Environment environment;
+    private final JdbcOperations jdbcOperations;
 
     public void call() {
-        exportData.call(LOCALES.stream()
-                                .flatMap(locale -> rangeClosed(1, getAvailableLessons(locale))
-                                        .mapToObj(v -> String.format("%02d", v))
-                                        .map(numberIn2Digits -> of(locale + "-" + numberIn2Digits, SQL_COPY.formatted(locale, numberIn2Digits)))));
+        final var exports = jdbcOperations.query(SQL_LESSONS, (rs, rowNum) -> toExport(rs));
+        exportData.call(exports.stream());
     }
 
-    private Integer getAvailableLessons(final String locale) {
-        return environment.getRequiredProperty("frog.lessons.last_ready." + locale, Integer.class);
+    private Export toExport(final ResultSet rs) throws SQLException {
+        final var locale = rs.getString("locale");
+        final var lesson = String.format("%02d", rs.getInt("lesson"));
+        return Export.of(locale + "-" + lesson, SQL_COPY.formatted(locale, lesson));
     }
 }

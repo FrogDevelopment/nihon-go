@@ -19,8 +19,13 @@ public class ExportConfiguration {
     }
 
     @Bean
-    public CopyOut copyOut() {
-        return new CopyOut();
+    public CompressExport compress() {
+        return new CompressExport();
+    }
+
+    @Bean
+    public CopyOut copyOut(final CompressExport compressExport) {
+        return new CopyOut(compressExport);
     }
 
     @Bean

@@ -23,17 +23,16 @@ public class UpdateLesson {
         japaneseDao.update(inputDto.getJapanese());
 
         Translation translation;
+        final var japaneseId = inputDto.getJapanese().getId();
         final var iterator = inputDto.getTranslations().iterator();
         while (iterator.hasNext()) {
             translation = iterator.next();
 
-            translation.setJapaneseId(inputDto.getJapanese().getId());
             if (translation.isToDelete()) {
                 translationDao.delete(translation);
                 iterator.remove();
             } else if (translation.getId() == 0) {
-                translation.setJapaneseId(inputDto.getJapanese().getId());
-                translationDao.create(translation);
+                translationDao.create(japaneseId, translation);
             } else {
                 translationDao.update(translation);
             }

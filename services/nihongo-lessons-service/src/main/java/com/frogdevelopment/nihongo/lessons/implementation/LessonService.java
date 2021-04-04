@@ -1,6 +1,5 @@
 package com.frogdevelopment.nihongo.lessons.implementation;
 
-import com.frogdevelopment.nihongo.lessons.dao.Input;
 import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +18,6 @@ import java.util.List;
 public class LessonService {
 
     private final LessonDao lessonDao;
-
-    public List<Input> getLesson(final String locale, final String lesson) {
-        return lessonDao.getLesson(locale, lesson);
-    }
 
     public int getTotal() {
         return lessonDao.getTotal();

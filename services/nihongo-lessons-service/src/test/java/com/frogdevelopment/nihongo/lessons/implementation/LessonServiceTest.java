@@ -22,17 +22,6 @@ class LessonServiceTest {
     private LessonDao lessonDao;
 
     @Test
-    void getLesson() {
-        // when
-        lessonService.getLesson("fr_FR", "01");
-
-        // then
-        then(lessonDao)
-                .should()
-                .getLesson("fr_FR", "01");
-    }
-
-    @Test
     void fetch_should_call_dao() {
         // when
         lessonService.getTotal();

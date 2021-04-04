@@ -19,13 +19,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.json.JacksonTester;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -80,8 +80,8 @@ class LessonAdminControllerTest {
                 .build();
 
         given(this.createLesson.call(dto)).will(invocation -> {
-            dto.getJapanese().setId(987);
-            dto.getTranslations().get(0).setId(654);
+//            dto.getJapanese().setId(987);
+//            dto.getTranslations().get(0).setId(654);
 
             return dto;
         });
@@ -89,9 +89,9 @@ class LessonAdminControllerTest {
         // when
         this.mvc.perform(
                 post("/admin")
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(APPLICATION_JSON)
                         .content(jsonDto.write(dto).getJson())
-                        .accept(MediaType.APPLICATION_JSON))
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonDto.write(dto).getJson()));
     }
@@ -123,9 +123,9 @@ class LessonAdminControllerTest {
         // when
         this.mvc.perform(
                 put("/admin")
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(APPLICATION_JSON)
                         .content(jsonDto.write(dto).getJson())
-                        .accept(MediaType.APPLICATION_JSON))
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonDto.write(dto).getJson()));
     }
@@ -155,9 +155,9 @@ class LessonAdminControllerTest {
         // when
         this.mvc.perform(
                 MockMvcRequestBuilders.delete("/admin")
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .contentType(APPLICATION_JSON)
                         .content(jsonDto.write(dto).getJson())
-                        .accept(MediaType.APPLICATION_JSON))
+                        .accept(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         // then

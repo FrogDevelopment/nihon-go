@@ -2,21 +2,12 @@ package com.frogdevelopment.nihongo.export;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.archivers.ArchiveOutputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.io.IOUtils;
 import org.postgresql.copy.CopyManager;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.SQLException;
 
 import static com.frogdevelopment.nihongo.export.ExportData.Export;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -25,35 +16,15 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @RequiredArgsConstructor
 class CopyOut {
 
+    private final CompressExport compressExport;
+
     Path call(final CopyManager copyManager, final Export export) {
-        final String fileName = export.getFileName();
-        try {
-            final Path tempDirectory = Files.createTempDirectory("export");
-            final Path tarPath = Path.of(tempDirectory.toString(), "%s.tar".formatted(fileName));
-            log.info("- Creating archive {}", tarPath);
-            try (final OutputStream fo = Files.newOutputStream(tarPath);
-                 final OutputStream gzo = new GzipCompressorOutputStream(fo);
-                 final ArchiveOutputStream archiveOutputStream = new TarArchiveOutputStream(gzo)) {
-                final Path path = Path.of(tempDirectory.toString(), "%s.csv".formatted(fileName));
-                final File file = path.toFile();
-                try (final var fileWriter = new BufferedWriter(new FileWriter(file, UTF_8))) {
-                    copyManager.copyOut(export.getCopySql(), fileWriter);
-                }
-                archiveOutputStream.putArchiveEntry(archiveOutputStream.createArchiveEntry(file, file.getName()));
-                try (final InputStream inputStream = Files.newInputStream(path)) {
-                    IOUtils.copy(inputStream, archiveOutputStream);
-                }
-                archiveOutputStream.closeArchiveEntry();
-                archiveOutputStream.finish();
-                Files.delete(path);
+        return compressExport.call(export, path -> {
+            final File file = path.toFile();
+            try (final var fileWriter = new BufferedWriter(new FileWriter(file, UTF_8))) {
+                copyManager.copyOut(export.getCopySql(), fileWriter);
             }
-
-            return tarPath;
-
-        } catch (final IOException | SQLException e) {
-            log.error("Unexpected error while creating archive for " + fileName, e);
-            return null;
-        }
+        });
     }
 
 }

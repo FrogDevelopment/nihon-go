@@ -19,12 +19,9 @@ public class CreateLesson {
     @Transactional(propagation = REQUIRED)
     public InputDto call(final InputDto inputDto) {
 
-        japaneseDao.create(inputDto.getJapanese());
+        final var japaneseId = japaneseDao.create(inputDto.getJapanese());
 
-        inputDto.getTranslations().forEach(translation -> {
-            translation.setJapaneseId(inputDto.getJapanese().getId());
-            translationDao.create(translation);
-        });
+        inputDto.getTranslations().forEach(translation -> translationDao.create(japaneseId, translation));
 
         return inputDto;
     }

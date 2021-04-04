@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 
+import static com.frogdevelopment.nihongo.lessons.Utils.getSortLetter;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
@@ -28,18 +29,17 @@ public class TranslationDao {
                 .usingGeneratedKeyColumns("translation_id");
     }
 
-    public void create(final Translation translation) {
+    public int create(final int japaneseId, final Translation translation) {
         final var parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("japanese_id", translation.getJapaneseId());
+        parameterSource.addValue("japanese_id", japaneseId);
         parameterSource.addValue("locale", translation.getLocale());
         parameterSource.addValue("input", trim(translation.getInput()));
-        parameterSource.addValue("sort_letter", translation.computeSortLetter());
+        parameterSource.addValue("sort_letter", getSortLetter(translation.getInput()));
         parameterSource.addValue("details", trimToNull(translation.getDetails()));
         parameterSource.addValue("example", trimToNull(translation.getExample()));
-        parameterSource.addValue("tags", translation.getTags().toArray(new String[0]));
+        parameterSource.addValue("tags", translation.getTags());
 
-        final var translationId = simpleJdbcInsert.executeAndReturnKey(parameterSource);
-        translation.setId(translationId.intValue());
+        return simpleJdbcInsert.executeAndReturnKey(parameterSource).intValue();
     }
 
     public void delete(final Translation translation) {
@@ -57,7 +57,7 @@ public class TranslationDao {
         parameterSource.addValue("translation_id", translation.getId());
         parameterSource.addValue("locale", translation.getLocale());
         parameterSource.addValue("input", StringUtils.trim(translation.getInput()));
-        parameterSource.addValue("sort_letter", translation.computeSortLetter());
+        parameterSource.addValue("sort_letter", getSortLetter(translation.getInput()));
         parameterSource.addValue("details", StringUtils.trimToNull(translation.getDetails()));
         parameterSource.addValue("example", StringUtils.trimToNull(translation.getExample()));
 
