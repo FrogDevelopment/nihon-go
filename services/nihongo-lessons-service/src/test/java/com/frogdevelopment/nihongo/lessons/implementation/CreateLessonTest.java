@@ -13,14 +13,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.VoidAnswer1;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.AdditionalAnswers.answerVoid;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.times;
 
 @Tag("unitTest")
@@ -70,8 +68,7 @@ class CreateLessonTest {
                 .translation(english)
                 .build();
 
-        doAnswer(answerVoid((VoidAnswer1<Japanese>) japanese1 -> japanese1.setId(123)))
-                .when(japaneseDao).create(japanese);
+        given(japaneseDao.create(japanese)).willReturn(123);
 
         // when
         createLesson.call(inputDto);
@@ -82,7 +79,7 @@ class CreateLessonTest {
                 .create(japanese);
         then(translationDao)
                 .should(times(2))
-                .create(translationArgumentCaptor.capture());
+                .create(123, translationArgumentCaptor.capture());
         List<Translation> allValues = translationArgumentCaptor.getAllValues();
         assertThat(allValues).hasSize(2);
         assertThat(allValues)

@@ -1,25 +1,19 @@
 package com.frogdevelopment.nihongo.lessons.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Singular;
+import lombok.Value;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.List;
 
-@Data
+@Value
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class InputDto implements Serializable {
+public class InputDto {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    private Japanese japanese;
+    @NonNull
+    Japanese japanese;
+    @NonNull
     @Singular("translation")
-    private List<Translation> translations;
+    List<Translation> translations;
 }

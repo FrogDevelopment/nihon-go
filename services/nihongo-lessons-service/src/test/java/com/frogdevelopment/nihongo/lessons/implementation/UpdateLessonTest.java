@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,15 +69,13 @@ class UpdateLessonTest {
                 .toDelete(true)
                 .build();
 
+        // need a modifiable collection for test
         var inputDto = InputDto.builder()
                 .japanese(japanese)
+                .translation(toUpdate)
+                .translation(toInsert)
+                .translation(toDelete)
                 .build();
-        // need a modifiable collection for test
-        var translations = new ArrayList<Translation>();
-        translations.add(toUpdate);
-        translations.add(toInsert);
-        translations.add(toDelete);
-        inputDto.setTranslations(translations);
 
         // when
         updateLesson.call(inputDto);
@@ -89,7 +86,7 @@ class UpdateLessonTest {
                 .update(japanese);
         then(translationDao)
                 .should(times(1))
-                .create(translationArgumentCaptor.capture());
+                .create(123, translationArgumentCaptor.capture());
         var insertedValue = translationArgumentCaptor.getValue();
         assertThat(insertedValue).extracting(Translation::getJapaneseId).isEqualTo(japanese.getId());
 

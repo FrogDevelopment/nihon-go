@@ -1,24 +1,16 @@
 package com.frogdevelopment.nihongo.lessons.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.Value;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-@Data
+@Value
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Japanese implements Serializable {
+public class Japanese {
 
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    private int id;
-    private String kanji;
-    private String kana;
+    int id;
+    @NonNull
+    String kanji;
+    String kana;
 
 }

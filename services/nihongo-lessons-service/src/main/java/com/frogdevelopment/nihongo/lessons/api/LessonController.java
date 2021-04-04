@@ -1,6 +1,5 @@
 package com.frogdevelopment.nihongo.lessons.api;
 
-import com.frogdevelopment.nihongo.lessons.dao.Input;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.implementation.LessonService;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +20,6 @@ public class LessonController {
 
     private final LessonService lessonService;
     private final Environment environment;
-
-    @GetMapping("/last_ready")
-    public Integer getAvailableLessons(@RequestParam final String locale) {
-        return environment.getRequiredProperty("frog.lessons.last_ready." + locale, Integer.class);
-    }
-
-    @GetMapping(value = "/import")
-    public List<Input> getLesson(@RequestParam final String locale,
-                                 @RequestParam final String lesson) {
-        return lessonService.getLesson(locale, lesson);
-    }
 
     @GetMapping("/total")
     public int getTotal() {

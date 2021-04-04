@@ -33,17 +33,16 @@ class TranslationDaoTest {
     @Test
     void create() {
         // given
-        var translation = new Translation();
-        translation.setJapaneseId(1);
-        translation.setLocale("LOCALE");
-        translation.setInput("INPUT");
-        translation.setDetails("DETAILS");
-        translation.setExample("EXAMPLE");
-        List<String> tags = List.of("TAG_1", "TAG_2", "TAG_3");
-        translation.setTags(tags);
+        var translation = Translation.builder()
+                .locale("LOCALE")
+                .input("INPUT")
+                .details("DETAILS")
+                .example("EXAMPLE")
+                .tags(List.of("TAG_1", "TAG_2", "TAG_3"))
+                .build();
 
         // when
-        translationDao.create(translation);
+        translationDao.create(1, translation);
 
         // then
         assertThat(translation.getId()).isNotNull();

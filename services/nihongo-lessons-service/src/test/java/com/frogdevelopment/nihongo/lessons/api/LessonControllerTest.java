@@ -2,7 +2,6 @@ package com.frogdevelopment.nihongo.lessons.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frogdevelopment.jwt.JwtProcessTokenFilter;
-import com.frogdevelopment.nihongo.lessons.dao.Input;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.entity.Japanese;
 import com.frogdevelopment.nihongo.lessons.entity.Translation;
@@ -46,7 +45,6 @@ class LessonControllerTest {
     private JwtProcessTokenFilter jwtProcessTokenFilter;
 
     private JacksonTester<List<String>> jsonLessonsInformation;
-    private JacksonTester<List<Input>> jsonData;
     private JacksonTester<List<InputDto>> jsonListDto;
     private JacksonTester<List<String>> jsonTags;
 
@@ -54,36 +52,6 @@ class LessonControllerTest {
     void setup() {
         var objectMapper = new ObjectMapper();
         JacksonTester.initFields(this, objectMapper);
-    }
-
-    @Test
-    void getLesson() throws Exception {
-        // given
-        var lesson = "leçon 01";
-        var locale = "fr_FR";
-
-        var data = Input.builder()
-                .kanji("私")
-                .kana("わたし")
-                .sortLetter("J")
-                .input("Je, Moi")
-                .details("détails")
-                .example("exemple")
-                .tags(lesson)
-                .build();
-
-        var dataList = List.of(data);
-
-        given(this.lessonService.getLesson(locale, lesson)).willReturn(dataList);
-
-        // when
-        this.mvc.perform(
-                get("/import")
-                        .param("locale", locale)
-                        .param("lesson", lesson)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonData.write(dataList).getJson()));
     }
 
     @Test

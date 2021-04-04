@@ -25,24 +25,6 @@ class LessonDaoTest {
     private LessonDao lessonDao;
 
     @Test
-    void getLesson() {
-        // when
-        var lessons = lessonDao.getLesson("fr_FR", "01");
-
-        // then
-        assertThat(lessons).hasSize(40);
-        var data = lessons.get(0);
-
-        assertThat(data.getKanji()).isEqualTo("私");
-        assertThat(data.getKana()).isEqualTo("わたし");
-        assertThat(data.getSortLetter()).isEqualTo("J");
-        assertThat(data.getInput()).isEqualTo("Je, moi");
-        assertThat(data.getDetails()).isNull();
-        assertThat(data.getExample()).isNull();
-        assertThat(data.getTags()).isEqualTo("leçon 01,leçon A");
-    }
-
-    @Test
     void getTotal() {
         // when
         var total = lessonDao.getTotal();

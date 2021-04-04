@@ -8,11 +8,20 @@ CREATE TABLE IF NOT EXISTS japaneses
 CREATE TABLE IF NOT EXISTS translations
 (
     translation_id SERIAL PRIMARY KEY,
-    japanese_id    INTEGER NOT NULL REFERENCES japaneses (japanese_id),
-    locale         TEXT    NOT NULL,
-    input          TEXT    NOT NULL,
-    sort_letter    CHAR(1) NOT NULL,
+    japanese_id    INTEGER  NOT NULL REFERENCES japaneses (japanese_id),
+    lesson         SMALLINT NOT NULL,
+    locale         TEXT     NOT NULL,
+    input          TEXT     NOT NULL,
+    sort_letter    CHAR(1)  NOT NULL,
     details        TEXT,
     example        TEXT,
     tags           TEXT ARRAY
 );
+
+CREATE TABLE IF NOT EXISTS exportable_lessons
+(
+    lesson          SMALLINT  NOT NULL,
+    locale          TEXT      NOT NULL,
+    exportable      BOOLEAN DEFAULT FALSE,
+    update_datetime TIMESTAMP NOT NULL
+)

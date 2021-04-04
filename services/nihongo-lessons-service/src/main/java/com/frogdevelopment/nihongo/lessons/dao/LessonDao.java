@@ -22,38 +22,6 @@ public class LessonDao {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public List<Input> getLesson(final String locale, final String lesson) {
-        final var sql = """
-                SELECT j.kanji,
-                       j.kana,
-                       t.sort_letter,
-                       t.input,
-                       t.details,
-                       t.example,
-                       ARRAY_TO_STRING(t.tags,',') AS tags
-                 FROM japaneses j
-                 INNER JOIN translations t
-                            ON j.japanese_id = t.japanese_id
-                            AND t.locale = :locale
-                            AND ARRAY_TO_STRING(t.tags,',') LIKE :lesson;
-                """;
-
-        final var paramSource = new MapSqlParameterSource();
-        paramSource.addValue("locale", locale);
-        paramSource.addValue("lesson", "%" + lesson + "%");
-
-        final var builder = Input.builder();
-        return namedParameterJdbcTemplate.query(sql, paramSource, (rs, rowNum) -> builder
-                .kanji(rs.getString("kanji"))
-                .kana(rs.getString("kana"))
-                .sortLetter(rs.getString("sort_letter"))
-                .input(rs.getString("input"))
-                .details(rs.getString("details"))
-                .example(rs.getString("example"))
-                .tags(rs.getString("tags"))
-                .build());
-    }
-
     public Integer getTotal() {
         final var sql = "SELECT COUNT(j.japanese_id) FROM japaneses j;";
 
@@ -70,6 +38,7 @@ public class LessonDao {
                                'translations', array_agg(json_build_object(
                                     'id', t.translation_id,
                                     'japaneseId', t.japanese_id,
+                                    'lesson', t.lesson,
                                     'locale', t.locale,
                                     'input', t.input,
                                     'sortLetter', t.sort_letter,
@@ -81,9 +50,9 @@ public class LessonDao {
                  FROM japaneses j
                     INNER JOIN translations t ON t.japanese_id = j.japanese_id
                  GROUP BY j.japanese_id, j.kanji, j.kana
-                 ORDER BY j.? ?
+                 ORDER BY j.%s %s
                  LIMIT :pageSize OFFSET :offset
-                """;
+                """.formatted(sortField, sortOrder);
 
         final var paramSource = new MapSqlParameterSource();
         paramSource.addValue("pageSize", pageSize);

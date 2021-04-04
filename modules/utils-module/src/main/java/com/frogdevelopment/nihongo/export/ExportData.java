@@ -48,7 +48,8 @@ public final class ExportData {
     private void exportToFtp(final Path path) {
         try {
             log.info("- Uploading {} to {}", path, remotePath);
-            ftpClient.putFileToPath(Path.of(remotePath, path.toFile().getName()).toString(), path.toFile());
+            final var file = path.toFile();
+            ftpClient.putFileToPath(Path.of(remotePath, file.getName()).toString(), file);
         } catch (final IOException e) {
             log.error("Unexpected error while uploading file " + path, e);
         }
