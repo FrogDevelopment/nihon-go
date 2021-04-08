@@ -1,22 +1,22 @@
 package com.frogdevelopment.nihongo;
 
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.PrintCommandListener;
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.beans.factory.DisposableBean;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+import static com.frogdevelopment.nihongo.LoggingOutputStream.LogLevel.INFO;
+
+@Slf4j
 public class FtpClient implements DisposableBean {
 
     private final String server;
@@ -24,13 +24,19 @@ public class FtpClient implements DisposableBean {
     private final String user;
     private final String password;
 
-    private FTPClient ftp;
+    private final FTPClient ftp;
+
+    public FtpClient(final String server, final int port, final String user, final String password) {
+        this.server = server;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+
+        this.ftp = new FTPClient();
+        this.ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(new LoggingOutputStream(log, INFO))));
+    }
 
     public void open() throws IOException {
-        ftp = new FTPClient();
-
-        ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(System.out)));
-
         ftp.connect(server, port);
         final int reply = ftp.getReplyCode();
         if (!FTPReply.isPositiveCompletion(reply)) {
@@ -57,7 +63,13 @@ public class FtpClient implements DisposableBean {
     }
 
     public void putFileToPath(final String path, final File file) throws IOException {
-        ftp.storeFile(path, new FileInputStream(file));
+        try (final var inputStream = new FileInputStream(file)) {
+            ftp.setFileType(FTP.BINARY_FILE_TYPE);
+            ftp.setFileTransferMode(FTP.COMPRESSED_TRANSFER_MODE);
+            ftp.setCharset(StandardCharsets.UTF_8);
+            ftp.enterLocalPassiveMode();
+            ftp.storeFile(path, inputStream);
+        }
     }
 
     public Collection<String> listFiles(final String path) throws IOException {

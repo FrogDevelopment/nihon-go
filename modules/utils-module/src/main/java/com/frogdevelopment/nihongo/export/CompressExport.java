@@ -43,7 +43,6 @@ class CompressExport {
                 }
                 archiveOutputStream.closeArchiveEntry();
                 archiveOutputStream.finish();
-                Files.delete(path);
             }
 
             return tarPath;

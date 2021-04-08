@@ -13,9 +13,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableEurekaClient
 @SpringBootApplication(scanBasePackages = "com.frogdevelopment")
 @Import({ExportConfiguration.class})
-public class Application {
+public class EntriesApplication {
 
     public static void main(final String[] args) {
-        SpringApplication.run(Application.class);
+        SpringApplication.run(EntriesApplication.class);
     }
 }

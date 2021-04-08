@@ -31,7 +31,7 @@ public final class ExportData {
                 final var copyManager = pgConnection.getCopyAPI();
 
                 stream
-//                        .parallel()
+                        .parallel()
                         .map(entry -> copyOut.call(copyManager, entry))
                         .filter(Objects::nonNull)
                         .forEach(this::exportToFtp);
