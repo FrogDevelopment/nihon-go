@@ -6,6 +6,8 @@ CREATE TABLE entries
     reading   TEXT NOT NULL
 );
 
+CREATE UNIQUE INDEX index_entries_entry_seq ON entries(entry_seq);
+
 CREATE TABLE senses
 (
     sense_seq TEXT PRIMARY KEY,
@@ -16,4 +18,6 @@ CREATE TABLE senses
     info      VARCHAR(250),
     dial      VARCHAR(50)
 );
+
+CREATE UNIQUE INDEX index_senses_sense_seq ON senses(sense_seq);
 
