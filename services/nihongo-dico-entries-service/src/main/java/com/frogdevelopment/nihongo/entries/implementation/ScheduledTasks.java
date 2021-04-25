@@ -16,7 +16,7 @@ public class ScheduledTasks {
 
     private final Search search;
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "0 0 * * * *")
     public void wakeUpPostgres() {
         log.info("Scheduled task wakeUpPostgres");
         search.call(Language.ENG.getCode(), "eat");
