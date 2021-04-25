@@ -18,12 +18,12 @@ public class ExportSentences {
 
     @Language("SQL")
     private static final String SQL_COPY = """
-            COPY (SELECT i.linking, japanese.sentence, ARRAY_AGG(translation.sentence)
-                FROM jpn.sentences japanese
-                        INNER JOIN %1$s.links_japanese_translation links ON links.japanese_id = japanese.sentence_id
-                        INNER JOIN %1$s.sentences translation ON translation.sentence_id = links.translation_id
-                        INNER JOIN jpn.japanese_indices i ON i.japanese_id = japanese.sentence_id
-                GROUP BY i.linking, japanese.sentence)
+            COPY (SELECT i.linking, japanese.sentence AS japanese, translation.sentence AS translation
+                  FROM jpn.sentences japanese
+                           INNER JOIN %1$s.links_japanese_translation links ON links.japanese_id = japanese.sentence_id
+                           INNER JOIN %1$s.sentences translation ON translation.sentence_id = links.translation_id
+                           INNER JOIN jpn.japanese_indices i ON i.japanese_id = japanese.sentence_id
+                  )
             TO STDOUT WITH (FORMAT CSV, HEADER);
             """;
 
