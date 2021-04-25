@@ -30,7 +30,7 @@ public class ExportSentences {
     private final ExportData exportData;
 
     public void call() {
-        exportData.call(Arrays.stream(values()).map(language -> of(language.getCode() + "-sentences", SQL_COPY.formatted(language.getCode()))));
+        exportData.call(Arrays.stream(values()).map(language -> of(language.getCode() + "_sentences", SQL_COPY.formatted(language.getCode()))));
     }
 
 }
