@@ -4,7 +4,7 @@ dependencies {
     implementation project(':modules:multi-schema-module')
     implementation project(':modules:utils-module')
 
-    implementation 'commons-io:commons-io:2.8.0'
+    implementation 'commons-io:commons-io:2.10.0'
     implementation 'org.apache.commons:commons-compress:1.20'
 
     testImplementation "com.frog-development:testcontainers-pgroonga:$tcPgroongaVersion"
