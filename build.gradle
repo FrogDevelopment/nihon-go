@@ -19,7 +19,7 @@ configure(subprojects.findAll { it.name.matches('(.*)-service') || it.name.match
 
     dependencyManagement {
         imports {
-            mavenBom 'org.junit:junit-bom:5.7.2'
+            mavenBom 'org.junit:junit-bom:5.8.0'
             mavenBom 'org.testcontainers:testcontainers-bom:1.15.2'
             mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.3'
         }
