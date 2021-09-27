@@ -10,6 +10,6 @@ dependencies {
 
     compileOnly 'org.postgresql:postgresql'
 
-    testImplementation 'org.mockftpserver:MockFtpServer:2.8.0'
+    testImplementation 'org.mockftpserver:MockFtpServer:3.0.0'
 
 }
