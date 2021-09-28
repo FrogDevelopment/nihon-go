@@ -1,7 +1,7 @@
 plugins {
     id 'io.freefair.lombok' version '5.3.3.3' apply false
     id 'fr.brouillard.oss.gradle.jgitver' version '0.9.1' apply false
-    id 'org.springframework.boot' version '2.5.0' apply false
+    id 'org.springframework.boot' version '2.5.5' apply false
     id 'io.spring.dependency-management' version '1.0.11.RELEASE' apply false
 }
 
@@ -19,9 +19,9 @@ configure(subprojects.findAll { it.name.matches('(.*)-service') || it.name.match
 
     dependencyManagement {
         imports {
-            mavenBom 'org.junit:junit-bom:5.7.2'
+            mavenBom 'org.junit:junit-bom:5.8.1'
             mavenBom 'org.testcontainers:testcontainers-bom:1.16.0'
-            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.3'
+            mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
         }
     }
 
