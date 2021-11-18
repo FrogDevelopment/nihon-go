@@ -1,5 +1,0 @@
-dependencies {
-    implementation project(':modules:utils-module')
-
-    implementation 'org.apache.commons:commons-csv:1.9.0'
-}
