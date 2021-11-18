@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ActiveProfiles("test")
 @Tag("integrationTest")
 @ExtendWith(SpringExtension.class)
-class ApplicationTest {
+class EntriesApplicationTest {
 
     @Autowired
     private ApplicationContext applicationContext;

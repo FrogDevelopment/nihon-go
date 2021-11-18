@@ -1,20 +1,18 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
+import com.frogdevelopment.nihongo.entries.implementation.about.AboutDao;
+import com.frogdevelopment.nihongo.entries.implementation.export.ExportEntries;
+import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.FetchJMDict;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import org.apache.commons.lang3.time.StopWatch;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import com.frogdevelopment.nihongo.entries.implementation.about.AboutDao;
-import com.frogdevelopment.nihongo.entries.implementation.export.ExportEntries;
-import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.FetchJMDict;
+import java.io.IOException;
+import java.net.URISyntaxException;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Slf4j
 @Component

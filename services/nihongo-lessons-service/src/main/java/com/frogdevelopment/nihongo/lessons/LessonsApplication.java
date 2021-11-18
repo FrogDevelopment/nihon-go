@@ -1,19 +1,21 @@
-package com.frogdevelopment.nihongo.sentences;
+package com.frogdevelopment.nihongo.lessons;
 
 import com.frogdevelopment.nihongo.export.ExportConfiguration;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Import;
-import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@EnableAsync
 @EnableEurekaClient
 @SpringBootApplication(scanBasePackages = "com.frogdevelopment")
+@EnableTransactionManagement
 @Import({ExportConfiguration.class})
-public class Application {
+public class LessonsApplication {
 
     public static void main(final String[] args) {
-        SpringApplication.run(Application.class);
+        new SpringApplicationBuilder(LessonsApplication.class).run(args);
     }
 }
+
+
