@@ -1,6 +1,8 @@
-package com.frogdevelopment.nihongo.lessons.implementation;
+package com.frogdevelopment.nihongo.lessons.application.lesson;
 
-import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.verify;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,15 +10,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.verify;
+import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
 
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
 class LessonServiceTest {
 
     @InjectMocks
-    private LessonService lessonService;
+    private LessonServiceImpl lessonServiceImpl;
 
     @Mock
     private LessonDao lessonDao;
@@ -24,7 +25,7 @@ class LessonServiceTest {
     @Test
     void fetch_should_call_dao() {
         // when
-        lessonService.getTotal();
+        lessonServiceImpl.getTotal();
 
         // then
         then(lessonDao)
@@ -41,7 +42,7 @@ class LessonServiceTest {
         var sortOrder = "sortOrder";
 
         // when
-        lessonService.fetch(pageIndex, pageSize, sortField, sortOrder);
+        lessonServiceImpl.fetch(pageIndex, pageSize, sortField, sortOrder);
 
         // then
         then(lessonDao)
@@ -58,7 +59,7 @@ class LessonServiceTest {
         var sortOrder = "sortOrder";
 
         // when
-        lessonService.fetch(pageIndex, pageSize, sortField, sortOrder);
+        lessonServiceImpl.fetch(pageIndex, pageSize, sortField, sortOrder);
 
         // then
         then(lessonDao)
@@ -75,7 +76,7 @@ class LessonServiceTest {
         String sortOrder = null;
 
         // when
-        lessonService.fetch(pageIndex, pageSize, sortField, sortOrder);
+        lessonServiceImpl.fetch(pageIndex, pageSize, sortField, sortOrder);
 
         // then
         then(lessonDao)
@@ -92,7 +93,7 @@ class LessonServiceTest {
         var sortOrder = "";
 
         // when
-        lessonService.fetch(pageIndex, pageSize, sortField, sortOrder);
+        lessonServiceImpl.fetch(pageIndex, pageSize, sortField, sortOrder);
 
         // then
         verify(lessonDao).fetch(pageIndex, pageSize, sortField, "asc");
@@ -107,7 +108,7 @@ class LessonServiceTest {
         var sortOrder = "desccend";
 
         // when
-        lessonService.fetch(pageIndex, pageSize, sortField, sortOrder);
+        lessonServiceImpl.fetch(pageIndex, pageSize, sortField, sortOrder);
 
         // then
         then(lessonDao)
@@ -124,7 +125,7 @@ class LessonServiceTest {
         var sortOrder = "descend";
 
         // when
-        lessonService.fetch(pageIndex, pageSize, sortField, sortOrder);
+        lessonServiceImpl.fetch(pageIndex, pageSize, sortField, sortOrder);
 
         // then
         then(lessonDao)
@@ -135,7 +136,7 @@ class LessonServiceTest {
     @Test
     void getTags_should_call_dao() {
         // when
-        lessonService.getTags();
+        lessonServiceImpl.getTags();
 
         // then
         then(lessonDao)

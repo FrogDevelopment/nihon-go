@@ -1,14 +1,14 @@
-package com.frogdevelopment.nihongo.lessons.implementation.migrate;
+package com.frogdevelopment.nihongo.lessons.application.migrate;
+
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 class MigrateDao {

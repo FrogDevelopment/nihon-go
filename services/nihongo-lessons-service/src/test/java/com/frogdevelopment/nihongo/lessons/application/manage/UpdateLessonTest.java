@@ -1,14 +1,17 @@
-package com.frogdevelopment.nihongo.lessons.implementation;
+package com.frogdevelopment.nihongo.lessons.application.manage;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
+
+import java.util.List;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,18 +24,21 @@ import com.frogdevelopment.nihongo.lessons.entity.Translation;
 
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
-class DeleteLessonTest {
+class UpdateLessonTest {
 
     @InjectMocks
-    private DeleteLesson deleteLesson;
+    private UpdateLesson updateLesson;
 
     @Mock
     private JapaneseDao japaneseDao;
     @Mock
     private TranslationDao translationDao;
 
+    @Captor
+    private ArgumentCaptor<Translation> translationArgumentCaptor;
+
     @Test
-    void should_delete() {
+    void update() {
         // given
         var japanese = Japanese.builder()
                 .id(123)
@@ -40,66 +46,59 @@ class DeleteLessonTest {
                 .kana("KANA")
                 .build();
 
-        var french = Translation.builder()
-                .id(456)
-                .lesson(1)
+        var toUpdate = Translation.builder()
                 .japaneseId(japanese.getId())
+                .id(456)
                 .locale("fr_FR")
                 .input("INPUT FRENCH")
-                .sortLetter('I')
                 .details("DETAILS FRENCH")
                 .example("EXAMPLE FRENCH")
-                .tag("TAGS FRENCH*")
+                .tags(List.of("TAGS FRENCH"))
                 .build();
 
-        var english = Translation.builder()
+        var toInsert = Translation.builder()
                 .japaneseId(japanese.getId())
-                .lesson(1)
                 .locale("en_US")
                 .input("INPUT ENGLISH")
-                .sortLetter('I')
                 .details("DETAILS ENGLISH")
                 .example("EXAMPLE ENGLISH")
-                .tag("TAGS ENGLISH")
+                .tags(List.of("TAGS ENGLISH"))
+                .build();
+
+        var toDelete = Translation.builder()
+                .japaneseId(japanese.getId())
+                .id(798)
+                .toDelete(true)
                 .build();
 
         var inputDto = InputDto.builder()
                 .japanese(japanese)
-                .translation(french)
-                .translation(english)
+                .translation(toUpdate)
+                .translation(toInsert)
+                .translation(toDelete)
                 .build();
 
         // when
-        deleteLesson.call(inputDto);
+        updateLesson.call(inputDto);
 
         // then
         then(japaneseDao)
                 .should()
-                .delete(japanese);
+                .update(japanese);
         then(translationDao)
                 .should(times(1))
-                .delete(french.getId());
-    }
+                .create(eq(123), translationArgumentCaptor.capture());
+        var insertedValue = translationArgumentCaptor.getValue();
+        assertThat(insertedValue).extracting(Translation::getJapaneseId).isEqualTo(japanese.getId());
 
-    @Test
-    void should_doNothing_when_japaneseIdEquals0() {
-        // given
-        var inputDto = InputDto.builder()
-                .japanese(Japanese.builder()
-                        .kana("KANA")
-                        .build())
-                .build();
-
-        // when
-        deleteLesson.call(inputDto);
-
-        // then
-        then(japaneseDao)
-                .should(never())
-                .delete(any());
         then(translationDao)
-                .should(never())
-                .delete(anyInt());
-    }
+                .should(times(1))
+                .update(translationArgumentCaptor.capture());
+        var updatedValue = translationArgumentCaptor.getValue();
+        assertThat(updatedValue).extracting(Translation::getId).isEqualTo(toUpdate.getId());
 
+        then(translationDao)
+                .should(times(1))
+                .delete(toDelete.getId());
+    }
 }

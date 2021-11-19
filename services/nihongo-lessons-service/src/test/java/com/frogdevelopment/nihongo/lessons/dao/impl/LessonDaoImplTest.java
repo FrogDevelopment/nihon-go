@@ -1,4 +1,4 @@
-package com.frogdevelopment.nihongo.lessons.dao;
+package com.frogdevelopment.nihongo.lessons.dao.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -19,10 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 @ExtendWith(SpringExtension.class)
 @Rollback
 @Transactional(propagation = Propagation.REQUIRED)
-class LessonDaoTest {
+class LessonDaoImplTest {
 
     @Autowired
-    private LessonDao lessonDao;
+    private LessonDaoImpl lessonDao;
 
     @Test
     void getTotal() {

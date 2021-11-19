@@ -1,4 +1,4 @@
-package com.frogdevelopment.nihongo.lessons.dao;
+package com.frogdevelopment.nihongo.lessons.dao.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
@@ -21,10 +21,10 @@ import com.frogdevelopment.nihongo.lessons.entity.Japanese;
 @Tag("integrationTest")
 @ExtendWith(SpringExtension.class)
 @Transactional(propagation = Propagation.REQUIRED)
-class JapaneseDaoTest {
+class JapaneseDaoImplTest {
 
     @Autowired
-    private JapaneseDao japaneseDao;
+    private JapaneseDaoImpl japaneseDao;
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;

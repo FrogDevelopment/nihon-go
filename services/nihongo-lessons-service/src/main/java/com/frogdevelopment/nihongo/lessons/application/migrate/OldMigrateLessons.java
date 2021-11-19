@@ -1,11 +1,13 @@
-package com.frogdevelopment.nihongo.lessons.implementation.migrate;
+package com.frogdevelopment.nihongo.lessons.application.migrate;
+
+import static com.frogdevelopment.nihongo.lessons.Utils.getSortLetter;
+import static java.util.stream.IntStream.rangeClosed;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -16,12 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.frogdevelopment.nihongo.lessons.Utils.getSortLetter;
-import static java.util.stream.IntStream.rangeClosed;
-import static org.apache.commons.lang3.StringUtils.capitalize;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.trimToNull;
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component

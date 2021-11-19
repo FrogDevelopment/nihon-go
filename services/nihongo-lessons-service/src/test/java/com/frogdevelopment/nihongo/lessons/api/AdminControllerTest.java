@@ -1,6 +1,7 @@
 package com.frogdevelopment.nihongo.lessons.api;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -12,7 +13,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,30 +25,24 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frogdevelopment.jwt.JwtProcessTokenFilter;
+import com.frogdevelopment.nihongo.lessons.application.ManageLessons;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.entity.Japanese;
 import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import com.frogdevelopment.nihongo.lessons.implementation.CreateLesson;
-import com.frogdevelopment.nihongo.lessons.implementation.DeleteLesson;
-import com.frogdevelopment.nihongo.lessons.implementation.UpdateLesson;
 
 @Disabled("Web test to fix")
-@WebMvcTest(value = LessonAdminController.class)
+@WebMvcTest(value = AdminController.class)
 @AutoConfigureMockMvc
 @SpringJUnitWebConfig
 @Tag("integrationTest")
 @ExtendWith(SpringExtension.class)
-class LessonAdminControllerTest {
+class AdminControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
-    private CreateLesson createLesson;
-    @MockBean
-    private UpdateLesson updateLesson;
-    @MockBean
-    private DeleteLesson deleteLesson;
+    private ManageLessons manageLessons;
 
     @MockBean
     private JwtProcessTokenFilter jwtProcessTokenFilter;
@@ -80,7 +74,7 @@ class LessonAdminControllerTest {
                         .build())
                 .build();
 
-        given(this.createLesson.call(dto)).will(invocation -> {
+        given(manageLessons.insert(dto)).will(invocation -> {
 //            dto.getJapanese().setId(987);
 //            dto.getTranslations().get(0).setId(654);
 
@@ -119,7 +113,7 @@ class LessonAdminControllerTest {
                         .build())
                 .build();
 
-        given(this.updateLesson.call(dto)).willReturn(dto);
+        given(manageLessons.update(dto)).willReturn(dto);
 
         // when
         this.mvc.perform(
@@ -162,6 +156,6 @@ class LessonAdminControllerTest {
                 .andExpect(status().isOk());
 
         // then
-        BDDMockito.then(deleteLesson).should().call(dto);
+        then(manageLessons).should().delete(dto);
     }
 }

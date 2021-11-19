@@ -24,10 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frogdevelopment.jwt.JwtProcessTokenFilter;
+import com.frogdevelopment.nihongo.lessons.application.LessonService;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.entity.Japanese;
 import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import com.frogdevelopment.nihongo.lessons.implementation.LessonService;
 
 @Disabled("Web test to fix")
 @WebMvcTest(value = LessonController.class)

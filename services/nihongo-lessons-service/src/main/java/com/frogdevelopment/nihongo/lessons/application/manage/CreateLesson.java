@@ -1,11 +1,8 @@
-package com.frogdevelopment.nihongo.lessons.implementation;
-
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+package com.frogdevelopment.nihongo.lessons.application.manage;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
 import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
@@ -13,13 +10,12 @@ import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 
 @Component
 @RequiredArgsConstructor
-public class CreateLesson {
+class CreateLesson {
 
     private final JapaneseDao japaneseDao;
     private final TranslationDao translationDao;
 
-    @Transactional(propagation = REQUIRED)
-    public InputDto call(final InputDto inputDto) {
+    InputDto call(final InputDto inputDto) {
 
         final var japaneseId = japaneseDao.create(inputDto.getJapanese());
 

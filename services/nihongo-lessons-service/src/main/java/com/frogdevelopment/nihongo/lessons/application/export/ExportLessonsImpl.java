@@ -1,26 +1,27 @@
-package com.frogdevelopment.nihongo.lessons.implementation.export;
+package com.frogdevelopment.nihongo.lessons.application.export;
 
-import com.frogdevelopment.nihongo.export.ExportData;
-import com.frogdevelopment.nihongo.export.ExportData.Export;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.intellij.lang.annotations.Language;
-import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@Slf4j
+import org.intellij.lang.annotations.Language;
+import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.stereotype.Component;
+
+import com.frogdevelopment.nihongo.export.ExportData;
+import com.frogdevelopment.nihongo.export.ExportData.Export;
+import com.frogdevelopment.nihongo.lessons.application.ExportLessons;
+
 @Component
 @RequiredArgsConstructor
-public class ExportLessons {
+public class ExportLessonsImpl implements ExportLessons {
 
     @Language("SQL")
     private static final String SQL_LESSONS = """
             SELECT lesson, locale
             FROM exportable_lessons
-            WHERE exportable = true;
+            WHERE exportable = TRUE;
             """;
 
     @Language("SQL")
@@ -55,6 +56,7 @@ public class ExportLessons {
     private final ExportData exportData;
     private final JdbcOperations jdbcOperations;
 
+    @Override
     public void call() {
         final var exports = jdbcOperations.query(SQL_LESSONS, (rs, rowNum) -> toExport(rs));
         exportData.call(exports.stream());

@@ -1,42 +1,47 @@
-package com.frogdevelopment.nihongo.lessons.implementation;
+package com.frogdevelopment.nihongo.lessons.application.lesson;
 
-import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.frogdevelopment.nihongo.lessons.application.LessonService;
+import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(propagation = Propagation.REQUIRES_NEW)
-public class LessonService {
+public class LessonServiceImpl implements LessonService {
 
     private final LessonDao lessonDao;
 
+    @Override
     public int getTotal() {
         return lessonDao.getTotal();
     }
 
+    @Override
     public List<InputDto> fetch(final int pageIndex, final int pageSize, String sortField, String sortOrder) {
-        if (StringUtils.isBlank(sortField)) {
+        if (isBlank(sortField)) {
             sortField = "japanese_id";
         }
 
-        if (StringUtils.isNotBlank(sortOrder)) {
-            sortOrder = "descend".equalsIgnoreCase(sortOrder) ? "desc" : "asc";
-        } else {
+        if (isBlank(sortOrder)) {
             sortOrder = "asc";
+        } else {
+            sortOrder = "descend".equalsIgnoreCase(sortOrder) ? "desc" : "asc";
         }
 
         return lessonDao.fetch(pageIndex, pageSize, sortField, sortOrder);
     }
 
+    @Override
     public List<String> getTags() {
         return lessonDao.getTags();
     }

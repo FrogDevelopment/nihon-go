@@ -1,4 +1,4 @@
-package com.frogdevelopment.nihongo.lessons.implementation;
+package com.frogdevelopment.nihongo.lessons.application.manage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
