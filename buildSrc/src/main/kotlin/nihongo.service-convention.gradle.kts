@@ -10,16 +10,14 @@ configure<JavaPluginExtension> {
 }
 
 dependencies {
-    val authorizationJwtVersion = "1.4.0"
-    val dockerSecretsVersion = "1.0.0"
 
     annotationProcessor("org.springframework:spring-context-indexer")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     implementation("org.jetbrains:annotations:22.0.0")
 
-    implementation("com.frog-development:authorization-jwt-module:$authorizationJwtVersion")
-    implementation("com.frog-development:docker-secrets-module:$dockerSecretsVersion")
+    implementation("com.frog-development:authorization-jwt-module:1.4.0")
+    implementation("com.frog-development:docker-secrets-module:1.0.0")
 
     implementation("org.postgresql:postgresql")
     implementation("org.hibernate:hibernate-java8")

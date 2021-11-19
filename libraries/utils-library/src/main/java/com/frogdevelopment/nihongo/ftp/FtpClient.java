@@ -1,6 +1,6 @@
-package com.frogdevelopment.nihongo;
+package com.frogdevelopment.nihongo.ftp;
 
-import static com.frogdevelopment.nihongo.LoggingOutputStream.LogLevel.INFO;
+import static com.frogdevelopment.nihongo.ftp.LoggingOutputStream.LogLevel.INFO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,11 +31,11 @@ public class FtpClient implements DisposableBean {
 
     private final FTPClient ftp;
 
-    public FtpClient(final String server, final int port, final String user, final String password) {
-        this.server = server;
-        this.port = port;
-        this.user = user;
-        this.password = password;
+    public FtpClient(FtpProperties ftpProperties) {
+        this.server = ftpProperties.getServer();
+        this.port = ftpProperties.getPort();
+        this.user = ftpProperties.getUser();
+        this.password = ftpProperties.getPassword();
 
         this.ftp = new FTPClient();
         this.ftp.addProtocolCommandListener(new PrintCommandListener(new PrintWriter(new LoggingOutputStream(log, INFO))));

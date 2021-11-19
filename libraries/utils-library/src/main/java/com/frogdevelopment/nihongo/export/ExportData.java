@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 import org.postgresql.PGConnection;
 
-import com.frogdevelopment.nihongo.FtpClient;
+import com.frogdevelopment.nihongo.ftp.FtpClient;
 
 @Slf4j
 @RequiredArgsConstructor

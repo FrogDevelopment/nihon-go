@@ -1,4 +1,4 @@
-package com.frogdevelopment.nihongo;
+package com.frogdevelopment.nihongo.ftp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -38,7 +38,13 @@ class FtpClientTest {
 
         fakeFtpServer.start();
 
-        ftpClient = new FtpClient("localhost", fakeFtpServer.getServerControlPort(), "user", "password");
+        FtpProperties ftpProperties = new FtpProperties();
+        ftpProperties.setServer("localhost");
+        ftpProperties.setPort(fakeFtpServer.getServerControlPort());
+        ftpProperties.setUser("user");
+        ftpProperties.setPassword("password");
+
+        ftpClient = new FtpClient(ftpProperties);
         ftpClient.open();
     }
 
@@ -71,7 +77,7 @@ class FtpClientTest {
     }
 
     @Test
-    public void givenRemoteFile_whenListingRemoteFiles_thenItIsContainedInList() throws IOException {
+    void givenRemoteFile_whenListingRemoteFiles_thenItIsContainedInList() throws IOException {
         // when
         Collection<String> files = ftpClient.listFiles("");
 

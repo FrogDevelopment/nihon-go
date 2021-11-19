@@ -1,4 +1,4 @@
-package com.frogdevelopment.nihongo;
+package com.frogdevelopment.nihongo.ftp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
