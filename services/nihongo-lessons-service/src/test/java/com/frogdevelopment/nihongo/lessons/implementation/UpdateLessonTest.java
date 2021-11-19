@@ -1,10 +1,12 @@
 package com.frogdevelopment.nihongo.lessons.implementation;
 
-import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
-import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
-import com.frogdevelopment.nihongo.lessons.entity.Japanese;
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.times;
+
+import java.util.List;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,11 +16,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.times;
+import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
+import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
 
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
@@ -69,7 +71,6 @@ class UpdateLessonTest {
                 .toDelete(true)
                 .build();
 
-        // need a modifiable collection for test
         var inputDto = InputDto.builder()
                 .japanese(japanese)
                 .translation(toUpdate)
@@ -86,7 +87,7 @@ class UpdateLessonTest {
                 .update(japanese);
         then(translationDao)
                 .should(times(1))
-                .create(123, translationArgumentCaptor.capture());
+                .create(eq(123), translationArgumentCaptor.capture());
         var insertedValue = translationArgumentCaptor.getValue();
         assertThat(insertedValue).extracting(Translation::getJapaneseId).isEqualTo(japanese.getId());
 
@@ -98,8 +99,6 @@ class UpdateLessonTest {
 
         then(translationDao)
                 .should(times(1))
-                .delete(translationArgumentCaptor.capture());
-        var deletedValue = translationArgumentCaptor.getValue();
-        assertThat(deletedValue).extracting(Translation::getId).isEqualTo(toDelete.getId());
+                .delete(toDelete.getId());
     }
 }

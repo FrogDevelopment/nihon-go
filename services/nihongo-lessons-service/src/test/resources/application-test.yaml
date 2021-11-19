@@ -1,7 +1,26 @@
+frog:
+  database:
+    name: nihongo_lessons
+  migrate:
+    base-url: http://legall.benoit.free.fr/
+    old:
+      file-name: nihon_go/NihonGo_All.tsv
+      url: ${frog.migrate.base-url}/${frog.migrate.old.file-name}
+
+  ftp:
+    hostname: ftpperso.free.fr
+    port: 21
+    username: XXXXX
+    password: XXXXX
+    remote-path: /nihongo/lessons
+
 spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:11-alpine://localhost/${frog.database.name}
+    url: jdbc:tc:postgresql:12-alpine://localhost/${frog.database.name}
+  sql:
+    init:
+      mode: always
 
 security:
   jwt:

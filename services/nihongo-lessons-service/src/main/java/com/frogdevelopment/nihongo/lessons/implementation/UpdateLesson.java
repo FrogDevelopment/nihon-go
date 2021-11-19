@@ -1,14 +1,16 @@
 package com.frogdevelopment.nihongo.lessons.implementation;
 
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
 import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
 @Component
 @RequiredArgsConstructor
@@ -19,25 +21,23 @@ public class UpdateLesson {
 
     @Transactional(propagation = REQUIRED)
     public InputDto call(final InputDto inputDto) {
+        final var inputDtoBuilder = InputDto.builder();
 
         japaneseDao.update(inputDto.getJapanese());
+        inputDtoBuilder.japanese(inputDto.getJapanese());
 
-        Translation translation;
-        final var japaneseId = inputDto.getJapanese().getId();
-        final var iterator = inputDto.getTranslations().iterator();
-        while (iterator.hasNext()) {
-            translation = iterator.next();
-
+        for (final Translation translation : inputDto.getTranslations()) {
             if (translation.isToDelete()) {
-                translationDao.delete(translation);
-                iterator.remove();
+                translationDao.delete(translation.getId());
             } else if (translation.getId() == 0) {
-                translationDao.create(japaneseId, translation);
+                final var translationId = translationDao.create(inputDto.getJapanese().getId(), translation);
+                inputDtoBuilder.translation(translation.toBuilder().id(translationId).build());
             } else {
                 translationDao.update(translation);
+                inputDtoBuilder.translation(translation);
             }
         }
 
-        return inputDto;
+        return inputDtoBuilder.build();
     }
 }

@@ -1,6 +1,4 @@
 spring:
-  profiles:
-    active: test
   cloud:
     config:
       enabled: false
@@ -14,7 +12,6 @@ spring:
 eureka:
   client:
     enabled: false
-
 
 logging:
   config: classpath:logback-spring-test.xml

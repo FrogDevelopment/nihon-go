@@ -5,12 +5,20 @@ frog:
     url: ftp://ftp.monash.edu.au/pub/nihongo/JMdict.gz
   export:
     path: ${java.io.tmpdir}/export
+  ftp:
+    hostname: ftpperso.free.fr
+    port: 21
+    username: XXXXX
+    password: XXXXX
+    remote-path: /nihongo/dico
 
 spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:pgroonga:///${frog.database.name}
-    initialization-mode: always
+  sql:
+    init:
+      mode: always
 
   flyway:
     multi-schema: true

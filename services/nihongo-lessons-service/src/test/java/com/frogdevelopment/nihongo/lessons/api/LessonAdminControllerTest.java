@@ -1,13 +1,12 @@
 package com.frogdevelopment.nihongo.lessons.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.frogdevelopment.jwt.JwtProcessTokenFilter;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
-import com.frogdevelopment.nihongo.lessons.entity.Japanese;
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import com.frogdevelopment.nihongo.lessons.implementation.CreateLesson;
-import com.frogdevelopment.nihongo.lessons.implementation.DeleteLesson;
-import com.frogdevelopment.nihongo.lessons.implementation.UpdateLesson;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
@@ -24,12 +23,14 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import static org.mockito.BDDMockito.given;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.frogdevelopment.jwt.JwtProcessTokenFilter;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
+import com.frogdevelopment.nihongo.lessons.implementation.CreateLesson;
+import com.frogdevelopment.nihongo.lessons.implementation.DeleteLesson;
+import com.frogdevelopment.nihongo.lessons.implementation.UpdateLesson;
 
 @Disabled("Web test to fix")
 @WebMvcTest(value = LessonAdminController.class)
@@ -71,7 +72,7 @@ class LessonAdminControllerTest {
                 .translation(Translation.builder()
                         .locale("fr_FR")
                         .input("Je, Moi")
-                        .sortLetter("J")
+                        .sortLetter('J')
                         .details("détails")
                         .example("exemple")
                         .tag("tag_1")
@@ -110,7 +111,7 @@ class LessonAdminControllerTest {
                         .japaneseId(123)
                         .locale("fr_FR")
                         .input("Je, Moi")
-                        .sortLetter("J")
+                        .sortLetter('J')
                         .details("détails")
                         .example("exemple")
                         .tag("tag_1")
@@ -144,7 +145,7 @@ class LessonAdminControllerTest {
                         .japaneseId(123)
                         .locale("fr_FR")
                         .input("Je, Moi")
-                        .sortLetter("J")
+                        .sortLetter('J')
                         .details("détails")
                         .example("exemple")
                         .tag("tag_1")

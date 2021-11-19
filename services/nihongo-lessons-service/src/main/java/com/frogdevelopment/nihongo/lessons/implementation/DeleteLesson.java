@@ -1,14 +1,16 @@
 package com.frogdevelopment.nihongo.lessons.implementation;
 
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
 import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +31,7 @@ public class DeleteLesson {
 
     private void delete(final Translation translation) {
         if (translation.getId() != 0) {
-            translationDao.delete(translation);
+            translationDao.delete(translation.getId());
         }
     }
 }

@@ -1,11 +1,12 @@
 package com.frogdevelopment.nihongo.lessons.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.frogdevelopment.jwt.JwtProcessTokenFilter;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
-import com.frogdevelopment.nihongo.lessons.entity.Japanese;
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import com.frogdevelopment.nihongo.lessons.implementation.LessonService;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
@@ -21,12 +22,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.frogdevelopment.jwt.JwtProcessTokenFilter;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
+import com.frogdevelopment.nihongo.lessons.implementation.LessonService;
 
 @Disabled("Web test to fix")
 @WebMvcTest(value = LessonController.class)
@@ -84,7 +85,7 @@ class LessonControllerTest {
                         .japaneseId(123)
                         .locale("fr_FR")
                         .input("Je, Moi")
-                        .sortLetter("J")
+                        .sortLetter('J')
                         .details("détails")
                         .example("exemple")
                         .tag("tag_1")
@@ -121,7 +122,7 @@ class LessonControllerTest {
                         .japaneseId(123)
                         .locale("fr_FR")
                         .input("Je, Moi")
-                        .sortLetter("J")
+                        .sortLetter('J')
                         .details("détails")
                         .example("exemple")
                         .tag("tag_1")

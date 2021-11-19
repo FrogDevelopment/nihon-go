@@ -1,24 +1,23 @@
 package com.frogdevelopment.nihongo.lessons.implementation;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
 import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.entity.Japanese;
 import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
 
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
@@ -32,11 +31,8 @@ class DeleteLessonTest {
     @Mock
     private TranslationDao translationDao;
 
-    @Captor
-    private ArgumentCaptor<Translation> translationArgumentCaptor;
-
     @Test
-    void delete() {
+    void should_delete() {
         // given
         var japanese = Japanese.builder()
                 .id(123)
@@ -46,9 +42,11 @@ class DeleteLessonTest {
 
         var french = Translation.builder()
                 .id(456)
+                .lesson(1)
                 .japaneseId(japanese.getId())
                 .locale("fr_FR")
                 .input("INPUT FRENCH")
+                .sortLetter('I')
                 .details("DETAILS FRENCH")
                 .example("EXAMPLE FRENCH")
                 .tag("TAGS FRENCH*")
@@ -56,8 +54,10 @@ class DeleteLessonTest {
 
         var english = Translation.builder()
                 .japaneseId(japanese.getId())
+                .lesson(1)
                 .locale("en_US")
                 .input("INPUT ENGLISH")
+                .sortLetter('I')
                 .details("DETAILS ENGLISH")
                 .example("EXAMPLE ENGLISH")
                 .tag("TAGS ENGLISH")
@@ -78,16 +78,15 @@ class DeleteLessonTest {
                 .delete(japanese);
         then(translationDao)
                 .should(times(1))
-                .delete(translationArgumentCaptor.capture());
-        Translation deletedValue = translationArgumentCaptor.getValue();
-        assertThat(deletedValue).extracting(Translation::getId).isEqualTo(french.getId());
+                .delete(french.getId());
     }
 
     @Test
-    void delete_no_japanese_id() {
+    void should_doNothing_when_japaneseIdEquals0() {
         // given
         var inputDto = InputDto.builder()
                 .japanese(Japanese.builder()
+                        .kana("KANA")
                         .build())
                 .build();
 
@@ -100,7 +99,7 @@ class DeleteLessonTest {
                 .delete(any());
         then(translationDao)
                 .should(never())
-                .delete(any());
+                .delete(anyInt());
     }
 
 }

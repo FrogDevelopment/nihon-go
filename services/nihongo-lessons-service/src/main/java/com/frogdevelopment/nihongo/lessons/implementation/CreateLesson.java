@@ -1,13 +1,15 @@
 package com.frogdevelopment.nihongo.lessons.implementation;
 
-import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
-import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
+import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 
 @Component
 @RequiredArgsConstructor
@@ -21,8 +23,14 @@ public class CreateLesson {
 
         final var japaneseId = japaneseDao.create(inputDto.getJapanese());
 
-        inputDto.getTranslations().forEach(translation -> translationDao.create(japaneseId, translation));
+        final var inputDtoBuilder = InputDto.builder()
+                .japanese(inputDto.getJapanese().toBuilder().id(japaneseId).build());
 
-        return inputDto;
+        inputDto.getTranslations().forEach(translation -> {
+            final var translationId = translationDao.create(japaneseId, translation);
+            inputDtoBuilder.translation(translation.toBuilder().id(translationId).build());
+        });
+
+        return inputDtoBuilder.build();
     }
 }
