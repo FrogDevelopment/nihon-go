@@ -10,8 +10,8 @@ frog:
   ftp:
     hostname: ftpperso.free.fr
     port: 21
-    username: XXXXX
-    password: XXXXX
+    username: legall.benoit
+    password: b3E12h210N
     remote-path: /nihongo/lessons
 
 spring:

@@ -4,8 +4,6 @@ frog:
   jmdict:
     url: ftp://ftp.edrdg.org/pub/Nihongo/JMdict.gz
   clean: false
-  export:
-    path: /opt/export/entries
   ftp:
     hostname: ftpperso.free.fr
     port: 21

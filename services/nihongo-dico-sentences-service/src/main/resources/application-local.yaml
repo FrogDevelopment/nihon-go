@@ -9,8 +9,12 @@ frog:
       japanese-indices: http://downloads.tatoeba.org/exports/jpn_indices.tar.bz2
       sentences: http://downloads.tatoeba.org/exports/sentences.tar.bz2
       links: http://downloads.tatoeba.org/exports/links.tar.bz2
-  export:
-    path: /opt/export/sentences
+  ftp:
+    hostname: ftpperso.free.fr
+    port: 21
+    username: legall.benoit
+    password: b3E12h210N
+    remote-path: /nihongo/dico
 
 spring:
   datasource:
