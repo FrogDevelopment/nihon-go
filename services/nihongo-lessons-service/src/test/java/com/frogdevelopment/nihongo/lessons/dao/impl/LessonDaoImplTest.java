@@ -51,6 +51,7 @@ class LessonDaoImplTest {
         assertThat(inputDto.getJapanese().getId()).isEqualTo(1);
         assertThat(inputDto.getJapanese().getKanji()).isEqualTo("私");
         assertThat(inputDto.getJapanese().getKana()).isEqualTo("わたし");
+        assertThat(inputDto.getJapanese().getLesson()).isOne();
 
         assertThat(inputDto.getTranslations()).hasSize(2);
         assertThat(inputDto.getTranslations().get(0).getId()).isEqualTo(1);
@@ -60,7 +61,6 @@ class LessonDaoImplTest {
         assertThat(inputDto.getTranslations().get(0).getSortLetter()).isEqualTo('I');
         assertThat(inputDto.getTranslations().get(0).getDetails()).isNullOrEmpty();
         assertThat(inputDto.getTranslations().get(0).getExample()).isNullOrEmpty();
-        assertThat(inputDto.getTranslations().get(0).getTags()).containsExactly("lesson 01", "lesson A");
 
         assertThat(inputDto.getTranslations().get(1).getId()).isEqualTo(2);
         assertThat(inputDto.getTranslations().get(1).getJapaneseId()).isEqualTo(1);
@@ -69,42 +69,6 @@ class LessonDaoImplTest {
         assertThat(inputDto.getTranslations().get(1).getSortLetter()).isEqualTo('J');
         assertThat(inputDto.getTranslations().get(1).getDetails()).isNullOrEmpty();
         assertThat(inputDto.getTranslations().get(1).getExample()).isNullOrEmpty();
-        assertThat(inputDto.getTranslations().get(1).getTags()).containsExactly("leçon 01", "leçon A");
     }
 
-    @Test
-    void getTags() {
-        // when
-        var tags = lessonDao.getTags();
-
-        // then
-        assertThat(tags)
-                .hasSize(24)
-                .containsExactlyInAnyOrder(
-                        "lesson 01",
-                        "lesson 02",
-                        "lesson 03",
-                        "lesson 04",
-                        "lesson 05",
-                        "lesson 06",
-                        "lesson 07",
-                        "lesson 08",
-                        "lesson 09",
-                        "lesson 10",
-                        "lesson 11",
-                        "lesson A",
-                        "leçon 01",
-                        "leçon 02",
-                        "leçon 03",
-                        "leçon 04",
-                        "leçon 05",
-                        "leçon 06",
-                        "leçon 07",
-                        "leçon 08",
-                        "leçon 09",
-                        "leçon 10",
-                        "leçon 11",
-                        "leçon A"
-                );
-    }
 }

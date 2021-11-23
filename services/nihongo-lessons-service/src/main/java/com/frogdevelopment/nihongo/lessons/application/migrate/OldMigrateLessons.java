@@ -4,6 +4,7 @@ import static com.frogdevelopment.nihongo.lessons.Utils.getSortLetter;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
@@ -13,7 +14,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,13 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class OldMigrateLessons {
 
-    private static final String COL_INPUT_EN_US = "en_US_input";
-    private static final String COL_DETAILS_EN_US = "en_US_details";
-    private static final String COL_EXAMPLE_EN_US = "en_US_example";
-    private static final String COL_INPUT_FR_FR = "fr_FR_input";
-    private static final String COL_DETAILS_FR_FR = "fr_FR_details";
-    private static final String COL_EXAMPLE_FR_FR = "fr_FR_example";
-
     private final String url;
     private final MigrateDao migrateDao;
 
@@ -48,31 +41,26 @@ public class OldMigrateLessons {
     public void call() {
         log.info("--- Migrate - start");
         final var japanese = new HashMap<String, Object>(3);
-        final var english = new HashMap<String, Object>(6);
-        final var french = new HashMap<String, Object>(6);
+        final var english = new HashMap<String, Object>(5);
+        final var french = new HashMap<String, Object>(5);
 
         try (final var in = new BufferedInputStream(new URL(url).openStream());
              final var reader = new InputStreamReader(in);
              final var parse = CSVFormat.TDF
-                     .withHeader()
-                     .withSkipHeaderRecord()
+                     .builder()
+                     .setHeader()
+                     .setSkipHeaderRecord(true)
+                     .build()
                      .parse(reader)) {
 
-            final var now = LocalDateTime.now();
-            for (final var record : parse.getRecords()) {
+            for (final var csvRecord : parse.getRecords()) {
                 japanese.clear();
-                japanese.put("kanji", record.get("kanji"));
-                japanese.put("kana", record.get("kana"));
-                japanese.put("created_date", now);
-                japanese.put("modified_date", now);
-                japanese.put("created_by", "old_migrate");
-                japanese.put("modified_by", "old_migrate");
+                japanese.put("kanji", trimToNull(csvRecord.get("kanji")));
+                japanese.put("kana", trim(csvRecord.get("kana")));
+                japanese.put("lesson", Integer.valueOf(csvRecord.get("tags")));
 
-                english.put("locale", "en_US");
-                fillMap(now, english, COL_INPUT_EN_US, COL_DETAILS_EN_US, COL_EXAMPLE_EN_US, record);
-
-                french.put("locale", "fr_FR");
-                fillMap(now, french, COL_INPUT_FR_FR, COL_DETAILS_FR_FR, COL_EXAMPLE_FR_FR, record);
+                fillMap(english, "en_US", csvRecord);
+                fillMap(french, "fr_FR", csvRecord);
 
                 migrateDao.insertWord(japanese, List.of(english, french));
             }
@@ -86,19 +74,14 @@ public class OldMigrateLessons {
         log.info("--- Migrate - end");
     }
 
-    private void fillMap(final LocalDateTime now, final Map<String, Object> map, final String col_input, final String col_details, final String col_example,
-                         final CSVRecord record) {
-        final var input = capitalize(record.get(col_input));
+    private void fillMap(final Map<String, Object> map, final String locale, final CSVRecord csvRecord) {
+        final var input = capitalize(csvRecord.get(locale + "_input"));
         if (isNotBlank(input)) {
+            map.put("locale", locale);
             map.put("input", input);
             map.put("sort_letter", getSortLetter(input));
-            map.put("details", trimToNull(record.get(col_details)));
-            map.put("example", trimToNull(record.get(col_example)));
-            map.put("lesson", record.get("tags"));
-            map.put("created_date", now);
-            map.put("modified_date", now);
-            map.put("created_by", "old_migrate");
-            map.put("modified_by", "old_migrate");
+            map.put("details", trimToNull(csvRecord.get(locale + "_details")));
+            map.put("example", trimToNull(csvRecord.get(locale + "_example")));
         } else {
             map.clear();
         }

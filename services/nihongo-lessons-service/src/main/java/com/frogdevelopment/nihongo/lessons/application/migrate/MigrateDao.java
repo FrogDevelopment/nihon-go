@@ -28,22 +28,26 @@ class MigrateDao {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    void insertWord(final Map<String, Object> japanese, final List<Map<String, Object>> translations) {
+    public void insertWord(final Map<String, Object> japanese, final List<Map<String, Object>> translations) {
         final var key = japaneseJdbcInsert.executeAndReturnKey(japanese);
         final var japaneseId = key.intValue();
 
         translations
                 .stream()
                 .filter(translation -> !translation.isEmpty())
-                .peek(translation -> translation.put("japanese_id", japaneseId))
+                .map(translation -> {
+                    translation.put("japanese_id", japaneseId);
+
+                    return translation;
+                })
                 .forEach(translationJdbcInsert::execute);
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    void insertExportableLessons(final int lesson, final String locale) {
+    public void insertExportableLessons(final int lesson, final String locale) {
         jdbcTemplate.update("""
-                                    INSERT INTO exportable_lessons(lesson, locale, exportable, update_datetime)
-                                    VALUES (?, ?, true, now())
-                                    """, lesson, locale);
+                INSERT INTO exportable_lessons(lesson, locale, exportable, update_datetime)
+                VALUES (?, ?, TRUE, NOW())
+                """, lesson, locale);
     }
 }

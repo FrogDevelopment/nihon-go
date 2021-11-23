@@ -69,8 +69,6 @@ class AdminControllerTest {
                         .sortLetter('J')
                         .details("détails")
                         .example("exemple")
-                        .tag("tag_1")
-                        .tag("tag_2")
                         .build())
                 .build();
 
@@ -108,8 +106,6 @@ class AdminControllerTest {
                         .sortLetter('J')
                         .details("détails")
                         .example("exemple")
-                        .tag("tag_1")
-                        .tag("tag_2")
                         .build())
                 .build();
 
@@ -142,8 +138,6 @@ class AdminControllerTest {
                         .sortLetter('J')
                         .details("détails")
                         .example("exemple")
-                        .tag("tag_1")
-                        .tag("tag_2")
                         .build())
                 .build();
 

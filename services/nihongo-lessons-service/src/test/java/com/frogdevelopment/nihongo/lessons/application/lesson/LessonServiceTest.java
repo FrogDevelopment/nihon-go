@@ -133,15 +133,4 @@ class LessonServiceTest {
                 .fetch(pageIndex, pageSize, sortField, "desc");
     }
 
-    @Test
-    void getTags_should_call_dao() {
-        // when
-        lessonServiceImpl.getTags();
-
-        // then
-        then(lessonDao)
-                .should()
-                .getTags();
-    }
-
 }

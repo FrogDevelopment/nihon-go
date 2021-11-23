@@ -5,8 +5,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,6 +42,7 @@ class UpdateLessonTest {
                 .id(123)
                 .kanji("KANJI")
                 .kana("KANA")
+                .lesson(1)
                 .build();
 
         var toUpdate = Translation.builder()
@@ -53,7 +52,6 @@ class UpdateLessonTest {
                 .input("INPUT FRENCH")
                 .details("DETAILS FRENCH")
                 .example("EXAMPLE FRENCH")
-                .tags(List.of("TAGS FRENCH"))
                 .build();
 
         var toInsert = Translation.builder()
@@ -62,7 +60,6 @@ class UpdateLessonTest {
                 .input("INPUT ENGLISH")
                 .details("DETAILS ENGLISH")
                 .example("EXAMPLE ENGLISH")
-                .tags(List.of("TAGS ENGLISH"))
                 .build();
 
         var toDelete = Translation.builder()

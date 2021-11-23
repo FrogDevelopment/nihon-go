@@ -35,6 +35,7 @@ class JapaneseDaoImplTest {
         var japanese = Japanese.builder()
                 .kanji("KANJI")
                 .kana("KANA")
+                .lesson(1)
                 .build();
 
         // when
@@ -45,9 +46,10 @@ class JapaneseDaoImplTest {
                 .queryForMap("SELECT * FROM japaneses WHERE japanese_id=" + id);
         assertThat(map)
                 .isNotNull()
-                .hasSize(3)
+                .hasSize(4)
                 .containsEntry("kanji", "KANJI")
-                .containsEntry("kana", "KANA");
+                .containsEntry("kana", "KANA")
+                .containsEntry("lesson", 1);
     }
 
     @Test
@@ -63,6 +65,7 @@ class JapaneseDaoImplTest {
                 .id(1)
                 .kanji("KANJI")
                 .kana("KANA")
+                .lesson(1)
                 .build();
 
         // when
@@ -82,6 +85,7 @@ class JapaneseDaoImplTest {
         var japanese = Japanese.builder()
                 .kanji("KANJI")
                 .kana("KANA")
+                .lesson(1)
                 .build();
 
         // when

@@ -41,8 +41,4 @@ public class LessonServiceImpl implements LessonService {
         return lessonDao.fetch(pageIndex, pageSize, sortField, sortOrder);
     }
 
-    @Override
-    public List<String> getTags() {
-        return lessonDao.getTags();
-    }
 }

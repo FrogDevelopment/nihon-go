@@ -12,5 +12,6 @@ public class Japanese {
     String kanji;
     @NonNull
     String kana;
+    Integer lesson;
 
 }

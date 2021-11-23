@@ -34,9 +34,4 @@ public class LessonController {
         return lessonService.getTotal();
     }
 
-    @GetMapping("/tags")
-    public List<String> getTags() {
-        return lessonService.getTags();
-    }
-
 }

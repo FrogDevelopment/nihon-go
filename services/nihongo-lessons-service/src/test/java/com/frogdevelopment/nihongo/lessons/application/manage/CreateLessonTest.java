@@ -34,28 +34,25 @@ class CreateLessonTest {
         var japanese = Japanese.builder()
                 .kanji("KANJI")
                 .kana("KANA")
+                .lesson(1)
                 .build();
 
         var french = Translation.builder()
                 .japaneseId(japanese.getId())
-                .lesson(1)
                 .locale("fr_FR")
                 .input("INPUT FRENCH")
                 .sortLetter('I')
                 .details("DETAILS FRENCH")
                 .example("EXAMPLE FRENCH")
-                .tag("TAGS FRENCH")
                 .build();
 
         var english = Translation.builder()
                 .japaneseId(japanese.getId())
-                .lesson(1)
                 .locale("en_US")
                 .input("INPUT ENGLISH")
                 .sortLetter('I')
                 .details("DETAILS ENGLISH")
                 .example("EXAMPLE ENGLISH")
-                .tag("TAGS ENGLISH")
                 .build();
 
         var inputDto = InputDto.builder()

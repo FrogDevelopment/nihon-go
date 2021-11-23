@@ -39,17 +39,16 @@ public class LessonDaoImpl implements LessonDao {
                                'japanese', JSON_BUILD_OBJECT(
                                     'id', j.japanese_id,
                                     'kanji', j.kanji,
-                                    'kana', j.kana),
+                                    'kana', j.kana,
+                                    'lesson', j.lesson),
                                'translations', ARRAY_AGG(JSON_BUILD_OBJECT(
                                     'id', t.translation_id,
                                     'japaneseId', t.japanese_id,
-                                    'lesson', t.lesson,
                                     'locale', t.locale,
                                     'input', t.input,
                                     'sortLetter', t.sort_letter,
                                     'details', t.details,
-                                    'example', t.example,
-                                    'tags', t.tags
+                                    'example', t.example
                                 ))
                            )
                  FROM japaneses j
@@ -72,13 +71,6 @@ public class LessonDaoImpl implements LessonDao {
                 return null;
             }
         });
-    }
-
-    @Override
-    public List<String> getTags() {
-        final var sql = "SELECT DISTINCT UNNEST(tags) FROM translations ORDER BY 1";
-
-        return namedParameterJdbcTemplate.getJdbcTemplate().queryForList(sql, String.class);
     }
 
 }

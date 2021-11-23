@@ -88,8 +88,6 @@ class LessonControllerTest {
                         .sortLetter('J')
                         .details("détails")
                         .example("exemple")
-                        .tag("tag_1")
-                        .tag("tag_2")
                         .build())
                 .build();
 
@@ -125,8 +123,6 @@ class LessonControllerTest {
                         .sortLetter('J')
                         .details("détails")
                         .example("exemple")
-                        .tag("tag_1")
-                        .tag("tag_2")
                         .build())
                 .build();
 
@@ -149,20 +145,5 @@ class LessonControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonListDto.write(List.of(dto)).getJson()));
-    }
-
-    @Test
-    void getTags() throws Exception {
-        // given
-        var tags = List.of("TAG_1", "TAG_2");
-
-        given(this.lessonService.getTags()).willReturn(tags);
-
-        // when
-        this.mvc.perform(
-                get("/tags")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(jsonTags.write(tags).getJson()));
     }
 }

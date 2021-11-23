@@ -34,13 +34,11 @@ public class TranslationDaoImpl implements TranslationDao {
     public int create(final int japaneseId, final Translation translation) {
         final var parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("japanese_id", japaneseId);
-        parameterSource.addValue("lesson", translation.getLesson());
         parameterSource.addValue("locale", translation.getLocale());
         parameterSource.addValue("input", trim(translation.getInput()));
         parameterSource.addValue("sort_letter", getSortLetter(translation.getInput()));
         parameterSource.addValue("details", trimToNull(translation.getDetails()));
         parameterSource.addValue("example", trimToNull(translation.getExample()));
-        parameterSource.addValue("tags", translation.getTags().toArray(new String[0]));
 
         return simpleJdbcInsert.executeAndReturnKey(parameterSource).intValue();
     }
@@ -59,23 +57,19 @@ public class TranslationDaoImpl implements TranslationDao {
         final var sql = """
                 UPDATE translations
                 SET locale = :locale,
-                    lesson = :lesson,
                     input = :input,
                     sort_letter = :sort_letter,
                     details = :details,
-                    example = :example,
-                    tags = :tags
+                    example = :example
                 WHERE translation_id = :translation_id""";
 
         final var parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("translation_id", translation.getId());
         parameterSource.addValue("locale", translation.getLocale());
-        parameterSource.addValue("lesson", translation.getLesson());
         parameterSource.addValue("input", trim(translation.getInput()));
         parameterSource.addValue("sort_letter", getSortLetter(translation.getInput()));
         parameterSource.addValue("details", trimToNull(translation.getDetails()));
         parameterSource.addValue("example", trimToNull(translation.getExample()));
-        parameterSource.addValue("tags", translation.getTags().toArray(new String[0]));
 
         jdbcTemplate.update(sql, parameterSource);
     }

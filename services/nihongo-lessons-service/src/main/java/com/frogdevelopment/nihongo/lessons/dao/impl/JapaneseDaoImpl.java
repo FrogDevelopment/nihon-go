@@ -34,22 +34,28 @@ public class JapaneseDaoImpl implements JapaneseDao {
         final var parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("kanji", trimToNull(japanese.getKanji()));
         parameterSource.addValue("kana", trim(japanese.getKana()));
+        parameterSource.addValue("lesson", japanese.getLesson());
 
         return simpleJdbcInsert.executeAndReturnKey(parameterSource).intValue();
     }
 
     @Override
     public void update(final Japanese japanese) {
-        final var sql = "UPDATE japaneses SET kanji = :kanji, kana = :kana WHERE japanese_id = :japanese_id;";
+        final var sql = """
+                UPDATE japaneses
+                SET kanji = :kanji,
+                    kana = :kana,
+                    lesson = :lesson
+                WHERE japanese_id = :japanese_id;""";
 
         final var parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("japanese_id", japanese.getId());
         parameterSource.addValue("kanji", trimToNull(japanese.getKanji()));
         parameterSource.addValue("kana", trim(japanese.getKana()));
+        parameterSource.addValue("lesson", japanese.getLesson());
 
         jdbcTemplate.update(sql, parameterSource);
     }
-
 
     @Override
     public void delete(final Japanese japanese) {

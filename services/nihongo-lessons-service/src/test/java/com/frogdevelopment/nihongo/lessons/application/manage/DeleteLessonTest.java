@@ -38,29 +38,26 @@ class DeleteLessonTest {
                 .id(123)
                 .kanji("KANJI")
                 .kana("KANA")
+                .lesson(1)
                 .build();
 
         var french = Translation.builder()
                 .id(456)
-                .lesson(1)
                 .japaneseId(japanese.getId())
                 .locale("fr_FR")
                 .input("INPUT FRENCH")
                 .sortLetter('I')
                 .details("DETAILS FRENCH")
                 .example("EXAMPLE FRENCH")
-                .tag("TAGS FRENCH*")
                 .build();
 
         var english = Translation.builder()
                 .japaneseId(japanese.getId())
-                .lesson(1)
                 .locale("en_US")
                 .input("INPUT ENGLISH")
                 .sortLetter('I')
                 .details("DETAILS ENGLISH")
                 .example("EXAMPLE ENGLISH")
-                .tag("TAGS ENGLISH")
                 .build();
 
         var inputDto = InputDto.builder()
@@ -87,6 +84,7 @@ class DeleteLessonTest {
         var inputDto = InputDto.builder()
                 .japanese(Japanese.builder()
                         .kana("KANA")
+                        .lesson(1)
                         .build())
                 .build();
 
