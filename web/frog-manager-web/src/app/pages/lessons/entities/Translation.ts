@@ -6,6 +6,5 @@ export class Translation {
   sortLetter: string;
   details: string;
   example: string;
-  tags: string[];
   toDelete: boolean;
 }

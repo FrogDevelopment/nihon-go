@@ -1,14 +1,13 @@
 package com.frogdevelopment.nihongo.lessons.application.migrate;
 
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.sql.DataSource;
+import java.util.Map;
 
 @Repository
 class MigrateDao {
@@ -28,19 +27,15 @@ class MigrateDao {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void insertWord(final Map<String, Object> japanese, final List<Map<String, Object>> translations) {
+    public int insertJapanese(final Map<String, Object> japanese) {
         final var key = japaneseJdbcInsert.executeAndReturnKey(japanese);
-        final var japaneseId = key.intValue();
 
-        translations
-                .stream()
-                .filter(translation -> !translation.isEmpty())
-                .map(translation -> {
-                    translation.put("japanese_id", japaneseId);
+        return key.intValue();
+    }
 
-                    return translation;
-                })
-                .forEach(translationJdbcInsert::execute);
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void insertTranslation(final Map<String, Object> translations) {
+        translationJdbcInsert.execute(translations);
     }
 
     @Transactional(propagation = Propagation.MANDATORY)

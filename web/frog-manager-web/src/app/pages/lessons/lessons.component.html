@@ -20,10 +20,13 @@
           (nzPageIndexChange)="searchData()"
           (nzPageSizeChange)="searchData(true)">
   <thead
-    (nzSortChange)="sort($event)">
+    (nzSortOrderChange)="sort($event)">
   <tr>
-    <th nzShowExpand
-        nzWidth="3%"></th>
+    <th nzWidth="3%"></th>
+    <th [nzSortFn]="sortLesson"
+        nzColumnKey="lesson"
+        nzWidth="5%">Lesson
+    </th>
     <th [nzSortFn]="sortKanji"
         nzWidth="42%"
         nzColumnKey="kanji">Kanji
@@ -40,6 +43,7 @@
     <tr>
       <td [nzShowExpand]="true"
           [(nzExpand)]="entry.expand"></td>
+      <td>{{entry.japanese.lesson}}</td>
       <td class="japanese-mincho">{{entry.japanese.kanji}}</td>
       <td class="japanese-mincho">{{entry.japanese.kana}}</td>
       <td>
@@ -58,7 +62,7 @@
                     nz-popconfirm
                     nzPopconfirmTitle="Are you sure?"
                     [nzIcon]="iconTpl"
-                    (nzOnConfirm)="delete(entry)"
+                    (nzOnConfirm)="delete(entry, i)"
                     [nzType]="'danger'"
                     [nzShape]="'circle'"
                     nz-tooltip
@@ -80,8 +84,7 @@
         [nzRenderItem]="translation"
         [nzItemLayout]="'horizontal'">
         <ng-template #translation let-translation>
-          <nz-list-item
-            [nzContent]="tags">
+          <nz-list-item>
             <nz-list-item-meta
               [nzTitle]="translation.input"
               [nzAvatar]="flag"
@@ -96,11 +99,6 @@
             <ng-template #description>
               <div *ngIf="translation.details">{{translation.details}}</div>
               <div *ngIf="translation.example"><i>{{translation.example}}</i></div>
-            </ng-template>
-            <ng-template #tags>
-              <nz-tag *ngFor="let tag of translation.tags"
-                      [nzColor]="colorByTags[tag]">{{tag}}
-              </nz-tag>
             </ng-template>
           </nz-list-item>
         </ng-template>

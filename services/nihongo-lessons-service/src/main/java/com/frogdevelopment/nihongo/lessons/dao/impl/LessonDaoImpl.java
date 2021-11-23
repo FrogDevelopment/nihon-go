@@ -1,20 +1,18 @@
 package com.frogdevelopment.nihongo.lessons.dao.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.List;
-
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Repository
@@ -53,7 +51,7 @@ public class LessonDaoImpl implements LessonDao {
                            )
                  FROM japaneses j
                     INNER JOIN translations t ON t.japanese_id = j.japanese_id
-                 GROUP BY j.japanese_id, j.kanji, j.kana
+                 GROUP BY j.japanese_id, j.kanji, j.kana, j.lesson
                  ORDER BY j.%s %s
                  LIMIT :pageSize OFFSET :offset
                 """.formatted(sortField, sortOrder);

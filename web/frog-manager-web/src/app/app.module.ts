@@ -4,27 +4,29 @@ import {AppComponent} from './app.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FormBuilder, FormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import {fr_FR, NZ_I18N, NzIconModule, NzLayoutModule, NzMenuModule, NzMessageService, NzModalService, NzToolTipModule} from 'ng-zorro-antd';
 import {registerLocaleData} from '@angular/common';
 import fr from '@angular/common/locales/fr';
-import {AuthGuard} from './guards/auth.guard';
-import {AuthenticationService} from './services/authentication.service';
 import {HttpErrorInterceptor} from './interceptors/http-error.interceptor';
 import {AppRoutingModule} from './app-routing.module';
-import {JWT_OPTIONS, JwtModule} from '@auth0/angular-jwt';
-import {environment} from '../environments/environment';
-import {TokenService} from './services/token.service';
+import {fr_FR, NZ_I18N} from 'ng-zorro-antd/i18n';
+import {NzLayoutModule} from 'ng-zorro-antd/layout';
+import {NzMenuModule} from 'ng-zorro-antd/menu';
+import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
+import {NzIconModule, NzIconService} from 'ng-zorro-antd/icon';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzImageService} from 'ng-zorro-antd/image';
 
 registerLocaleData(fr);
 
-export function jwtOptionsFactory(tokenService) {
-  return {
-    tokenGetter: () => {
-      return tokenService.getAccessToken();
-    },
-    whitelistedDomains: [environment.domain]
-  };
-}
+// export function jwtOptionsFactory(tokenService) {
+//   return {
+//     tokenGetter: () => {
+//       return tokenService.getAccessToken();
+//     },
+//     whitelistedDomains: [environment.domain]
+//   };
+// }
 
 @NgModule({
   imports: [
@@ -33,26 +35,28 @@ export function jwtOptionsFactory(tokenService) {
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
-    JwtModule.forRoot({
-      jwtOptionsProvider: {
-        provide: JWT_OPTIONS,
-        useFactory: jwtOptionsFactory,
-        deps: [TokenService]
-      }
-    }),
+    // JwtModule.forRoot({
+    //   jwtOptionsProvider: {
+    //     provide: JWT_OPTIONS,
+    //     useFactory: jwtOptionsFactory,
+    //     deps: [TokenService]
+    //   }
+    // }),
     NzLayoutModule,
     NzMenuModule,
     NzIconModule,
-    NzToolTipModule
+    NzToolTipModule,
   ],
   declarations: [
     AppComponent
   ],
   providers: [
-    AuthGuard,
-    AuthenticationService,
-    TokenService,
+    // AuthGuard,
+    // AuthenticationService,
+    // TokenService,
     NzMessageService,
+    NzImageService,
+    NzIconService,
     FormBuilder,
     NzModalService,
     {provide: NZ_I18N, useValue: fr_FR},

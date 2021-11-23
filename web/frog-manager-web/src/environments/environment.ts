@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  domain: 'gateway.frog-development.com',
-  baseUrl: 'https://gateway.frog-development.com/api'
+  domain: 'localhost',
+  baseUrl: 'http://localhost:4200/api'
 };

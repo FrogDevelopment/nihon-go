@@ -1,9 +1,9 @@
 import {Component, HostListener, Input, OnInit} from '@angular/core';
 import {InputDto} from '../entities/InputDto';
-import {NzModalRef} from 'ng-zorro-antd';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LessonsService} from '../../../services/lessons.service';
 import {Translation} from '../entities/Translation';
+import {NzModalRef} from 'ng-zorro-antd/modal';
 
 @Component({
   selector: 'app-entry-modal',
@@ -14,7 +14,6 @@ export class LessonEditModalComponent implements OnInit {
 
   @Input() inputDto: InputDto;
   @Input() action: string;
-  @Input() tags: Array<string>;
 
   locales = [
     { value: 'fr_FR', src: '../../../assets/flags/france.svg', label: 'Français' },
@@ -98,7 +97,6 @@ export class LessonEditModalComponent implements OnInit {
             translation.input = this.validateForm.get(`input_${translationForm.id}`).value;
             translation.details = this.validateForm.get(`details_${translationForm.id}`).value;
             translation.example = this.validateForm.get(`example_${translationForm.id}`).value;
-            translation.tags = this.validateForm.get(`tags_${translationForm.id}`).value;
             translation.toDelete = false;
           });
       });
@@ -111,7 +109,6 @@ export class LessonEditModalComponent implements OnInit {
         translation.input = this.validateForm.get(`input_${translationForm.id}`).value;
         translation.details = this.validateForm.get(`details_${translationForm.id}`).value;
         translation.example = this.validateForm.get(`example_${translationForm.id}`).value;
-        translation.tags = this.validateForm.get(`tags_${translationForm.id}`).value;
 
         this.inputDto.translations.push(translation);
       });
@@ -219,10 +216,6 @@ export class LessonEditModalComponent implements OnInit {
     const example = new TranslationField('Example', `example_${id}`, false);
     controls.push(example);
     this.validateForm.addControl(example.name, new FormControl(translation ? translation.example : null));
-
-    const tags = new TranslationField('Tags', `tags_${id}`, false);
-    controls.push(tags);
-    this.validateForm.addControl(tags.name, new FormControl(translation ? translation.tags : null));
 
     this.translationForms.push(new TranslationForm(id, controls, created));
   }

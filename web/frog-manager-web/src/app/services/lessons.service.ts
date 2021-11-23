@@ -13,11 +13,7 @@ export class LessonsService {
   }
 
   getTotal(): Observable<number> {
-    return this.http.get<number>(`${environment.baseUrl}/nihongo/lessons/total`);
-  }
-
-  getTags(): Observable<Array<string>> {
-    return this.http.get<Array<string>>(`${environment.baseUrl}/nihongo/lessons/tags`);
+    return this.http.get<number>(`${environment.baseUrl}/lessons/total`);
   }
 
   getDtos(pageIndex: number = 1, pageSize: number = 10, sortField: string, sortOrder: string): Observable<InputDto[]> {
@@ -33,18 +29,18 @@ export class LessonsService {
       params = params.set('sortOrder', `${sortOrder}`);
     }
 
-    return this.http.get<InputDto[]>(`${environment.baseUrl}/nihongo/lessons/fetch`, {params});
+    return this.http.get<InputDto[]>(`${environment.baseUrl}/lessons`, {params});
   }
 
   insert(dto: InputDto): Observable<InputDto> {
-    return this.http.post<InputDto>(`${environment.baseUrl}/nihongo/lessons/admin`, dto);
+    return this.http.post<InputDto>(`${environment.baseUrl}/lessons/admin`, dto);
   }
 
   update(dto: InputDto): Observable<InputDto> {
-    return this.http.put<InputDto>(`${environment.baseUrl}/nihongo/lessons/admin`, dto);
+    return this.http.put<InputDto>(`${environment.baseUrl}/lessons/admin`, dto);
   }
 
   delete(dto: InputDto): Observable<any> {
-    return this.http.request('delete', `${environment.baseUrl}/nihongo/lessons/admin`, {body: dto});
+    return this.http.request('delete', `${environment.baseUrl}/lessons/admin`, {body: dto});
   }
 }

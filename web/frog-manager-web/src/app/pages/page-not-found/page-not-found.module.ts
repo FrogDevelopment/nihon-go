@@ -1,8 +1,8 @@
 import {NgModule} from '@angular/core';
 import {PageNotFoundRoutingModule} from './page-not-found-routing.module';
 import {PageNotFoundComponent} from './page-not-found.component';
-import {NzButtonModule, NzResultModule} from 'ng-zorro-antd';
-
+import {NzResultModule} from 'ng-zorro-antd/result';
+import {NzButtonModule} from 'ng-zorro-antd/button';
 
 @NgModule({
   imports: [

@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {LessonsService} from '../../services/lessons.service';
 import {InputDto} from './entities/InputDto';
-import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {Japanese} from './entities/Japanese';
 import {LessonEditModalComponent} from './lesson-edit-modal/lesson-edit-modal.component';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {NzModalService} from 'ng-zorro-antd/modal';
+import {NzTableSortFn} from 'ng-zorro-antd/table';
 
 @Component({
   selector: 'app-data-edition',
@@ -30,9 +32,6 @@ export class LessonsComponent implements OnInit {
     en_US: '../../assets/flags/united-states.svg'
   };
 
-  tags: Array<string>;
-  colorByTags = {};
-
   constructor(private dataService: LessonsService,
               private message: NzMessageService,
               private modalService: NzModalService) {
@@ -40,11 +39,12 @@ export class LessonsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getTags();
+    this.searchTotal();
   }
 
-  sortKanji = (a: InputDto, b: InputDto) => a.japanese.kanji.localeCompare(b.japanese.kanji);
-  sortKana = (a: InputDto, b: InputDto) => a.japanese.kana.localeCompare(b.japanese.kana);
+  sortKanji: NzTableSortFn<InputDto> = (a: InputDto, b: InputDto) => a.japanese.kanji.localeCompare(b.japanese.kanji);
+  sortKana: NzTableSortFn<InputDto> = (a: InputDto, b: InputDto) => a.japanese.kana.localeCompare(b.japanese.kana);
+  sortLesson: NzTableSortFn<InputDto> = (a: InputDto, b: InputDto) => a.japanese.lesson - b.japanese.lesson;
 
   sort(sort: { key: string, value: string }): void {
     this.sortOrder = sort.value;
@@ -54,22 +54,6 @@ export class LessonsComponent implements OnInit {
       this.sortField = sort.key;
     }
     this.searchData();
-  }
-
-  getTags(): void {
-    this.loading = true;
-
-
-    this.dataService.getTags()
-      .subscribe(
-        tags => {
-          this.tags = tags;
-
-          this.computeColorTags();
-
-          this.searchTotal();
-        },
-        () => this.handleError());
   }
 
   searchTotal(): void {
@@ -88,13 +72,14 @@ export class LessonsComponent implements OnInit {
       this.pageIndex = 1;
     }
     this.loading = true;
+    this.entries = [];
     this.dataService.getDtos(this.pageIndex, this.pageSize, this.sortField, this.sortOrder)
       .subscribe(
         data => {
           this.loading = false;
-          data.forEach((dto: InputDto) => {
-            dto.expand = true;
-          });
+          // data.forEach((dto: InputDto) => {
+          //   dto.expand = true;
+          // });
           this.entries = data;
         },
         () => this.handleError());
@@ -111,7 +96,6 @@ export class LessonsComponent implements OnInit {
       nzMaskClosable: false,
       nzComponentParams: {
         inputDto: dto,
-        tags: this.tags,
         action: 'insert'
       },
       nzFooter: [
@@ -132,7 +116,7 @@ export class LessonsComponent implements OnInit {
     modal.afterClose.subscribe((result: InputDto) => {
       if (result) {
         result.expand = true;
-        this.entries.unshift(result);
+        this.entries = [...this.entries, result];
         this.total++;
       }
     });
@@ -146,7 +130,6 @@ export class LessonsComponent implements OnInit {
       nzMaskClosable: false,
       nzComponentParams: {
         inputDto: dto,
-        tags: this.tags,
         action: 'update'
       },
       nzFooter: [
@@ -169,16 +152,17 @@ export class LessonsComponent implements OnInit {
         this.entries[index] = result;
       }
     });
-
   }
 
-  delete(dto: InputDto): void {
+  delete(dto: InputDto, index: number): void {
     this.loading = true;
     this.dataService.delete(dto)
       .subscribe(
         () => {
           this.total--;
-          this.searchData(true);
+          this.entries.splice(index, 1);
+          this.entries = [...this.entries];
+          // this.searchData(true);
         },
         () => this.handleError());
   }
@@ -186,12 +170,6 @@ export class LessonsComponent implements OnInit {
   private handleError(): void {
     this.loading = false;
     this.message.error('Something bad happened; please try again later.');
-  }
-
-  private computeColorTags() {
-    for (const i in this.tags) {
-      this.colorByTags[this.tags[i]] = '#' + Math.floor(Math.random() * 16777215).toString(16);
-    }
   }
 
 }
