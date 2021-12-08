@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Singular;
 import lombok.Value;
 
-import java.util.List;
+import java.util.Map;
 
 @Value
 @Builder
@@ -12,5 +12,5 @@ public class InputDto {
 
     Japanese japanese;
     @Singular("translation")
-    List<Translation> translations;
+    Map<String, Translation> translations;
 }

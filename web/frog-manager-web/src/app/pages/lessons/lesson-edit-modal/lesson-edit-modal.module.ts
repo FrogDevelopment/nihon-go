@@ -11,6 +11,7 @@ import {NzAlertModule} from 'ng-zorro-antd/alert';
 import {NzDividerModule} from 'ng-zorro-antd/divider';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzImageModule} from 'ng-zorro-antd/image';
+import {NzInputNumberModule} from 'ng-zorro-antd/input-number';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import {NzImageModule} from 'ng-zorro-antd/image';
     NzDividerModule,
     ReactiveFormsModule,
     NzInputModule,
-    NzImageModule
+    NzImageModule,
+    NzInputNumberModule
   ],
   exports: [LessonEditModalComponent],
   declarations: [LessonEditModalComponent]

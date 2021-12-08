@@ -1,33 +1,25 @@
 package com.frogdevelopment.nihongo.lessons.dao.impl;
 
-import static org.apache.commons.lang3.StringUtils.trim;
-import static org.apache.commons.lang3.StringUtils.trimToNull;
-import static org.springframework.transaction.annotation.Propagation.MANDATORY;
-
-import javax.sql.DataSource;
-
+import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
-import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import static org.apache.commons.lang3.StringUtils.trim;
+import static org.apache.commons.lang3.StringUtils.trimToNull;
+import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
 @Repository
 @Transactional(propagation = MANDATORY)
+@RequiredArgsConstructor
 public class JapaneseDaoImpl implements JapaneseDao {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
-
-    public JapaneseDaoImpl(final DataSource dataSource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("japaneses")
-                .usingGeneratedKeyColumns("japanese_id");
-    }
+    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private final SimpleJdbcInsert japaneseJdbcInsert;
 
     @Override
     public int create(final Japanese japanese) {
@@ -36,7 +28,7 @@ public class JapaneseDaoImpl implements JapaneseDao {
         parameterSource.addValue("kana", trim(japanese.getKana()));
         parameterSource.addValue("lesson", japanese.getLesson());
 
-        return simpleJdbcInsert.executeAndReturnKey(parameterSource).intValue();
+        return japaneseJdbcInsert.executeAndReturnKey(parameterSource).intValue();
     }
 
     @Override
@@ -54,7 +46,7 @@ public class JapaneseDaoImpl implements JapaneseDao {
         parameterSource.addValue("kana", trim(japanese.getKana()));
         parameterSource.addValue("lesson", japanese.getLesson());
 
-        jdbcTemplate.update(sql, parameterSource);
+        namedParameterJdbcOperations.update(sql, parameterSource);
     }
 
     @Override
@@ -63,6 +55,6 @@ public class JapaneseDaoImpl implements JapaneseDao {
 
         final var parameterSource = new MapSqlParameterSource("japanese_id", japanese.getId());
 
-        jdbcTemplate.update(sql, parameterSource);
+        namedParameterJdbcOperations.update(sql, parameterSource);
     }
 }

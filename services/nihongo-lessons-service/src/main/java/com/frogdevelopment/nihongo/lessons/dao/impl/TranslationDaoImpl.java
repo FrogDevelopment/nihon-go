@@ -1,34 +1,26 @@
 package com.frogdevelopment.nihongo.lessons.dao.impl;
 
+import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
+import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
 import static com.frogdevelopment.nihongo.lessons.Utils.getSortLetter;
 import static org.apache.commons.lang3.StringUtils.trim;
 import static org.apache.commons.lang3.StringUtils.trimToNull;
 import static org.springframework.transaction.annotation.Propagation.MANDATORY;
 
-import javax.sql.DataSource;
-
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
-
 @Repository
 @Transactional(propagation = MANDATORY)
+@RequiredArgsConstructor
 public class TranslationDaoImpl implements TranslationDao {
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
-
-    public TranslationDaoImpl(final DataSource dataSource) {
-        this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("translations")
-                .usingGeneratedKeyColumns("translation_id");
-    }
+    private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private final SimpleJdbcInsert translationJdbcInsert;
 
     @Override
     public int create(final int japaneseId, final Translation translation) {
@@ -40,16 +32,16 @@ public class TranslationDaoImpl implements TranslationDao {
         parameterSource.addValue("details", trimToNull(translation.getDetails()));
         parameterSource.addValue("example", trimToNull(translation.getExample()));
 
-        return simpleJdbcInsert.executeAndReturnKey(parameterSource).intValue();
+        return translationJdbcInsert.executeAndReturnKey(parameterSource).intValue();
     }
 
     @Override
-    public void delete(int translationId) {
-        final var sql = "DELETE FROM translations WHERE translation_id = :japanese_id";
+    public void deleteJapaneseTranslations(final int japaneseId) {
+        final var sql = "DELETE FROM translations WHERE japanese_id = :japanese_id";
 
-        final var parameterSource = new MapSqlParameterSource("japanese_id", translationId);
+        final var parameterSource = new MapSqlParameterSource("japanese_id", japaneseId);
 
-        jdbcTemplate.update(sql, parameterSource);
+        namedParameterJdbcOperations.update(sql, parameterSource);
     }
 
     @Override
@@ -71,6 +63,6 @@ public class TranslationDaoImpl implements TranslationDao {
         parameterSource.addValue("details", trimToNull(translation.getDetails()));
         parameterSource.addValue("example", trimToNull(translation.getExample()));
 
-        jdbcTemplate.update(sql, parameterSource);
+        namedParameterJdbcOperations.update(sql, parameterSource);
     }
 }

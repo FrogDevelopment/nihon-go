@@ -1,8 +1,6 @@
 package com.frogdevelopment.nihongo.lessons.dao.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
-
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +12,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -96,7 +95,7 @@ class TranslationDaoImplTest {
         assertThat(rowsInTable).isEqualTo(1);
 
         // when
-        translationDao.delete(1);
+        translationDao.deleteJapaneseTranslations(1);
 
         // then
         rowsInTable = countRowsInTableWhere(jdbcTemplate.getJdbcTemplate(), "translations", "translation_id = 1");

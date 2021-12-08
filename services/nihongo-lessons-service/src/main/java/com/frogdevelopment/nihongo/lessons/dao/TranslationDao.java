@@ -5,7 +5,7 @@ import com.frogdevelopment.nihongo.lessons.entity.Translation;
 public interface TranslationDao {
     int create(int japaneseId, Translation translation);
 
-    void delete(int translationId);
+    void deleteJapaneseTranslations(int japaneseId);
 
     void update(Translation translation);
 }

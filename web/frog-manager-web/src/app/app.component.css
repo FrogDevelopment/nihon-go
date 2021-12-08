@@ -5,7 +5,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.layout {
+.app-layout {
   min-height: 100vh;
 }
 
@@ -17,26 +17,17 @@
   float: left;
 }
 
-nz-header {
+.app-layout > nz-header {
   position: fixed;
   width: 100%;
 }
 
-[nz-menu] {
-  line-height: 64px;
-}
-
-nz-content {
-  padding: 0 50px;
+.app-layout > nz-content {
   margin-top: 64px;
 }
 
-.inner-content {
-  background: #fff;
-  padding: 24px;
-  min-height: 380px;
-}
-
-nz-footer {
+.app-layout > nz-footer {
   text-align: center;
+  padding-bottom: 12px;
+  padding-top: 12px;
 }

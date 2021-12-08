@@ -1,8 +1,10 @@
 package com.frogdevelopment.nihongo.export;
 
+import com.frogdevelopment.nihongo.ftp.FtpClient;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.postgresql.PGConnection;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -10,10 +12,6 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.stream.Stream;
-
-import org.postgresql.PGConnection;
-
-import com.frogdevelopment.nihongo.ftp.FtpClient;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +31,6 @@ public final class ExportData {
                 final var copyManager = pgConnection.getCopyAPI();
 
                 stream
-                        .parallel()
                         .map(entry -> copyOut.call(copyManager, entry))
                         .filter(Objects::nonNull)
                         .forEach(this::exportToFtp);

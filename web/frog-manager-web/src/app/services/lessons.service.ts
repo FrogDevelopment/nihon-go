@@ -9,17 +9,15 @@ import {environment} from '../../environments/environment';
 })
 export class LessonsService {
 
+  private readonly serviceUrl: string;
+
   constructor(private http: HttpClient) {
+    this.serviceUrl = `${environment.baseUrl}/lessons`;
   }
 
-  getTotal(): Observable<number> {
-    return this.http.get<number>(`${environment.baseUrl}/lessons/total`);
-  }
-
-  getDtos(pageIndex: number = 1, pageSize: number = 10, sortField: string, sortOrder: string): Observable<InputDto[]> {
+  getDtos(lesson: number, sortField: string, sortOrder: string): Observable<InputDto[]> {
     let params = new HttpParams()
-      .set('pageIndex', `${pageIndex}`)
-      .set('pageSize', `${pageSize}`)
+      .set('lesson', `${lesson}`)
     ;
 
     if (sortField) {
@@ -29,18 +27,18 @@ export class LessonsService {
       params = params.set('sortOrder', `${sortOrder}`);
     }
 
-    return this.http.get<InputDto[]>(`${environment.baseUrl}/lessons`, {params});
+    return this.http.get<InputDto[]>(this.serviceUrl, {params});
   }
 
   insert(dto: InputDto): Observable<InputDto> {
-    return this.http.post<InputDto>(`${environment.baseUrl}/lessons/admin`, dto);
+    return this.http.post<InputDto>(this.serviceUrl, dto);
   }
 
   update(dto: InputDto): Observable<InputDto> {
-    return this.http.put<InputDto>(`${environment.baseUrl}/lessons/admin`, dto);
+    return this.http.put<InputDto>(this.serviceUrl, dto);
   }
 
   delete(dto: InputDto): Observable<any> {
-    return this.http.request('delete', `${environment.baseUrl}/lessons/admin`, {body: dto});
+    return this.http.request('delete', this.serviceUrl, {body: dto});
   }
 }

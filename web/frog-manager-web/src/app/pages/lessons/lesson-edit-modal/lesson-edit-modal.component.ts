@@ -16,16 +16,17 @@ export class LessonEditModalComponent implements OnInit {
   @Input() action: string;
 
   locales = [
-    { value: 'fr_FR', src: '../../../assets/flags/france.svg', label: 'Français' },
-    { value: 'de_DE', src: '../../../assets/flags/germany.svg', label: 'Allemand' },
-    { value: 'it_IT', src: '../../../assets/flags/italy.svg', label: 'Italien' },
-    { value: 'es_ES', src: '../../../assets/flags/spain.svg', label: 'Espagnol' },
+    {value: 'fr_FR', src: '../../../assets/flags/france.svg', label: 'Français'},
+    {value: 'de_DE', src: '../../../assets/flags/germany.svg', label: 'Allemand'},
+    {value: 'it_IT', src: '../../../assets/flags/italy.svg', label: 'Italien'},
+    {value: 'es_ES', src: '../../../assets/flags/spain.svg', label: 'Espagnol'},
     {value: 'en_UK', src: '../../../assets/flags/united-kingdom.svg', label: 'Anglais'},
     {value: 'en_US', src: '../../../assets/flags/united-states.svg', label: 'Américain'}
   ];
 
   flagByLocal = {};
   presentLocales: Array<string> = [];
+  rowIds: Map<number, Translation> = new Map<number, Translation>();
 
   validateForm: FormGroup;
   translationForms: Array<TranslationForm> = [];
@@ -33,21 +34,28 @@ export class LessonEditModalComponent implements OnInit {
   errorMessage: string;
   errorDescription: string;
 
-  constructor(private dataService: LessonsService,
+  constructor(private lessonsService: LessonsService,
               private fb: FormBuilder,
               private modal: NzModalRef) {
   }
 
   ngOnInit() {
     this.validateForm = this.fb.group({
+      lesson: [this.inputDto.japanese.lesson, Validators.required],
       kanji: [this.inputDto.japanese.kanji, [this.kanjiValidator]],
       kana: [this.inputDto.japanese.kana, [Validators.required, this.kanaValidator]]
     });
 
-    if (this.action === 'insert') {
-      this.addTranslation();
-    } else if (this.action === 'update') {
-      this.inputDto.translations.forEach(translation => this.addTranslation(null, translation));
+    switch (this.action) {
+      case 'insert':
+        this.addTranslation();
+        break;
+      case 'update':
+        Object.values(this.inputDto.translations).forEach(translation => this.addTranslation(null, translation));
+        break;
+      default:
+        this.modal.close();
+        break;
     }
 
     this.locales.forEach(locale => {
@@ -79,50 +87,6 @@ export class LessonEditModalComponent implements OnInit {
     return false;
   }
 
-  private upsert() {
-    this.inputDto.japanese.kanji = this.validateForm.get('kanji').value;
-    this.inputDto.japanese.kana = this.validateForm.get('kana').value;
-
-    this.inputDto.translations.forEach(translation => {
-      translation.toDelete = true;
-    });
-
-    this.translationForms
-      .filter(translationForm => !translationForm.created)
-      .forEach(translationForm => {
-        this.inputDto.translations
-          .filter(translation => translation.rowId === translationForm.id)
-          .forEach(translation => {
-            translation.locale = this.validateForm.get(`locale_${translationForm.id}`).value;
-            translation.input = this.validateForm.get(`input_${translationForm.id}`).value;
-            translation.details = this.validateForm.get(`details_${translationForm.id}`).value;
-            translation.example = this.validateForm.get(`example_${translationForm.id}`).value;
-            translation.toDelete = false;
-          });
-      });
-
-    this.translationForms
-      .filter(translationForm => translationForm.created)
-      .forEach(translationForm => {
-        const translation = new Translation();
-        translation.locale = this.validateForm.get(`locale_${translationForm.id}`).value;
-        translation.input = this.validateForm.get(`input_${translationForm.id}`).value;
-        translation.details = this.validateForm.get(`details_${translationForm.id}`).value;
-        translation.example = this.validateForm.get(`example_${translationForm.id}`).value;
-
-        this.inputDto.translations.push(translation);
-      });
-
-    this.modal.componentInstance.nzOkLoading = true;
-    const next = (data: InputDto) => this.modal.close({ ...data });
-    const error = e => this.handleError(e);
-    if (this.action === 'insert') {
-      this.dataService.insert(this.inputDto).subscribe(next, error);
-    } else if (this.action === 'update') {
-      this.dataService.update(this.inputDto).subscribe(next, error);
-    }
-  }
-
   /**
    * 3000 - 303F: Japanese-style punctuation
    * 3040 - 309F: Hiragana
@@ -135,7 +99,7 @@ export class LessonEditModalComponent implements OnInit {
    */
   kanjiValidator = (control: FormControl): { [s: string]: boolean } => {
     if (control.value) {
-      const value: string = control.value;
+      const value = this.handleJapanesePunctuation(control);
       let isOnlyJapanese = true;
       value.split('').forEach(c => {
         if (!c.match(/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uffef\u4e00-\u9faf\u3400-\u4dbf]/)) {
@@ -145,10 +109,10 @@ export class LessonEditModalComponent implements OnInit {
 
       if (!isOnlyJapanese) {
         console.error(`not only kanji => ${control.value}`);
-        return { isOnlyJapanese: false };
+        return {isOnlyJapanese: false};
       }
     }
-  }
+  };
 
   /**
    * 3000 - 303F: Japanese-style punctuation
@@ -160,9 +124,9 @@ export class LessonEditModalComponent implements OnInit {
    */
   kanaValidator = (control: FormControl): { [s: string]: boolean } => {
     if (!control.value) {
-      return { required: true };
+      return {required: true};
     } else {
-      const value: string = control.value;
+      const value = this.handleJapanesePunctuation(control);
       let isOnlyKana = true;
       value.split('').forEach(c => {
         if (!c.match(/[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\uff00-\uffef]/)) {
@@ -172,11 +136,89 @@ export class LessonEditModalComponent implements OnInit {
       });
 
       if (!isOnlyKana) {
-        return { isOnlyKana: false };
+        return {isOnlyKana: false};
       }
+    }
+  };
+
+  private handleJapanesePunctuation(control: FormControl) {
+    let value: string = control.value;
+    let hasChange = false;
+
+    if (value.indexOf(',') > 0) {
+      value = value.replace(',', '\u3001');
+      hasChange = true;
+    }
+    if (value.indexOf('.') > 0) {
+      value = value.replace('.', '\u3002');
+      hasChange = true;
+    }
+    if (value.indexOf('[') > 0) {
+      value = value.replace('[', '\u3010');
+      hasChange = true;
+    }
+    if (value.indexOf(']') > 0) {
+      value = value.replace(']', '\u3011');
+      hasChange = true;
+    }
+    if (value.indexOf('~') > 0) {
+      value = value.replace(']', '\u301C');
+      hasChange = true;
+    }
+
+    if (hasChange) {
+      control.setValue(value, {emitEvent: false});
+    }
+    return value;
+  }
+
+  private upsert() {
+    this.inputDto.japanese.lesson = this.validateForm.get('lesson').value;
+    this.inputDto.japanese.kanji = this.validateForm.get('kanji').value;
+    this.inputDto.japanese.kana = this.validateForm.get('kana').value;
+
+    Object.values(this.inputDto.translations).forEach(translation => {
+      translation.toDelete = true;
+    });
+
+    // update existing data
+    this.translationForms
+      .filter(translationForm => !translationForm.created)
+      .forEach(translationForm => {
+        const rowId = this.validateForm.get(`rowId_${translationForm.id}`).value;
+        const translation = this.rowIds.get(rowId);
+        if (translation !== undefined) {
+          this.populateTranslation(translation, translationForm);
+        }
+      });
+
+    // insert new data
+    this.translationForms
+      .filter(translationForm => translationForm.created)
+      .forEach(translationForm => {
+        const translation = new Translation();
+        this.populateTranslation(translation, translationForm);
+
+        this.inputDto.translations[translation.locale] = translation;
+      });
+
+    this.modal.componentInstance.nzOkLoading = true;
+    const next = (data: InputDto) => this.modal.close({...data});
+    const error = e => this.handleError(e);
+    if (this.action === 'insert') {
+      this.lessonsService.insert(this.inputDto).subscribe(next, error);
+    } else if (this.action === 'update') {
+      this.lessonsService.update(this.inputDto).subscribe(next, error);
     }
   }
 
+  private populateTranslation(translation: Translation, translationForm: TranslationForm) {
+    translation.locale = this.validateForm.get(`locale_${translationForm.id}`).value;
+    translation.input = this.validateForm.get(`input_${translationForm.id}`).value;
+    translation.details = this.validateForm.get(`details_${translationForm.id}`).value;
+    translation.example = this.validateForm.get(`example_${translationForm.id}`).value;
+    translation.toDelete = false;
+  }
 
   showExplain(name: string): boolean {
     const control = this.validateForm.get(name);
@@ -190,9 +232,10 @@ export class LessonEditModalComponent implements OnInit {
 
     let id: number;
     let created: boolean;
-    if (translation && translation.rowId) {
-      id = translation.rowId;
+    if (translation && translation.id) {
+      id = translation.id;
       created = false;
+      this.rowIds.set(id, translation);
     } else {
       id = (this.translationForms.length > 0) ? this.translationForms[this.translationForms.length - 1].id + 1 : 0;
       created = true;
@@ -216,6 +259,10 @@ export class LessonEditModalComponent implements OnInit {
     const example = new TranslationField('Example', `example_${id}`, false);
     controls.push(example);
     this.validateForm.addControl(example.name, new FormControl(translation ? translation.example : null));
+
+    const idField = new TranslationField('rowId', `rowId_${id}`, false);
+    controls.push(idField);
+    this.validateForm.addControl(idField.name, new FormControl(translation ? translation.id : null));
 
     this.translationForms.push(new TranslationForm(id, controls, created));
   }

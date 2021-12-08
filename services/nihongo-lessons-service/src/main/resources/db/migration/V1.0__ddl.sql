@@ -17,10 +17,9 @@ CREATE TABLE IF NOT EXISTS translations
     example        TEXT
 );
 
-CREATE TABLE IF NOT EXISTS exportable_lessons
+CREATE TABLE IF NOT EXISTS lessons
 (
-    lesson          SMALLINT  NOT NULL,
-    locale          TEXT      NOT NULL,
-    exportable      BOOLEAN DEFAULT FALSE,
-    update_datetime TIMESTAMP NOT NULL
+    lesson          SMALLINT PRIMARY KEY,
+    update_datetime TIMESTAMP NOT NULL DEFAULT NOW(),
+    export_datetime TIMESTAMP
 )

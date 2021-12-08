@@ -1,11 +1,11 @@
 package com.frogdevelopment.nihongo.lessons.application.manage;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-
+import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
+import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
+import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,11 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
-import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
-import com.frogdevelopment.nihongo.lessons.entity.Japanese;
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.never;
 
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
@@ -30,6 +29,8 @@ class DeleteLessonTest {
     private JapaneseDao japaneseDao;
     @Mock
     private TranslationDao translationDao;
+    @Mock
+    private LessonDao lessonDao;
 
     @Test
     void should_delete() {
@@ -62,8 +63,8 @@ class DeleteLessonTest {
 
         var inputDto = InputDto.builder()
                 .japanese(japanese)
-                .translation(french)
-                .translation(english)
+                .translation(french.getLocale(), french)
+                .translation(english.getLocale(), english)
                 .build();
 
         // when
@@ -74,8 +75,11 @@ class DeleteLessonTest {
                 .should()
                 .delete(japanese);
         then(translationDao)
-                .should(times(1))
-                .delete(french.getId());
+                .should()
+                .deleteJapaneseTranslations(japanese.getId());
+        then(lessonDao)
+                .should()
+                .deleteLesson(japanese.getLesson());
     }
 
     @Test
@@ -97,7 +101,10 @@ class DeleteLessonTest {
                 .delete(any());
         then(translationDao)
                 .should(never())
-                .delete(anyInt());
+                .deleteJapaneseTranslations(anyInt());
+        then(lessonDao)
+                .should(never())
+                .deleteLesson(anyInt());
     }
 
 }

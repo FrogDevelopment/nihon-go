@@ -1,8 +1,11 @@
 package com.frogdevelopment.nihongo.lessons.application.manage;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-
+import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
+import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
+import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,11 +13,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
-import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
-import com.frogdevelopment.nihongo.lessons.entity.Japanese;
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @Tag("unitTest")
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +28,8 @@ class CreateLessonTest {
     private JapaneseDao japaneseDao;
     @Mock
     private TranslationDao translationDao;
+    @Mock
+    private LessonDao lessonDao;
 
     @Test
     void create() {
@@ -57,8 +60,8 @@ class CreateLessonTest {
 
         var inputDto = InputDto.builder()
                 .japanese(japanese)
-                .translation(french)
-                .translation(english)
+                .translation(french.getLocale(), french)
+                .translation(english.getLocale(), english)
                 .build();
 
         given(japaneseDao.create(japanese)).willReturn(123);
@@ -70,9 +73,12 @@ class CreateLessonTest {
 
         // then
         assertThat(saveValue.getJapanese().getId()).isEqualTo(123);
-        assertThat(saveValue.getTranslations())
+        assertThat(saveValue.getTranslations().values())
                 .extracting(Translation::getId)
                 .containsOnly(456, 789);
+        then(lessonDao)
+                .should()
+                .upsertLesson(japanese.getLesson());
     }
 
 }
