@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: postgre
+    include: postgres,ftp
   application:
     name: nihongo-lessons-service
 

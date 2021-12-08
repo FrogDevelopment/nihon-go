@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: postgres
+    include: postgres,ftp
   application:
     name: nihongo-dico-sentences-service
 

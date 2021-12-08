@@ -5,6 +5,10 @@ plugins {
     id("io.spring.dependency-management")
 }
 
+allprojects {
+    group = "com.frogdevelopment.nihongo"
+}
+
 repositories {
     mavenCentral()
     maven {
@@ -17,7 +21,7 @@ dependencyManagement {
     imports {
         mavenBom("org.junit:junit-bom:5.8.1")
         mavenBom("org.testcontainers:testcontainers-bom:1.16.2")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2020.0.4")
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.0")
     }
 }
 

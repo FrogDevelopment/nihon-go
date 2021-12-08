@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [ 'realm-library', 'security-library' ]
+        project: [ 'multi-schema-library', 'utils-library' ]
     steps:
       - name: Checkout with all branches and tags
         uses: actions/checkout@v2
@@ -32,10 +32,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Setup Java 15
+      - name: Setup Java 17
         uses: joschi/setup-jdk@v2
         with:
-          java-version: '15'
+          java-version: '17'
       - name: Compile & Test
         run: ./gradlew libraries:${{ matrix.project }}:test
       - name: Upload Unit Test Results
@@ -51,13 +51,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        #            'authentication-service',
         project: [
-            'authentication-service',
-            'budget-service',
-            'core-service',
-            'notification-service',
-            'settings-service',
-            'users-service'
+            'nihongo-dico-entries-service',
+            'nihongo-dico-sentences-service',
+            'nihongo-lessons-service'
         ]
     steps:
       - name: Checkout with all branches and tags
@@ -73,10 +71,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Setup Java 15
+      - name: Setup Java 17
         uses: joschi/setup-jdk@v2
         with:
-          java-version: '15'
+          java-version: '17'
       - name: Compile & Test
         run: ./gradlew services:${{ matrix.project }}:test
       - name: Upload Unit Test Results
@@ -122,6 +120,7 @@ jobs:
             test-results_notification-service
             test-results_settings-service
             test-results_users-service
+
 
   build-front:
     runs-on: ubuntu-latest

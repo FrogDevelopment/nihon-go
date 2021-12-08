@@ -4,9 +4,9 @@ plugins {
     id("com.google.cloud.tools.jib")
 }
 
-configure<JavaPluginExtension> {
-    sourceCompatibility = JavaVersion.VERSION_15
-    targetCompatibility = JavaVersion.VERSION_15
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
@@ -54,18 +54,24 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
+@Suppress("UNCHECKED_CAST")
+val extraTags = rootProject.extra["tags"] as Set<String>
+
 springBoot {
-    buildInfo()
+    buildInfo {
+        properties{
+            additional = mapOf("tags" to extraTags.joinToString(", "))
+        }
+    }
 }
 
 jib {
     from {
-        image = "frogdevelopment/docker-adoptopenjdk15-curl:latest"
+        image = "eclipse-temurin:17.0.1_12-jdk-focal"
     }
     to {
         image = "frognihongo/${name}"
-        @Suppress("UNCHECKED_CAST")
-        tags = rootProject.extra["tags"] as Set<String>
+        tags = extraTags
     }
     container {
         jvmFlags = listOf("-Xmx128m")
