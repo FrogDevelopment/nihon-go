@@ -2,10 +2,11 @@ package com.frogdevelopment.nihongo.lessons.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.frogdevelopment.jwt.JwtProcessTokenFilter;
+import com.frogdevelopment.nihongo.lessons.application.LessonService;
+import com.frogdevelopment.nihongo.lessons.application.ManageLessons;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
 import com.frogdevelopment.nihongo.lessons.entity.Japanese;
 import com.frogdevelopment.nihongo.lessons.entity.Translation;
-import com.frogdevelopment.nihongo.lessons.implementation.LessonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
@@ -20,11 +21,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.mockito.BDDMockito.then;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,32 +46,18 @@ class LessonControllerTest {
     @MockBean
     private LessonService lessonService;
     @MockBean
+    private ManageLessons manageLessons;
+
+    @MockBean
     private JwtProcessTokenFilter jwtProcessTokenFilter;
 
-    private JacksonTester<List<String>> jsonLessonsInformation;
     private JacksonTester<List<InputDto>> jsonListDto;
-    private JacksonTester<List<String>> jsonTags;
+    private JacksonTester<InputDto> jsonDto;
 
     @BeforeEach
     void setup() {
         var objectMapper = new ObjectMapper();
         JacksonTester.initFields(this, objectMapper);
-    }
-
-    @Test
-    void getTotal() throws Exception {
-        // given
-        var filterType = "filterType";
-
-        given(this.lessonService.getTotal()).willReturn(123);
-
-        // when
-        this.mvc.perform(
-                get("/total")
-                        .param(filterType, filterType)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(String.valueOf(123)));
     }
 
     @Test
@@ -79,29 +69,25 @@ class LessonControllerTest {
                         .kanji("私")
                         .kana("わたし")
                         .build())
-                .translation(Translation.builder()
+                .translation("fr_FR", Translation.builder()
                         .id(465)
                         .japaneseId(123)
                         .locale("fr_FR")
                         .input("Je, Moi")
-                        .sortLetter("J")
+                        .sortLetter('J')
                         .details("détails")
                         .example("exemple")
-                        .tag("tag_1")
-                        .tag("tag_2")
                         .build())
                 .build();
 
-        var pageIndex = 1;
-        var pageSize = 1;
+        var lesson = 1;
 
-        given(this.lessonService.fetch(pageIndex, pageSize, null, null)).willReturn(List.of(dto));
+        given(this.lessonService.fetch(lesson, null, null)).willReturn(List.of(dto));
 
         // when
         this.mvc.perform(
                 get("/fetch")
-                        .param("pageIndex", String.valueOf(pageIndex))
-                        .param("pageSize", String.valueOf(pageSize))
+                        .param("lesson", String.valueOf(lesson))
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonListDto.write(List.of(dto)).getJson()));
@@ -116,32 +102,28 @@ class LessonControllerTest {
                         .kanji("私")
                         .kana("わたし")
                         .build())
-                .translation(Translation.builder()
+                .translation("fr_FR", Translation.builder()
                         .id(465)
                         .japaneseId(123)
                         .locale("fr_FR")
                         .input("Je, Moi")
-                        .sortLetter("J")
+                        .sortLetter('J')
                         .details("détails")
                         .example("exemple")
-                        .tag("tag_1")
-                        .tag("tag_2")
                         .build())
                 .build();
 
-        var pageIndex = 1;
-        var pageSize = 1;
+        var lesson = 1;
         var sortField = "sortField";
         var sortOrder = "sortOrder";
         var filterType = "filterType";
 
-        given(this.lessonService.fetch(pageIndex, pageSize, sortField, sortOrder)).willReturn(List.of(dto));
+        given(this.lessonService.fetch(lesson, sortField, sortOrder)).willReturn(List.of(dto));
 
         // when
         this.mvc.perform(
                 get("/fetch")
-                        .param("pageIndex", String.valueOf(pageIndex))
-                        .param("pageSize", String.valueOf(pageSize))
+                        .param("lesson", String.valueOf(lesson))
                         .param("sortField", sortField)
                         .param("sortOrder", sortOrder)
                         .param("filterType", filterType)
@@ -151,17 +133,100 @@ class LessonControllerTest {
     }
 
     @Test
-    void getTags() throws Exception {
+    void insert() throws Exception {
         // given
-        var tags = List.of("TAG_1", "TAG_2");
+        var dto = InputDto.builder()
+                .japanese(Japanese.builder()
+                        .kanji("私")
+                        .kana("わたし")
+                        .build())
+                .translation("fr_FR", Translation.builder()
+                        .locale("fr_FR")
+                        .input("Je, Moi")
+                        .sortLetter('J')
+                        .details("détails")
+                        .example("exemple")
+                        .build())
+                .build();
 
-        given(this.lessonService.getTags()).willReturn(tags);
+        given(manageLessons.insert(dto)).will(invocation -> {
+//            dto.getJapanese().setId(987);
+//            dto.getTranslations().get(0).setId(654);
+
+            return dto;
+        });
 
         // when
         this.mvc.perform(
-                get("/tags")
-                        .accept(MediaType.APPLICATION_JSON))
+                        post("/admin")
+                                .contentType(APPLICATION_JSON)
+                                .content(jsonDto.write(dto).getJson())
+                                .accept(APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().json(jsonTags.write(tags).getJson()));
+                .andExpect(content().json(jsonDto.write(dto).getJson()));
+    }
+
+    @Test
+    void update() throws Exception {
+        // given
+        var dto = InputDto.builder()
+                .japanese(Japanese.builder()
+                        .id(123)
+                        .kanji("私")
+                        .kana("わたし")
+                        .build())
+                .translation("fr_FR", Translation.builder()
+                        .id(465)
+                        .japaneseId(123)
+                        .locale("fr_FR")
+                        .input("Je, Moi")
+                        .sortLetter('J')
+                        .details("détails")
+                        .example("exemple")
+                        .build())
+                .build();
+
+        given(manageLessons.update(dto)).willReturn(dto);
+
+        // when
+        this.mvc.perform(
+                        put("/admin")
+                                .contentType(APPLICATION_JSON)
+                                .content(jsonDto.write(dto).getJson())
+                                .accept(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonDto.write(dto).getJson()));
+    }
+
+    @Test
+    void delete() throws Exception {
+        // given
+        var dto = InputDto.builder()
+                .japanese(Japanese.builder()
+                        .id(123)
+                        .kanji("私")
+                        .kana("わたし")
+                        .build())
+                .translation("fr_FR", Translation.builder()
+                        .id(465)
+                        .japaneseId(123)
+                        .locale("fr_FR")
+                        .input("Je, Moi")
+                        .sortLetter('J')
+                        .details("détails")
+                        .example("exemple")
+                        .build())
+                .build();
+
+        // when
+        this.mvc.perform(
+                        MockMvcRequestBuilders.delete("/admin")
+                                .contentType(APPLICATION_JSON)
+                                .content(jsonDto.write(dto).getJson())
+                                .accept(APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        // then
+        then(manageLessons).should().delete(dto);
     }
 }

@@ -2,24 +2,20 @@ import {NgModule} from '@angular/core';
 
 import {LessonsRoutingModule} from './lessons-routing.module';
 import {LessonsComponent} from './lessons.component';
-import {NzAvatarModule, NzButtonModule, NzIconModule, NzListModule, NzPopconfirmModule, NzTableModule, NzTagModule, NzToolTipModule} from 'ng-zorro-antd';
+import {NzIconModule} from 'ng-zorro-antd/icon';
 import {CommonModule} from '@angular/common';
-import {LessonEditModalModule} from './lesson-edit-modal/lesson-edit-modal.module';
-
+import {NzLayoutModule} from 'ng-zorro-antd/layout';
+import {NzMenuModule} from 'ng-zorro-antd/menu';
+import {LessonContentModule} from './content/lesson-content.module';
 
 @NgModule({
   imports: [
     LessonsRoutingModule,
-    NzButtonModule,
     NzIconModule,
-    NzTableModule,
     CommonModule,
-    NzToolTipModule,
-    NzPopconfirmModule,
-    NzListModule,
-    NzAvatarModule,
-    NzTagModule,
-    LessonEditModalModule
+    NzLayoutModule,
+    NzMenuModule,
+    LessonContentModule
   ],
   exports: [LessonsComponent],
   declarations: [LessonsComponent]

@@ -1,50 +1,14 @@
 <nz-layout class="app-layout">
-  <nz-sider class="menu-sidebar"
-            nzCollapsible
-            nzWidth="200px"
-            nzBreakpoint="md"
-            [(nzCollapsed)]="isCollapsed"
-            [nzTrigger]="null">
-    <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
-        <img src="assets/brand-icon.png" alt="logo">
-        <h1>Frog Manager</h1>
-      </a>
-    </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed" *ngIf="isLogged()">
-      <li nz-menu-item nzMatchRouter nzSelected nz-tooltip nzTooltipPlacement="right"
-          [nzTooltipTitle]="isCollapsed ? 'Lessons' : ''" routerLink="/lessons">
-        <i nz-icon [nzType]="'translation'"></i>
-        <span>Lessons</span>
+  <nz-header>
+    <div class="logo"></div>
+    <ul nz-menu nzMode="horizontal" nzTheme="dark">
+      <li nz-menu-item routerLink="/lessons/1"><i [nzTheme]="'outline'" [nzType]="'translation'" nz-icon></i> Lessons
       </li>
-      <li nz-menu-item nzMatchRouter nz-tooltip nzTooltipPlacement="right"
-          [nzTooltipTitle]="isCollapsed ? 'Dictionary' : ''"
-          routerLink="/dictionary">
-        <i nz-icon [nzType]="'read'"></i>
-        <span>Dictionary</span>
-      </li>
-      <li nz-menu-item (click)="logout()" nz-tooltip nzTooltipPlacement="right"
-          [nzTooltipTitle]="isCollapsed ? 'Logout' : ''">
-        <i nz-icon [nzType]="'logout'" style="color: red"></i>
-        <span>Logout</span>
-      </li>
+      <li nz-menu-item routerLink="/dictionary"><i [nzTheme]="'outline'" [nzType]="'read'" nz-icon></i> Dictionary</li>
     </ul>
-  </nz-sider>
-  <nz-layout>
-    <nz-header>
-      <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-            <i class="trigger"
-               nz-icon
-               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
-            ></i>
-        </span>
-      </div>
-    </nz-header>
-    <nz-content>
-      <div class="inner-content">
-        <router-outlet></router-outlet>
-      </div>
-    </nz-content>
-  </nz-layout>
+  </nz-header>
+  <nz-content>
+    <router-outlet></router-outlet>
+  </nz-content>
+  <nz-footer>Frog Development ©2021</nz-footer>
 </nz-layout>

@@ -1,111 +1,18 @@
-<div class="top-bar">
-  <h1>Lessons Edition</h1>
-  <button nz-button
-          (click)="addEntry()"
-          [nzType]="'primary'"><i nz-icon [nzType]="'plus'"></i>New entry
-  </button>
-</div>
-
-<nz-table #nestedTable
-          nzShowSizeChanger
-          [nzFrontPagination]="false"
-          [nzData]="entries"
-          [nzLoading]="loading"
-          [nzTotal]="total"
-          [nzSize]="'small'"
-          [nzBordered]="true"
-          [nzScroll]="{ y: '68vh' }"
-          [(nzPageIndex)]="pageIndex"
-          [(nzPageSize)]="pageSize"
-          (nzPageIndexChange)="searchData()"
-          (nzPageSizeChange)="searchData(true)">
-  <thead
-    (nzSortChange)="sort($event)">
-  <tr>
-    <th nzShowExpand
-        nzWidth="3%"></th>
-    <th [nzSortFn]="sortKanji"
-        nzWidth="42%"
-        nzColumnKey="kanji">Kanji
-    </th>
-    <th [nzSortFn]="sortKana"
-        nzWidth="42%"
-        nzColumnKey="kana">Kana
-    </th>
-    <th nzWidth="100px">Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <ng-template ngFor let-entry let-i="index" [ngForOf]="nestedTable.data">
-    <tr>
-      <td [nzShowExpand]="true"
-          [(nzExpand)]="entry.expand"></td>
-      <td class="japanese-mincho">{{entry.japanese.kanji}}</td>
-      <td class="japanese-mincho">{{entry.japanese.kana}}</td>
-      <td>
-        <div class="editable-row-operations">
-          <button nz-button
-                  [nzType]="'default'"
-                  [nzShape]="'circle'"
-                  (click)="editEntry(entry, i)"
-                  nz-tooltip
-                  [nzTooltipTitle]="'Edit'">
-            <i nz-icon [nzType]="'edit'"></i>
-          </button>
-
-          <ng-container>
-            <button nz-button
-                    nz-popconfirm
-                    nzPopconfirmTitle="Are you sure?"
-                    [nzIcon]="iconTpl"
-                    (nzOnConfirm)="delete(entry)"
-                    [nzType]="'danger'"
-                    [nzShape]="'circle'"
-                    nz-tooltip
-                    [nzTooltipTitle]="'Delete'">
-              <i nz-icon [nzType]="'delete'"></i>
-              <ng-template #iconTpl>
-                <i nz-icon nzType="question-circle-o" style="color: red;"></i>
-              </ng-template>
-            </button>
-          </ng-container>
-        </div>
-      </td>
-    </tr>
-    <tr [nzExpand]="entry.expand">
-      <nz-list
-        [nzDataSource]="entry.translations"
-        [nzBordered]="false"
-        [nzSize]="'small'"
-        [nzRenderItem]="translation"
-        [nzItemLayout]="'horizontal'">
-        <ng-template #translation let-translation>
-          <nz-list-item
-            [nzContent]="tags">
-            <nz-list-item-meta
-              [nzTitle]="translation.input"
-              [nzAvatar]="flag"
-              [nzDescription]="description">
-            </nz-list-item-meta>
-            <ng-template #flag>
-              <nz-avatar
-                [nzShape]="'square'"
-                [nzIcon]="'anticon anticon-flag'"
-                [nzSrc]="flagByLocal[translation.locale]"></nz-avatar>
-            </ng-template>
-            <ng-template #description>
-              <div *ngIf="translation.details">{{translation.details}}</div>
-              <div *ngIf="translation.example"><i>{{translation.example}}</i></div>
-            </ng-template>
-            <ng-template #tags>
-              <nz-tag *ngFor="let tag of translation.tags"
-                      [nzColor]="colorByTags[tag]">{{tag}}
-              </nz-tag>
-            </ng-template>
-          </nz-list-item>
-        </ng-template>
-      </nz-list>
-    </tr>
-  </ng-template>
-  </tbody>
-</nz-table>
+<nz-layout class="lesson-layout">
+  <nz-sider>
+    <ul nz-menu nzMode="inline" nzTheme="dark">
+      <li *ngFor="let lessonNb of lessons"
+          nz-menu-item
+          nzMatchRouter
+          routerLink="{{lessonNb}}">
+        <i nz-icon nzType="file"></i>
+        <span>Lesson {{ lessonNb }}</span>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-content>
+      <router-outlet></router-outlet>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

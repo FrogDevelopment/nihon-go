@@ -1,17 +1,12 @@
 frog:
   database:
     name: nihongo_lessons
-  migrate:
-    base-url: http://legall.benoit.free.fr/
-    old:
-      file-name: nihon_go/NihonGo_All.tsv
-      url: ${frog.migrate.base-url}/${frog.migrate.old.file-name}
 
   ftp:
-    hostname: ftpperso.free.fr
+    server: ftpperso.free.fr
     port: 21
-    username: legall.benoit
-    password: b3E12h210N
+    user: xxxxx
+    password: xxxxx
     remote-path: /nihongo/lessons
 
 spring:

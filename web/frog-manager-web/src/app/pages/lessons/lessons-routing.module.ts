@@ -3,7 +3,16 @@ import {RouterModule, Routes} from '@angular/router';
 import {LessonsComponent} from './lessons.component';
 
 const routes: Routes = [
-  {path: '', component: LessonsComponent},
+  {
+    path: '',
+    component: LessonsComponent,
+    children: [
+      {
+        path: ':id',
+        loadChildren: () => import('./content/lesson-content.module').then(m => m.LessonContentModule)
+      }
+    ]
+  },
 ];
 
 @NgModule({

@@ -1,1 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+/*http://sawarabi-fonts.osdn.jp/*/
+@import url(https://fonts.googleapis.com/earlyaccess/sawarabimincho.css);
+
+.japanese-mincho {
+  font-family: 'Sawarabi Mincho', serif;
+}
+

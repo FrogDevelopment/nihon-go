@@ -1,19 +1,16 @@
 package com.frogdevelopment.nihongo.lessons.entity;
 
 import lombok.Builder;
-import lombok.NonNull;
 import lombok.Singular;
 import lombok.Value;
 
-import java.util.List;
+import java.util.Map;
 
 @Value
 @Builder
 public class InputDto {
 
-    @NonNull
     Japanese japanese;
-    @NonNull
     @Singular("translation")
-    List<Translation> translations;
+    Map<String, Translation> translations;
 }

@@ -1,0 +1,107 @@
+<nz-page-header [nzGhost]="false">
+  <nz-breadcrumb nz-page-header-breadcrumb>
+    <nz-breadcrumb-item><i nz-icon nzType="home"></i></nz-breadcrumb-item>
+    <nz-breadcrumb-item><i [nzTheme]="'outline'" [nzType]="'translation'" nz-icon></i><span>Lessons</span>
+    </nz-breadcrumb-item>
+    <nz-breadcrumb-item>Lesson {{lesson}}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+  <nz-page-header-title>Edit Lesson {{lesson}}</nz-page-header-title>
+
+  <nz-page-header-tags *ngIf="lessonInfo">
+    <nz-tag [nzColor]="'blue'">Updated {{lessonInfo.updateDateTime| date: 'dd/MM/yyyy - hh:mm:ss'}}</nz-tag>
+    <nz-tag *ngIf="lessonInfo.exportDateTime" [nzColor]="'green'">
+      Exported {{lessonInfo.exportDateTime| date: 'dd/MM/yyyy - hh:mm:ss'}}</nz-tag>
+  </nz-page-header-tags>
+
+  <nz-page-header-extra>
+    <button (click)="addEntry()"
+            [nzType]="'primary'"
+            nz-button><i [nzType]="'plus'" nz-icon></i>Add
+    </button>
+    <button (click)="exportLesson()"
+            [nzLoading]="exportLoading"
+            [nzType]="'primary'"
+            nz-button><i [nzType]="'export'" nz-icon></i>Export
+    </button>
+  </nz-page-header-extra>
+
+  <nz-page-header-content>
+    <nz-table #nestedTable
+              [nzBordered]="true"
+              [nzData]="entries"
+              [nzFrontPagination]="false"
+              [nzLoading]="loading"
+              [nzScroll]="{ y: '72vh' }"
+              [nzShowPagination]="false"
+              [nzSize]="'small'"
+              nzShowSizeChanger>
+      <thead
+        (nzSortOrderChange)="sort($event)">
+      <tr>
+        <th [nzSortFn]="sortKanji"
+            nzColumnKey="kanji"
+            nzWidth="15%"><b>Kanji</b>
+        </th>
+        <th [nzSortFn]="sortKana"
+            nzColumnKey="kana"
+            nzWidth="15%"><b>Kana</b>
+        </th>
+        <th *ngFor="let local of locales">
+          <nz-avatar
+            [nzIcon]="'anticon anticon-flag'"
+            [nzShape]="'square'"
+            [nzSrc]="flagByLocal[local]"></nz-avatar>
+        </th>
+        <th nzWidth="100px">Action</th>
+      </tr>
+      </thead>
+      <tbody>
+      <ng-template [ngForOf]="nestedTable.data" let-entry ngFor>
+        <tr>
+          <td class="japanese-mincho">{{entry.japanese.kanji}}</td>
+          <td class="japanese-mincho">{{entry.japanese.kana}}</td>
+          <td *ngFor="let local of locales">
+            <ng-container *ngIf="entry.translations[local]">
+              <p>{{entry.translations[local].input}}</p>
+              <p *ngIf="entry.translations[local].details">Details: <i>{{entry.translations[local].details}}</i></p>
+              <p *ngIf="entry.translations[local].example">Example: <i>{{entry.translations[local].example}}</i></p>
+            </ng-container>
+          </td>
+          <td>
+            <div class="editable-row-operations">
+              <button (click)="editEntry(entry)"
+                      [nzShape]="'circle'"
+                      [nzTooltipTitle]="'Edit'"
+                      [nzType]="'default'"
+                      nz-button
+                      nz-tooltip>
+                <i [nzType]="'edit'" nz-icon></i>
+              </button>
+
+              <ng-container>
+                <button (nzOnConfirm)="delete(entry)"
+                        [nzIcon]="iconTpl"
+                        [nzShape]="'circle'"
+                        [nzTooltipTitle]="'Delete'"
+                        nz-button
+                        nz-popconfirm
+                        nz-tooltip
+                        nzDanger
+                        nzPopconfirmTitle="Are you sure?">
+                  <i [nzType]="'delete'"
+                     nz-icon></i>
+                  <ng-template #iconTpl>
+                    <i nz-icon nzType="question-circle-o"
+                       style="color: red;"></i>
+                  </ng-template>
+                </button>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      </tbody>
+    </nz-table>
+  </nz-page-header-content>
+</nz-page-header>

@@ -1,7 +1,21 @@
+frog:
+  database:
+    name: nihongo_lessons
+
+  ftp:
+    server: ftpperso.free.fr
+    port: 21
+    user: XXXXX
+    password: XXXXX
+    remote-path: /nihongo/lessons
+
 spring:
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:11-alpine://localhost/${frog.database.name}
+    url: jdbc:tc:postgresql:14-alpine://localhost/${frog.database.name}
+  sql:
+    init:
+      mode: always
 
 security:
   jwt:

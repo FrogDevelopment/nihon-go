@@ -5,7 +5,7 @@ services:
   ########### TOOLS ###########
   pgroonga:
     hostname: pgroonga
-    image: groonga/pgroonga:2.2.7-alpine-13-slim
+    image: groonga/pgroonga:2.3.3-alpine-14-slim
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
@@ -13,7 +13,7 @@ services:
       retries: 5
     restart: always
     ports:
-      - 2345:5432
+      - "2345:5432"
     environment:
       TZ: Europe/Paris
       POSTGRES_USER_FILE: /run/secrets/postgres_user
@@ -64,6 +64,7 @@ services:
       - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
       - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
       - ./secrets/repository_application:/run/secrets/repository/application:ro
+      - ./secrets/repository_application-ftp:/run/secrets/repository/application-ftp:ro
       - ./secrets/repository_application-postgres:/run/secrets/repository/application-postgres:ro
 
     ########### SERVICES ###########
@@ -103,6 +104,22 @@ services:
   nihongo-dico-sentences-service:
     hostname: nihongo-dico-sentences-service
     image: frognihongo/nihongo-dico-sentences-service:$NIHON_GO_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: console
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+  nihongo-lessons-service:
+    hostname: nihongo-lessons-service
+    image: frognihongo/nihongo-lessons-service:$NIHON_GO_VERSION
     healthcheck:
       test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
       interval: 20s

@@ -5,12 +5,13 @@ import lombok.NonNull;
 import lombok.Value;
 
 @Value
-@Builder
+@Builder(toBuilder = true)
 public class Japanese {
 
     int id;
-    @NonNull
     String kanji;
+    @NonNull
     String kana;
+    Integer lesson;
 
 }
