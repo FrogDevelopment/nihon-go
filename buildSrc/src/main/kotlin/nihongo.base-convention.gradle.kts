@@ -19,7 +19,7 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom("org.junit:junit-bom:5.8.1")
+        mavenBom("org.junit:junit-bom:5.8.2")
         mavenBom("org.testcontainers:testcontainers-bom:1.16.2")
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:2021.0.0")
     }
