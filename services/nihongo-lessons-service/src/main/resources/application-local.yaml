@@ -3,11 +3,11 @@ frog:
     name: nihongo_lessons
 
   ftp:
-    server: ftpperso.free.fr
+    server: xxxxxxxxxxxxxxxx
     port: 21
-    user: xxxxx
-    password: xxxxx
-    remote-path: /nihongo/lessons
+    user: xxxxxxxxxxxxxxxxxxxx
+    password: xxxxxxxxxxxxxxxxx
+    remote-path: /www/nihongo/lessons
 
 spring:
   datasource:

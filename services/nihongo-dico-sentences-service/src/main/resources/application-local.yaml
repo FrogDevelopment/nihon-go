@@ -10,10 +10,10 @@ frog:
       sentences: http://downloads.tatoeba.org/exports/sentences.tar.bz2
       links: http://downloads.tatoeba.org/exports/links.tar.bz2
   ftp:
-    hostname: ftpperso.free.fr
+    server: XXXXXXXXXXXXXX
     port: 21
-    username: legall.benoit
-    password: b3E12h210N
+    user: XXXXXXXXXXXXX
+    password: XXXXXXXXXXXXXX
     remote-path: /nihongo/dico
 
 spring:
