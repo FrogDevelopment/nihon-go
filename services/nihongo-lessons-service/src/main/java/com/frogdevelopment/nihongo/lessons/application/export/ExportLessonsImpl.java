@@ -58,7 +58,8 @@ public class ExportLessonsImpl implements ExportLessons {
     private RowMapper<Export> getRowMapper(final int lesson) {
         return (rs, rowNum) -> {
             final String locale = rs.getString("locale");
-            return Export.of(locale + "-" + lesson, SQL_COPY.formatted(locale, lesson));
+            final var fileName = "%s-%02d".formatted(locale, lesson);
+            return Export.of(fileName, SQL_COPY.formatted(locale, lesson));
         };
     }
 }
