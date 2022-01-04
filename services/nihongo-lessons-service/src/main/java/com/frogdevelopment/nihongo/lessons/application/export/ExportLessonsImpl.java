@@ -38,7 +38,7 @@ public class ExportLessonsImpl implements ExportLessons {
                             ON j.japanese_id = t.japanese_id
                             AND t.locale = '%1$s'
                             AND lesson = %2$s)
-            TO STDOUT;
+            TO STDOUT WITH (FORMAT CSV, HEADER);
             """;
 
     private final ExportData exportData;
