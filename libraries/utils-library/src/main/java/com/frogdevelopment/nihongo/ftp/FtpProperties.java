@@ -1,7 +1,6 @@
 package com.frogdevelopment.nihongo.ftp;
 
 import lombok.Data;
-
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
@@ -9,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class FtpProperties {
 
     private String server;
-    private int port;
+    private int port = 21;
     private String user;
     private String password;
     private String remotePath;

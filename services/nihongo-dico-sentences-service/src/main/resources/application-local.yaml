@@ -6,15 +6,11 @@ frog:
     name: nihongo_sentences
   tatoeba:
     url:
-      japanese-indices: http://downloads.tatoeba.org/exports/jpn_indices.tar.bz2
-      sentences: http://downloads.tatoeba.org/exports/sentences.tar.bz2
-      links: http://downloads.tatoeba.org/exports/links.tar.bz2
+      japanese-indices: https://downloads.tatoeba.org/exports/jpn_indices.tar.bz2
+      sentences: https://downloads.tatoeba.org/exports/sentences.tar.bz2
+      links: https://downloads.tatoeba.org/exports/links.tar.bz2
   ftp:
-    server: XXXXXXXXXXXXXX
-    port: 21
-    user: XXXXXXXXXXXXX
-    password: XXXXXXXXXXXXXX
-    remote-path: /nihongo/dico
+    remote-path: /www/nihongo/dico
 
 spring:
   datasource:
