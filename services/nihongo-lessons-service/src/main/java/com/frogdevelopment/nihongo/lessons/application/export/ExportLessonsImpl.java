@@ -38,7 +38,7 @@ public class ExportLessonsImpl implements ExportLessons {
                             ON j.japanese_id = t.japanese_id
                             AND t.locale = '%1$s'
                             AND lesson = %2$s)
-            TO STDOUT;
+            TO STDOUT WITH (FORMAT CSV, HEADER);
             """;
 
     private final ExportData exportData;
@@ -58,7 +58,8 @@ public class ExportLessonsImpl implements ExportLessons {
     private RowMapper<Export> getRowMapper(final int lesson) {
         return (rs, rowNum) -> {
             final String locale = rs.getString("locale");
-            return Export.of(locale + "-" + lesson, SQL_COPY.formatted(locale, lesson));
+            final var fileName = "%s-%02d".formatted(locale, lesson);
+            return Export.of(fileName, SQL_COPY.formatted(locale, lesson));
         };
     }
 }

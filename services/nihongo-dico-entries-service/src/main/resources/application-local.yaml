@@ -5,11 +5,7 @@ frog:
     url: ftp://ftp.edrdg.org/pub/Nihongo/JMdict.gz
   clean: false
   ftp:
-    hostname: ftpperso.free.fr
-    port: 21
-    username: XXXXX
-    password: XXXXX
-    remote-path: /nihongo/dico
+    remote-path: /www/nihongo/dico
 
 spring:
   datasource:
