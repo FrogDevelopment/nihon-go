@@ -1,26 +1,25 @@
 package com.frogdevelopment.nihongo.sentences.api;
 
-import com.frogdevelopment.nihongo.sentences.implementation.populate.FetchSentences;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
-import static org.springframework.http.HttpStatus.ACCEPTED;
+import com.frogdevelopment.nihongo.sentences.implementation.populate.FetchSentences;
 
-@RestController
-@RequestMapping(path = "populate")
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Status;
+
+import static io.micronaut.http.HttpStatus.ACCEPTED;
+
+@Controller("populate")
 @RequiredArgsConstructor
 public class PopulateController {
 
     private final FetchSentences fetchSentences;
 
-    @PostMapping
-    @ResponseStatus(ACCEPTED)
+    @Post
+    @Status(ACCEPTED)
 //    @PreAuthorize("hasAnyRole('ADMIN')") fixme
-    @PreAuthorize("permitAll()")
+//    @PreAuthorize("permitAll()")
     public void fetch() {
         fetchSentences.call();
     }

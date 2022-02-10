@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {ElementRef, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {Router} from '@angular/router';
 import {PlatformLocation} from '@angular/common';
@@ -6,7 +6,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {SearchSettingsComponent} from '../search-settings/search-settings.component';
 import {EntriesService, Search} from '../../services/entries';
 
-@Component({
+@Singleton({
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.css']
 })

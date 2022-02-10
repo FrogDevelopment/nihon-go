@@ -1,13 +1,12 @@
 package com.frogdevelopment.nihongo.sentences.implementation.populate;
 
-import com.frogdevelopment.nihongo.multischema.Language;
+import com.frogdevelopment.nihongo.Language;
+import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,17 +15,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.joining;
+import static javax.transaction.Transactional.TxType.MANDATORY;
 
 @Slf4j
-@Repository
-@Transactional(propagation = Propagation.MANDATORY)
+@JdbcRepository
+@Transactional(MANDATORY)
 public class SentencesDao {
-
-    private final JdbcTemplate jdbcTemplate;
-
-    public SentencesDao(final JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
 
     public void prepareImportedData(final Connection connection) throws SQLException {
         try (final var statement = connection.createStatement()) {
@@ -47,10 +41,11 @@ public class SentencesDao {
                     .map(l -> "'" + l + "'")
                     .collect(joining(","));
 
-            statement.executeUpdate("DELETE FROM tmp_sentences "
-                    + "WHERE sentence IS NULL "
-                    + "OR lang IS NULL "
-                    + "OR lang NOT IN (" + languagesToKeep + ");");
+            statement.executeUpdate("""
+                    DELETE FROM tmp_sentences
+                    WHERE sentence IS NULL
+                        OR lang IS NULL
+                        OR lang NOT IN (%s);""".formatted(languagesToKeep));
 
             log.info("- handle lang with multiple iso3 code");
             statement.executeUpdate("""
@@ -74,65 +69,57 @@ public class SentencesDao {
 
     public Map<String, Integer> insertSentences(final Connection connection) throws SQLException {
         final var data = new HashMap<String, Integer>();
-        final var langs = Arrays.stream(Language.values())
-                .map(Language::getCode)
-                .collect(Collectors.toSet());
-        langs.addAll(Set.of("jpn"));
+        try (final var statement = connection.createStatement()) {
+            statement.executeUpdate("DROP INDEX IF EXISTS pgroonga_sentences_index");
+            statement.executeUpdate("TRUNCATE sentences CASCADE;");
 
-        for (final String lang : langs) {
-            log.info("Insert sentences for [{}]", lang);
-            connection.setSchema(lang);
-            try (final var statement = connection.createStatement()) {
-                log.info("- cleaning previous data");
-                statement.executeUpdate("DROP INDEX IF EXISTS pgroonga_sentences_index");
-                statement.executeUpdate("TRUNCATE sentences CASCADE;");
-
-                log.info("- inserting new sentences");
-                final var nbInserted = statement.executeUpdate("INSERT INTO sentences(sentence_id, sentence)"
-                        + " SELECT tmp.sentence_id, tmp.sentence FROM tmp_sentences tmp"
-                        + " WHERE tmp.lang = '" + lang + "';");
-                data.put(lang, nbInserted);
-                log.info("-> {} sentences inserted", nbInserted);
-
-                log.info("- create sentence_id prgoonga index");
-                jdbcTemplate.update("CREATE INDEX pgroonga_sentences_index ON " + lang + ".sentences USING pgroonga (sentence);");
+            try (final var preparedStatement = connection.prepareStatement("""
+                    INSERT INTO sentences(sentence_id, sentence, language)
+                        SELECT tmp.sentence_id, tmp.sentence, tmp.lang
+                        FROM tmp_sentences tmp
+                        WHERE tmp.lang = ?;""")) {
+                data.put("jpn", insertSentences(preparedStatement, "jpn"));
+                for (Language language : Language.values()) {
+                    final var languageCode = language.getCode();
+                    data.put(languageCode, insertSentences(preparedStatement, languageCode));
+                }
             }
+
+            log.info("- create sentence_id prgoonga index");
+            statement.executeUpdate("CREATE INDEX pgroonga_sentences_index ON sentences USING pgroonga (sentence);");
         }
 
         return data;
     }
 
-    public void insertTranslationsLinks(final Connection connection) throws SQLException {
-        for (final Language language : Language.values()) {
-            final String lang = language.getCode();
-            log.info("Insert Translation links for [{}]", lang);
-            connection.setSchema(lang);
-            try (final var statement = connection.createStatement()) {
-                log.info("- cleaning previous data");
-                statement.executeUpdate("TRUNCATE links_japanese_translation CASCADE;");
+    private int insertSentences(PreparedStatement preparedStatement, String language) throws SQLException {
+        log.info("Insert sentences for [{}]", language);
+        preparedStatement.setString(1, language);
+        final var nbInserted = preparedStatement.executeUpdate();
+        log.info("-> {} sentences inserted", nbInserted);
 
-                log.info("- inserting links for japanese translation");
-                final var sql = """
-                        INSERT INTO links_japanese_translation (japanese_id, translation_id)
-                        SELECT japanese.sentence_id, translation.sentence_id
-                        FROM tmp_links tmp
-                        INNER JOIN jpn.sentences japanese ON japanese.sentence_id = tmp.sentence_id
-                        INNER JOIN sentences translation ON translation.sentence_id = tmp.translation_id;
-                        """;
-                statement.executeUpdate(sql);
-            }
+        return nbInserted;
+    }
+
+    public void insertTranslationsLinks(final Connection connection) throws SQLException {
+        log.info("Insert Translation links");
+        try (final var statement = connection.createStatement()) {
+            statement.executeUpdate("TRUNCATE links_japanese_translation CASCADE;");
+            statement.executeUpdate("""
+                    INSERT INTO links_japanese_translation (japanese_id, translation_id)
+                    SELECT japanese.sentence_id, translation.sentence_id
+                    FROM tmp_links tmp
+                    INNER JOIN sentences japanese ON japanese.sentence_id = tmp.sentence_id
+                    INNER JOIN sentences translation ON translation.sentence_id = tmp.translation_id;
+                    """);
         }
     }
 
     public void insertJapaneseIndices(final Connection connection) throws SQLException {
         log.info("Insert Japaneses Indices");
-        connection.setSchema("jpn");
         try (final var statement = connection.createStatement()) {
-            log.info("- cleaning previous data");
             statement.executeUpdate("DROP INDEX IF EXISTS pgroonga_linking_index");
             statement.executeUpdate("TRUNCATE japanese_indices CASCADE;");
-
-            log.info("- inserting links for japanese entries");
             statement.executeUpdate("""
                     INSERT INTO japanese_indices
                     SELECT tmp.sentence_id, tmp.linking FROM tmp_japanese_indices tmp
@@ -140,7 +127,7 @@ public class SentencesDao {
                     """);
 
             log.info("- create linking prgoonga index");
-            jdbcTemplate.update("CREATE INDEX pgroonga_linking_index ON jpn.japanese_indices USING pgroonga (linking);");
+            statement.executeUpdate("CREATE INDEX pgroonga_linking_index ON japanese_indices USING pgroonga (linking);");
         }
     }
 }

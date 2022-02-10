@@ -1,19 +1,21 @@
 package com.frogdevelopment.nihongo.lessons.application.manage;
 
-import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
-import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
-import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
-import com.frogdevelopment.nihongo.lessons.entity.InputDto;
-import com.frogdevelopment.nihongo.lessons.entity.Japanese;
-import com.frogdevelopment.nihongo.lessons.entity.Translation;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.Answer1;
+import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
+import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
+import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
+import com.frogdevelopment.nihongo.lessons.entity.InputDto;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.AdditionalAnswers.answer;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -44,7 +46,7 @@ class CreateLessonTest {
                 .japaneseId(japanese.getId())
                 .locale("fr_FR")
                 .input("INPUT FRENCH")
-                .sortLetter('I')
+                .sortLetter("I")
                 .details("DETAILS FRENCH")
                 .example("EXAMPLE FRENCH")
                 .build();
@@ -53,7 +55,7 @@ class CreateLessonTest {
                 .japaneseId(japanese.getId())
                 .locale("en_US")
                 .input("INPUT ENGLISH")
-                .sortLetter('I')
+                .sortLetter("I")
                 .details("DETAILS ENGLISH")
                 .example("EXAMPLE ENGLISH")
                 .build();
@@ -64,18 +66,18 @@ class CreateLessonTest {
                 .translation(english.getLocale(), english)
                 .build();
 
-        given(japaneseDao.create(japanese)).willReturn(123);
-        given(translationDao.create(123, french)).willReturn(456);
-        given(translationDao.create(123, english)).willReturn(789);
+        given(japaneseDao.save(japanese)).will(answer((Answer1<Japanese, Japanese>) argument -> argument.toBuilder().id(123L).build()));
+        given(translationDao.save(french)).will(answer((Answer1<Translation, Translation>) argument -> argument.toBuilder().id(456L).build()));
+        given(translationDao.save(english)).will(answer((Answer1<Translation, Translation>) argument -> argument.toBuilder().id(789L).build()));
 
         // when
         var saveValue = createLesson.call(inputDto);
 
         // then
-        assertThat(saveValue.getJapanese().getId()).isEqualTo(123);
+        assertThat(saveValue.getJapanese().getId()).isEqualTo(123L);
         assertThat(saveValue.getTranslations().values())
                 .extracting(Translation::getId)
-                .containsOnly(456, 789);
+                .containsOnly(456L, 789L);
         then(lessonDao)
                 .should()
                 .upsertLesson(japanese.getLesson());

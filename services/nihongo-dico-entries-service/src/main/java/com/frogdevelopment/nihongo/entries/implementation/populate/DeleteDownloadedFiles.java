@@ -1,18 +1,19 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
+import io.micronaut.context.annotation.Value;
+import io.micronaut.runtime.context.scope.Refreshable;
+import jakarta.inject.Singleton;
 
 import static com.frogdevelopment.nihongo.entries.implementation.populate.utils.FileUtils.getTemporaryDownloadDirectory;
 import static org.apache.commons.io.FileUtils.cleanDirectory;
 
 @Slf4j
-@Component
-@RefreshScope
+@Singleton
+@Refreshable
 class DeleteDownloadedFiles {
 
     private final boolean clean;

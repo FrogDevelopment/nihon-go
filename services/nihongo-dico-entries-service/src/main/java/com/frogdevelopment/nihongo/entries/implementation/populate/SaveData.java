@@ -2,15 +2,17 @@ package com.frogdevelopment.nihongo.entries.implementation.populate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Map;
+import javax.sql.DataSource;
+import javax.transaction.Transactional;
+
+import jakarta.inject.Singleton;
 
 @Slf4j
-@Component
+@Singleton
 @RequiredArgsConstructor
 public class SaveData {
 
@@ -19,6 +21,7 @@ public class SaveData {
     private final InsertData insertData;
     private final UpdateVectorsIndex updateVectorsIndex;
 
+    @Transactional
     public Map<String, Object> call() {
         try (final var connection = dataSource.getConnection()) {
             log.info("****** Clear database");

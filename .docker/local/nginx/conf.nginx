@@ -1,0 +1,16 @@
+events {}
+http {
+  server {
+    root /home/frog_admin_user;
+
+    location /dico/ {
+      autoindex on;
+      sendfile on;
+    }
+
+    location /lessons/ {
+      autoindex on;
+      sendfile on;
+    }
+  }
+}

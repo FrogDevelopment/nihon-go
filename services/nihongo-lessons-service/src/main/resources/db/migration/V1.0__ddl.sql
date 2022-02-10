@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS japaneses
 (
     japanese_id SERIAL PRIMARY KEY,
     kanji       TEXT,
-    kana        TEXT,
+    kana        TEXT     NOT NULL,
     lesson      SMALLINT NOT NULL
 );
 

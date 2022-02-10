@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {OnInit} from '@angular/core';
 import {DictionaryService} from '../../services/dictionary.service';
 
-@Component({
+@Singleton({
   selector: 'app-dictionary',
   templateUrl: './dictionary.component.html',
   styleUrls: ['./dictionary.component.css']

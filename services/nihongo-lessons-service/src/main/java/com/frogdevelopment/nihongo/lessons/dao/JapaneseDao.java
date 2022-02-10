@@ -1,11 +1,16 @@
 package com.frogdevelopment.nihongo.lessons.dao;
 
+import javax.transaction.Transactional;
 import com.frogdevelopment.nihongo.lessons.entity.Japanese;
 
-public interface JapaneseDao {
-    int create(Japanese japanese);
+import io.micronaut.data.jdbc.annotation.JdbcRepository;
+import io.micronaut.data.model.query.builder.sql.Dialect;
+import io.micronaut.data.repository.CrudRepository;
 
-    void update(Japanese japanese);
+import static javax.transaction.Transactional.TxType.MANDATORY;
 
-    void delete(Japanese japanese);
+@Transactional(MANDATORY)
+@JdbcRepository(dialect = Dialect.POSTGRES)
+public interface JapaneseDao extends CrudRepository<Japanese, Long> {
 }
+

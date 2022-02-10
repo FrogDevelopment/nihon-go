@@ -3,14 +3,26 @@ frog:
     name: nihongo_lessons
 
   ftp:
-    remote-path: /www/nihongo/lessons
+    server: localhost
+    port: 2222
+    user: frog_admin_user
+    password: frog_admin_pwd
+    remote-path: lessons/
 
-spring:
-  datasource:
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${micronaut.application.name}
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${spring.application.name}
     username: postgres
     password: postgres
+    maximum-pool-size: 5
+    minimum-idle: 2
+    connection-test-query: SELECT 1
+
+flyway:
+  datasources:
+    default:
+      enabled: true
 
 security:
   jwt:

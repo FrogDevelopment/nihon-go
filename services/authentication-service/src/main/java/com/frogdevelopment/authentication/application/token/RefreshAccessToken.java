@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Component
+@Singleton
 public class RefreshAccessToken {
 
     private final TokenProvider tokenProvider;

@@ -2,9 +2,10 @@ package com.frogdevelopment.nihongo.lessons;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.Normalizer;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Utils {
@@ -16,7 +17,7 @@ public class Utils {
         // Le replaceAll("[\u0300-\u036F]", "") supprimera tous les caractères unicode allant de u0300 à u036F,
         // c'est à dire la plage de code des diacritiques (les accents qu'on a décomposé ci-dessus donc).
         return Normalizer
-                .normalize(input.substring(0, 1), Normalizer.Form.NFD)
+                .normalize(StringUtils.trimToEmpty(input).substring(0, 1), Normalizer.Form.NFD)
                 .replaceAll("[\u0300-\u036F]", "")
                 .toUpperCase();
     }

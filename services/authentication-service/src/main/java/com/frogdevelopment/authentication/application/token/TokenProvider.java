@@ -18,7 +18,7 @@ import static java.time.temporal.ChronoUnit.HOURS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
-@Component
+@Singleton
 public class TokenProvider {
 
     static final String AUTHORITIES_KEY = "authorities";

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static java.util.stream.Stream.of;
 import static java.util.stream.Stream.ofNullable;
 
-@Component
+@Singleton
 @RefreshScope
 public class GetTreeFromRoles {
 

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import static com.frogdevelopment.authentication.application.user.UserTransformer.fromDto;
 import static com.frogdevelopment.authentication.application.user.UserTransformer.toDto;
 
-@Component
+@Singleton
 public class AddUser {
 
     private final JwtUserDetailsService jwtUserDetailsService;

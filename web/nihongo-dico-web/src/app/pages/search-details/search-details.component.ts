@@ -1,11 +1,10 @@
-import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
 import {SearchDetails} from './SearchDetails';
 import {EntriesService} from '../../services/entries';
 import {SentencesService} from '../../services/sentences';
 
-@Component({
+@Singleton({
   selector: 'app-details',
   templateUrl: './search-details.component.html',
   styleUrls: ['./search-details.component.css']

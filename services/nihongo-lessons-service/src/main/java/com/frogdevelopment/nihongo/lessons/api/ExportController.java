@@ -1,41 +1,39 @@
 package com.frogdevelopment.nihongo.lessons.api;
 
+import lombok.RequiredArgsConstructor;
+
+import java.util.Optional;
 import com.frogdevelopment.nihongo.lessons.application.ExportLessons;
 import com.frogdevelopment.nihongo.lessons.application.migrate.OldMigrateLessons;
 import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
 import com.frogdevelopment.nihongo.lessons.entity.LessonInfo;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.PathVariable;
+import io.micronaut.http.annotation.Post;
+import io.micronaut.http.annotation.Status;
 
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
+import static io.micronaut.http.HttpStatus.NO_CONTENT;
+import static io.micronaut.http.HttpStatus.OK;
 
-@RestController
+@Controller("export")
 @RequiredArgsConstructor
-@RequestMapping(value = "/export")
 public class ExportController {
 
     private final ExportLessons exportLessons;
     private final LessonDao lessonDao;
 
-    @GetMapping("/{lesson}")
-    @PreAuthorize("permitAll()")
-    @ResponseStatus(code = OK)
+    @Get("/{lesson}")
+//    @PreAuthorize("permitAll()")
+    @Status(OK)
     public Optional<LessonInfo> getLessonInfo(@PathVariable final int lesson) {
-        return lessonDao.getLessonInfo(lesson);
+        return lessonDao.findById(lesson);
     }
 
-    @PostMapping("/{lesson}")
-    @PreAuthorize("permitAll()")
-    @ResponseStatus(code = NO_CONTENT)
+    @Post("/{lesson}")
+//    @PreAuthorize("permitAll()")
+    @Status(NO_CONTENT)
     public void exportLesson(@PathVariable final int lesson) {
         exportLessons.call(lesson);
     }
@@ -43,9 +41,9 @@ public class ExportController {
     // tmp
     private final OldMigrateLessons oldMigrateLessons;
 
-    @PostMapping("/import_old")
-    @PreAuthorize("permitAll()")
-    @ResponseStatus(code = NO_CONTENT)
+    @Post("/import_old")
+//    @PreAuthorize("permitAll()")
+    @Status(NO_CONTENT)
     public void importOld() {
         oldMigrateLessons.call();
     }

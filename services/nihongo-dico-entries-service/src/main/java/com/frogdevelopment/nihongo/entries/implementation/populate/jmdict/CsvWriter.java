@@ -1,10 +1,10 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
+import com.frogdevelopment.nihongo.Language;
 import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Entry;
 import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Sense;
 import com.frogdevelopment.nihongo.entries.implementation.populate.utils.FileUtils;
 import com.frogdevelopment.nihongo.entries.implementation.search.utils.KanaToRomaji;
-import com.frogdevelopment.nihongo.multischema.Language;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedWriter;
@@ -98,6 +98,7 @@ public class CsvWriter implements AutoCloseable {
             final var lang = handleMultipleIsoLang(gloss.getLang());
             if (glossesWriters.containsKey(lang)) {
                 final var line = senseSeq + "\t"
+                        + lang + "\t"
                         + escapeTrailingBackslash(gloss.getValue());
                 glossesWriters.get(lang).write(line);
                 glossesWriters.get(lang).newLine();

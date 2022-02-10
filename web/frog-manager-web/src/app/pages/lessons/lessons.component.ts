@@ -1,6 +1,4 @@
-import {Component} from '@angular/core';
-
-@Component({
+@Singleton({
   selector: 'app-lessons',
   templateUrl: './lessons.component.html',
   styleUrls: ['./lessons.component.css']

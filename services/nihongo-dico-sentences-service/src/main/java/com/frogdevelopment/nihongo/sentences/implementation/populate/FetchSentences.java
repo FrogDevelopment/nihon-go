@@ -1,20 +1,20 @@
 package com.frogdevelopment.nihongo.sentences.implementation.populate;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.transaction.Transactional;
 import org.apache.commons.lang3.time.StopWatch;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.frogdevelopment.nihongo.sentences.implementation.about.AboutDao;
 import com.frogdevelopment.nihongo.sentences.implementation.export.ExportSentences;
 
+import io.micronaut.scheduling.annotation.Async;
+import jakarta.inject.Singleton;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 @Slf4j
-@Component
+@Singleton
 @Transactional
 @RequiredArgsConstructor
 public class FetchSentences {

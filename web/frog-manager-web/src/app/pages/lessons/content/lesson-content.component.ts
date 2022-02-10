@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {OnInit} from '@angular/core';
 import {LessonsService} from '../../../services/lessons.service';
 import {InputDto} from '../entities/InputDto';
 import {Japanese} from '../entities/Japanese';
@@ -9,7 +9,7 @@ import {NzTableSortFn} from 'ng-zorro-antd/table';
 import {ActivatedRoute} from '@angular/router';
 import {ExportService, LessonInfo} from '../../../services/export.service';
 
-@Component({
+@Singleton({
   selector: 'app-lesson-content',
   templateUrl: './lesson-content.component.html',
   providers: [LessonsService],

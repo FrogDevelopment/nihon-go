@@ -1,34 +1,41 @@
 plugins {
     jacoco
-    id("io.freefair.lombok")
-    id("org.springframework.boot")
-    id("io.spring.dependency-management")
+    java
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 allprojects {
     group = "com.frogdevelopment.nihongo"
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        name = "JitPack"
-        url = uri("https://jitpack.io")
-    }
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor(30, TimeUnit.MINUTES)
+    resolutionStrategy.cacheDynamicVersionsFor(30, TimeUnit.SECONDS)
 }
 
-dependencyManagement {
-    imports {
-        mavenBom("org.junit:junit-bom:5.8.2")
-        mavenBom("org.testcontainers:testcontainers-bom:1.16.2")
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2020.0.4")
-    }
-}
 
-configurations {
-    all {
-        resolutionStrategy.cacheChangingModulesFor(10, "seconds")
+dependencies {
+    // not using the "io.freefair.lombok" plugin because of some conflicts with micronaut annotation processor
+    // read https://docs.micronaut.io/latest/guide/#lombok
+    compileOnly("org.projectlombok:lombok:${Versions.lombok}")
+    annotationProcessor("org.projectlombok:lombok:${Versions.lombok}")
+    annotationProcessor(enforcedPlatform("io.micronaut:micronaut-bom:${Versions.micronaut}"))
+
+    implementation(enforcedPlatform("io.micronaut:micronaut-bom:${Versions.micronaut}"))
+    implementation("javax.annotation:javax.annotation-api")
+
+    testImplementation(enforcedPlatform("org.junit:junit-bom:${Versions.junit}"))
+    testImplementation(enforcedPlatform("org.testcontainers:testcontainers-bom:1.16.3"))
+
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher") {
+        because("Only needed to run tests in a version of IntelliJ IDEA that bundles older versions")
     }
+    testImplementation("org.mockito:mockito-junit-jupiter")
+    testImplementation("org.assertj:assertj-core")
 }
 
 tasks.named<Test>("test") {

@@ -1,11 +1,11 @@
-import {Component, HostListener, Input, OnInit} from '@angular/core';
+import {HostListener, Input, OnInit} from '@angular/core';
 import {InputDto} from '../entities/InputDto';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {LessonsService} from '../../../services/lessons.service';
 import {Translation} from '../entities/Translation';
 import {NzModalRef} from 'ng-zorro-antd/modal';
 
-@Component({
+@Singleton({
   selector: 'app-entry-modal',
   templateUrl: './lesson-edit-modal.component.html',
   styleUrls: ['./lesson-edit-modal.component.css']

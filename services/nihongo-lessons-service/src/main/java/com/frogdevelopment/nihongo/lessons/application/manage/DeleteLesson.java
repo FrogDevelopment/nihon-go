@@ -1,13 +1,15 @@
 package com.frogdevelopment.nihongo.lessons.application.manage;
 
+import lombok.RequiredArgsConstructor;
+
 import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
 import com.frogdevelopment.nihongo.lessons.dao.LessonDao;
 import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
 import com.frogdevelopment.nihongo.lessons.entity.InputDto;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@Component
+import jakarta.inject.Singleton;
+
+@Singleton
 @RequiredArgsConstructor
 class DeleteLesson {
 
@@ -16,13 +18,13 @@ class DeleteLesson {
     private final LessonDao lessonDao;
 
     void call(final InputDto inputDto) {
-        if (inputDto.getJapanese().getId() != 0) {
+        if (inputDto.getJapanese().getId() != null) {
 
-            translationDao.deleteJapaneseTranslations(inputDto.getJapanese().getId());
+            translationDao.deleteByJapaneseId(inputDto.getJapanese().getId());
 
             japaneseDao.delete(inputDto.getJapanese());
 
-            lessonDao.deleteLesson(inputDto.getJapanese().getLesson());
+            lessonDao.deleteById(inputDto.getJapanese().getLesson());
         }
     }
 

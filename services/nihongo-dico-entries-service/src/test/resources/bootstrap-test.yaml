@@ -14,4 +14,4 @@ eureka:
     enabled: false
 
 logging:
-  config: classpath:logback-spring-test.xml
+  config: classpath:logback-test.xml

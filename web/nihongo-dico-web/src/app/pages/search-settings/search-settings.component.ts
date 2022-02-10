@@ -1,8 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
-@Component({
+@Singleton({
   selector: 'app-search-settings',
   templateUrl: './search-settings.component.html',
   styleUrls: ['./search-settings.component.css']

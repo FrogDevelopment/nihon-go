@@ -1,23 +1,24 @@
 package com.frogdevelopment.nihongo.entries.implementation.search;
 
-import com.frogdevelopment.nihongo.entries.implementation.search.entity.SearchResult;
-import com.frogdevelopment.nihongo.entries.implementation.search.utils.ComputeSimilarity;
-import com.frogdevelopment.nihongo.entries.implementation.search.utils.Input;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+import com.frogdevelopment.nihongo.entries.implementation.search.entity.SearchResult;
+import com.frogdevelopment.nihongo.entries.implementation.search.utils.ComputeSimilarity;
+import com.frogdevelopment.nihongo.entries.implementation.search.utils.Input;
+
+import jakarta.inject.Singleton;
 
 import static com.frogdevelopment.nihongo.entries.implementation.search.utils.InputUtils.containsKanji;
 import static com.frogdevelopment.nihongo.entries.implementation.search.utils.InputUtils.isOnlyKana;
 import static java.lang.Character.isWhitespace;
 import static java.util.Comparator.comparingDouble;
+import static javax.transaction.Transactional.TxType.REQUIRED;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
 
-@Component
+@Singleton
 @RequiredArgsConstructor
 public class Search {
 
@@ -25,7 +26,7 @@ public class Search {
 
     private final SearchDao searchDao;
 
-    @Transactional(propagation = REQUIRED)
+    @Transactional(REQUIRED)
     public Collection<SearchResult> call(final String lang, final String query) {
         final Input input = getInputType(query);
 
@@ -72,14 +73,13 @@ public class Search {
                 } while (isWhitespace(charAt));
 
                 switch (charAt) {
-                    case '?': // OR
-                        stringBuilder.append(" OR ");
-                        break;
-                    case '!': // NOT
-                        stringBuilder.append(" -");
-                        break;
-                    default:
-                        //
+                    // OR
+                    case '?' -> stringBuilder.append(" OR ");
+                    // NOT
+                    case '!' -> stringBuilder.append(" -");
+                    default -> {
+                        // NOTHING TO DO
+                    }
                 }
             }
 

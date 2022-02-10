@@ -8,7 +8,7 @@ import java.util.List;
 
 import static java.util.stream.Stream.ofNullable;
 
-@Component
+@Singleton
 public class GetRolesFromTree {
 
     public List<String> call(List<HierarchyNode> nodes) {

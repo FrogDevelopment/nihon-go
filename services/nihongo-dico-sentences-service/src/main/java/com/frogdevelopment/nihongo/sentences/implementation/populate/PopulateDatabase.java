@@ -1,21 +1,23 @@
 package com.frogdevelopment.nihongo.sentences.implementation.populate;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
 import java.util.Map;
+import javax.sql.DataSource;
+import javax.transaction.Transactional;
+
+import io.micronaut.context.annotation.Value;
+import io.micronaut.runtime.context.scope.Refreshable;
+import jakarta.inject.Singleton;
+
+import static javax.transaction.Transactional.TxType.REQUIRED;
 
 @Slf4j
-@Component
-@RefreshScope
+@Singleton
+@Refreshable
 public class PopulateDatabase {
 
     @Value("${frog.tatoeba.url.japanese-indices}")
@@ -43,7 +45,7 @@ public class PopulateDatabase {
         this.sentencesDao = sentencesDao;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(REQUIRED)
     public Map<String, Integer> call() {
         try {
             log.info(">>>>>>>>>> Download required files");
@@ -62,13 +64,13 @@ public class PopulateDatabase {
                 log.info("****** creating temporary import tables");
                 createTemporaryImportTables.call(connection);
 
-                log.info("****** copy tatoeba sentence");
+                log.info("****** copy tatoeba sentences");
                 copyFromPath.call(connection, sentencesPath, "tmp_sentences", "sentence_id, lang, sentence");
 
-                log.info("****** copy links between tatoeba sentence");
+                log.info("****** copy links between tatoeba sentences");
                 copyFromPath.call(connection, linksPath, "tmp_links", "sentence_id, translation_id");
 
-                log.info("****** copy links between JMDict & Tatoeba sentence");
+                log.info("****** copy links between JMDict & Tatoeba sentences");
                 copyFromPath.call(connection, indicesPath, "tmp_japanese_indices", "sentence_id, meaning_id, linking");
 
                 log.info("****** cleaning imported data");

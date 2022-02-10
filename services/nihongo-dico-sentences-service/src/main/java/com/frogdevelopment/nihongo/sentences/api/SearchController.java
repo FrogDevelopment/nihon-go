@@ -1,31 +1,27 @@
 package com.frogdevelopment.nihongo.sentences.api;
 
-import com.frogdevelopment.nihongo.sentences.implementation.search.Search;
-import com.frogdevelopment.nihongo.sentences.implementation.search.entity.Sentence;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
+import com.frogdevelopment.nihongo.sentences.implementation.search.Search;
+import com.frogdevelopment.nihongo.sentences.implementation.search.entity.Sentence;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.QueryValue;
 
-@RestController
-@RequestMapping(path = "search", produces = APPLICATION_JSON_VALUE)
+@Controller("search")
 @RequiredArgsConstructor
 public class SearchController {
 
     private final Search search;
 
-    @GetMapping
-    @PreAuthorize("permitAll()")
-    public Collection<Sentence> search(@RequestParam final String lang,
-                                       @RequestParam(required = false, value = "") final String kanji,
-                                       @RequestParam final String kana,
-                                       @RequestParam final String gloss) {
+    @Get
+//    @PreAuthorize("permitAll()")
+    public Collection<Sentence> search(@QueryValue final String lang,
+            @QueryValue(defaultValue = "") final String kanji,
+            @QueryValue final String kana,
+            @QueryValue final String gloss) {
         return search.call(lang, kanji, kana, gloss);
     }
 }

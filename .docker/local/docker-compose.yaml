@@ -1,0 +1,160 @@
+version: "3.7"
+
+services:
+
+  ########### TOOLS ###########
+  pgroonga:
+    hostname: pgroonga
+    image: groonga/pgroonga:2.3.4-alpine-14-slim
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: always
+    ports:
+      - "2345:5432"
+    environment:
+      TZ: Europe/Paris
+      POSTGRES_USER_FILE: /run/secrets/postgres_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    volumes:
+      - pgroonga_data:/var/lib/postgresql/data
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d:ro
+      - ./secrets/postgres_user:/run/secrets/postgres_user:ro
+      - ./secrets/postgres_password:/run/secrets/postgres_password:ro
+
+  sftp:
+    hostname: sftp
+    image: atmoz/sftp:alpine
+    ports:
+      - "2222:22"
+    volumes:
+      - sftp_data:/home
+    command: frog_admin_user:frog_admin_pwd:1001::dico,lessons
+
+  nginx:
+    hostname: nginx
+    image: nginx:1.23-alpine
+    ports:
+      - "88:80"
+    volumes:
+      - sftp_data:/home:ro
+      - ./nginx/conf.nginx:/etc/nginx/nginx.conf:ro
+
+    ########### SUPPORTS ###########
+  support-registry:
+    hostname: support-registry
+    image: springsupports/support-registry:$SUPPORT_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: always
+    ports:
+      - "8761:8080"
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: local
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+  support-config-server:
+    hostname: support-config-server
+    image: springsupports/support-config-server:$SUPPORT_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    restart: 'no'
+    depends_on:
+      - support-registry
+    ports:
+      - "8888:8080"
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: git,secrets,local
+      GIT_LABEL: $CONFIG_VERSION
+    volumes:
+      - /home/legall_benoit/.ssh/tmp:/root/.ssh
+      - ./secrets/git_uri:/run/secrets/git_uri:ro
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+      - ./secrets/repository_application:/run/secrets/repository/application:ro
+    #      - ./secrets/repository_application-ftp:/run/secrets/repository/application-ftp:ro
+    #      - ./secrets/repository_application-postgres:/run/secrets/repository/application-postgres:ro
+
+    ########### SERVICES ###########
+  authentication-service:
+    hostname: authentication-service
+    image: frognihongo/authentication-service:$NIHON_GO_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: console
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+  nihongo-dico-entries-service:
+    hostname: nihongo-dico-entries-service
+    image: frognihongo/nihongo-dico-entries-service:$NIHON_GO_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: console
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+  nihongo-dico-sentences-service:
+    hostname: nihongo-dico-sentences-service
+    image: frognihongo/nihongo-dico-sentences-service:$NIHON_GO_VERSION
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+      SPRING_PROFILES_ACTIVE: console
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+  nihongo-lessons-service:
+    hostname: nihongo-lessons-service
+    image: frognihongo/nihongo-lessons-service:latest
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    environment:
+      TZ: Europe/Paris
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+
+volumes:
+  pgroonga_data:
+  sftp_data:

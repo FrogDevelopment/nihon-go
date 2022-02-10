@@ -1,9 +1,0 @@
-spring:
-  main:
-    banner-mode: off
-
-  application:
-    name: utils-module
-
-logging:
-  config: classpath:logback-spring-test.xml

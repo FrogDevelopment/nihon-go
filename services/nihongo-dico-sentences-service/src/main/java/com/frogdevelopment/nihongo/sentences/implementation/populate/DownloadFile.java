@@ -1,20 +1,21 @@
 package com.frogdevelopment.nihongo.sentences.implementation.populate;
 
-import com.frogdevelopment.nihongo.sentences.implementation.populate.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import com.frogdevelopment.nihongo.sentences.implementation.populate.utils.FileUtils;
+
+import jakarta.inject.Singleton;
 
 import static java.nio.file.Files.copy;
 import static java.nio.file.Files.exists;
 
 @Slf4j
-@Component
+@Singleton
 public class DownloadFile {
 
     Path call(final String url) throws IOException, URISyntaxException {

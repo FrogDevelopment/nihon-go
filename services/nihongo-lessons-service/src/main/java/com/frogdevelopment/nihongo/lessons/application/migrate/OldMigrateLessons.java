@@ -1,35 +1,38 @@
 package com.frogdevelopment.nihongo.lessons.application.migrate;
 
-import com.frogdevelopment.nihongo.ftp.FtpClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import javax.transaction.Transactional;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVRecord;
+import com.frogdevelopment.nihongo.ftp.FtpClientHelper;
+import com.frogdevelopment.nihongo.lessons.dao.JapaneseDao;
+import com.frogdevelopment.nihongo.lessons.dao.TranslationDao;
+import com.frogdevelopment.nihongo.lessons.entity.Japanese;
+import com.frogdevelopment.nihongo.lessons.entity.Translation;
 
-import static com.frogdevelopment.nihongo.lessons.Utils.getSortLetter;
-import static org.apache.commons.lang3.StringUtils.*;
-import static org.springframework.transaction.annotation.Propagation.REQUIRED;
+import jakarta.inject.Singleton;
+
+import static javax.transaction.Transactional.TxType.REQUIRED;
+import static org.apache.commons.lang3.StringUtils.capitalize;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
-@Component
+@Singleton
 @RequiredArgsConstructor
 public class OldMigrateLessons {
 
     private static final String SOURCE = "nihon_go/NihonGo_All.tsv";
-    private static final String[] LOCALES = {"en_US", "fr_FR"};
+    private static final String[] LOCALES = { "en_US", "fr_FR" };
 
-    private final FtpClient ftpClient;
-    private final SimpleJdbcInsert japaneseJdbcInsert;
-    private final SimpleJdbcInsert translationJdbcInsert;
+    private final FtpClientHelper ftpClient;
+    private final JapaneseDao japaneseDao;
+    private final TranslationDao translationDao;
 
-    @Transactional(propagation = REQUIRED)
+    @Transactional(REQUIRED)
     public void call() {
         log.info("--- Migrate - start");
         try {
@@ -45,7 +48,7 @@ public class OldMigrateLessons {
                          .parse(reader)) {
 
                 for (final var csvRecord : parse.getRecords()) {
-                    final int japaneseId = insertJapanese(csvRecord);
+                    final var japaneseId = insertJapanese(csvRecord);
                     insertTranslation(japaneseId, csvRecord);
                 }
             } finally {
@@ -57,28 +60,28 @@ public class OldMigrateLessons {
         }
     }
 
-    private int insertJapanese(final CSVRecord csvRecord) {
-        final var japanese = new HashMap<String, Object>(3);
-        japanese.put("kanji", trimToNull(csvRecord.get("kanji")));
-        japanese.put("kana", trim(csvRecord.get("kana")));
-        japanese.put("lesson", Integer.valueOf(csvRecord.get("tags")));
+    private Long insertJapanese(final CSVRecord csvRecord) {
+        final var japanese = Japanese.builder()
+                .kanji(csvRecord.get("kanji"))
+                .kana(csvRecord.get("kana"))
+                .lesson(Integer.valueOf(csvRecord.get("tags")))
+                .build();
 
-        return japaneseJdbcInsert.executeAndReturnKey(japanese).intValue();
+        return japaneseDao.save(japanese).getId();
     }
 
-    private void insertTranslation(final int japaneseId, final CSVRecord csvRecord) {
-        final var translation = new HashMap<String, Object>(6);
-        translation.put("japanese_id", japaneseId);
+    private void insertTranslation(final Long japaneseId, final CSVRecord csvRecord) {
+        final var translationBuilder = Translation.builder()
+                .japaneseId(japaneseId);
         for (final String locale : LOCALES) {
             final var input = capitalize(csvRecord.get(locale + "_input"));
             if (isNotBlank(input)) {
-                translation.put("locale", locale);
-                translation.put("input", input);
-                translation.put("sort_letter", getSortLetter(input));
-                translation.put("details", trimToNull(csvRecord.get(locale + "_details")));
-                translation.put("example", trimToNull(csvRecord.get(locale + "_example")));
+                translationBuilder.locale(locale);
+                translationBuilder.input(input);
+                translationBuilder.details(csvRecord.get(locale + "_details"));
+                translationBuilder.example(csvRecord.get(locale + "_example"));
 
-                translationJdbcInsert.execute(translation);
+                translationDao.save(translationBuilder.build());
             }
         }
     }

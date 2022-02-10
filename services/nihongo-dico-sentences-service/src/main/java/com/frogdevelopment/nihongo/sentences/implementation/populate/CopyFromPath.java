@@ -1,11 +1,6 @@
 package com.frogdevelopment.nihongo.sentences.implementation.populate;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
-import org.postgresql.jdbc.PgConnection;
-import org.springframework.stereotype.Component;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -13,6 +8,12 @@ import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.postgresql.jdbc.PgConnection;
+
+import jakarta.inject.Singleton;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
@@ -21,7 +22,7 @@ import static java.nio.file.Files.newInputStream;
  * https://tatoeba.org/eng/downloads
  */
 @Slf4j
-@Component
+@Singleton
 class CopyFromPath {
 
     private static final String SQL_COPY = "COPY %s (%s) FROM STDIN WITH (FORMAT TEXT, ENCODING 'UTF-8', DELIMITER '\t', HEADER false, NULL '')";

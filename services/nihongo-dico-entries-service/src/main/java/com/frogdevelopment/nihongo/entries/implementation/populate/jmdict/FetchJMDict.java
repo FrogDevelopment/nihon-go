@@ -1,18 +1,19 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
-import com.frogdevelopment.nihongo.entries.implementation.populate.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Scanner;
+import com.frogdevelopment.nihongo.entries.implementation.populate.utils.FileUtils;
+
+import io.micronaut.context.annotation.Value;
+import io.micronaut.runtime.context.scope.Refreshable;
+import jakarta.inject.Singleton;
 
 @Slf4j
-@Component
-@RefreshScope
+@Singleton
+@Refreshable
 public class FetchJMDict {
 
     private final String url;

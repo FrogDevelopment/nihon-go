@@ -12,7 +12,7 @@ import java.io.IOException;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
-@Component
+@Singleton
 public class JwtAuthenticationLoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override

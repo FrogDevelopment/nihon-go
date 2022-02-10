@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Component
+@Singleton
 public class JwtParser {
 
     private final ResolveClaimsFromToken resolveClaimsFromToken;

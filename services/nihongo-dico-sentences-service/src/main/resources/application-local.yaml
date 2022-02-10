@@ -1,5 +1,12 @@
-server:
-  port: 8080
+micronaut:
+  server:
+    port: 8091
+
+eureka:
+  client:
+    defaultZone: http://admin:security_is_fun@localhost:8761
+    registration:
+      enabled: true
 
 frog:
   database:
@@ -10,27 +17,33 @@ frog:
       sentences: https://downloads.tatoeba.org/exports/sentences.tar.bz2
       links: https://downloads.tatoeba.org/exports/links.tar.bz2
   ftp:
-    remote-path: /www/nihongo/dico
+    server: localhost
+    port: 2222
+    user: frog_admin_user
+    password: frog_admin_pwd
+    remote-path: dico/
 
-spring:
-  datasource:
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${micronaut.application.name}
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:2345/${frog.database.name}?ApplicationName=${spring.application.name}
     username: postgres
     password: postgres
 
-  flyway:
-    multi-schema: true
+flyway:
+  datasources:
+    default:
+      enabled: true
 
-security:
-  jwt:
-    token:
-      signing-key: xxx
-
-logging:
-  config: classpath:logback-spring.xml
-
-  level:
+logger:
+  levels:
     root: INFO
     com.frogdevelopment: WARN
-    com.frogdevelopment.nihongo: debug
+    com.frogdevelopment.nihongo: DEBUG
+
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+  env:
+    enabled: true

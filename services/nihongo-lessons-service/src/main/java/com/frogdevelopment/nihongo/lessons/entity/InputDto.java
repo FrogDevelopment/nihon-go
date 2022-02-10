@@ -6,8 +6,11 @@ import lombok.Value;
 
 import java.util.Map;
 
+import io.micronaut.core.annotation.Introspected;
+
 @Value
 @Builder
+@Introspected
 public class InputDto {
 
     Japanese japanese;

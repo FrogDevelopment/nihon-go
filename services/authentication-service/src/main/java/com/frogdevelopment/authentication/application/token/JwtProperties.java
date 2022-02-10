@@ -10,7 +10,7 @@ import javax.annotation.PostConstruct;
 import java.security.InvalidParameterException;
 
 @Data
-@Component
+@Singleton
 @RefreshScope
 @Configuration
 @ConfigurationProperties("security.jwt.token")

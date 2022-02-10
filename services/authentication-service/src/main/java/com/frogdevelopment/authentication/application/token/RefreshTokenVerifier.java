@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Objects;
 
-@Component
+@Singleton
 class RefreshTokenVerifier {
 
     private final JwtUserDetailsService jwtUserDetailsService;

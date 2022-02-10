@@ -1,19 +1,20 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
-import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Gloss;
-import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Sense;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Gloss;
+import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Sense;
+
+import jakarta.inject.Singleton;
 
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
-@Component
+@Singleton
 class SenseParser {
 
     static final String SENSE_START = "<sense>";

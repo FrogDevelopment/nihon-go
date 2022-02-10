@@ -3,7 +3,7 @@ package com.frogdevelopment.authentication.application.user;
 import com.frogdevelopment.authentication.api.exception.UserNotFoundException;
 import org.springframework.stereotype.Component;
 
-@Component
+@Singleton
 public class DeleteUser {
 
     private final JwtUserDetailsService jwtUserDetailsService;

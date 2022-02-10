@@ -12,18 +12,17 @@ frog:
     password: XXXXX
     remote-path: /nihongo/dico
 
-spring:
-  datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+datasources:
+  default:
     url: jdbc:tc:pgroonga:///${frog.database.name}
-  sql:
-    init:
-      mode: always
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    pool-name: public
+    username: postgres
+    password: postgres
 
-  flyway:
-    multi-schema: true
-
-security:
-  jwt:
-    token:
-      signing-key: xxx
+flyway:
+  datasources:
+    default:
+      enabled: true
+      clean-schema: true
+      create-schemas: true

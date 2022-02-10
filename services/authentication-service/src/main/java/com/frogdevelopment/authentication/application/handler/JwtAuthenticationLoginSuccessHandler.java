@@ -17,7 +17,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
-@Component
+@Singleton
 public class JwtAuthenticationLoginSuccessHandler implements AuthenticationSuccessHandler {
 
     public static final String CLIENT_ID = "client_id";

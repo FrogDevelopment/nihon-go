@@ -1,53 +1,53 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
+import com.frogdevelopment.nihongo.Language;
 import com.frogdevelopment.nihongo.entries.implementation.about.AboutDao;
 import com.frogdevelopment.nihongo.entries.implementation.populate.SaveData;
-import com.frogdevelopment.nihongo.multischema.Language;
+import io.micronaut.context.annotation.Value;
+import io.micronaut.core.io.Readable;
+import io.micronaut.data.jdbc.runtime.JdbcOperations;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.postgresql.util.PGobject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@Disabled("fixme ")
-@Rollback
-@Transactional
-@SpringBootTest
-@ActiveProfiles("test")
 @Tag("integrationTest")
+@MicronautTest(startApplication = false)
 class FetchJMDictTest {
 
-    @Autowired
+    @Inject
     private FetchJMDict fetchJmDict;
-    @Autowired
+    @Inject
     private SaveData saveData;
-    @Autowired
+    @Inject
     private AboutDao aboutDao;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    @Inject
+    private JdbcOperations jdbcOperations;
 
     @Value("classpath:jmdict_sample.txt")
-    private Resource data;
+    private Readable data;
 
     @Test
     void test() throws IOException {
         // given
         var date = "";
-        try (var scanner = new Scanner(data.getInputStream(), UTF_8)) {
+        try (var scanner = new Scanner(data.asInputStream(), UTF_8)) {
             date = fetchJmDict.read(scanner);
         }
 
@@ -61,7 +61,7 @@ class FetchJMDictTest {
         thenSensesAreCorrectlySaved();
         thenGlossesAreCorrectlySaved();
 
-        var about = jdbcTemplate.queryForList("SELECT * FROM about");
+        var about = jdbcOperations.prepareStatement("SELECT * FROM about", this::getRowsAsMap);
         assertThat(about).hasSize(1);
         assertThat(about.get(0))
                 .containsEntry("jmdict_date", "2019-02-01")
@@ -73,7 +73,7 @@ class FetchJMDictTest {
     }
 
     private void thenEntriesAreCorrectlySaved() {
-        var entries = jdbcTemplate.queryForList("SELECT * FROM jpn.entries");
+        var entries = jdbcOperations.prepareStatement("SELECT * FROM entries", this::getRowsAsMap);
         assertThat(entries).hasSize(1);
         var entry = entries.get(0);
         assertThat(entry)
@@ -85,7 +85,7 @@ class FetchJMDictTest {
     }
 
     private void thenSensesAreCorrectlySaved() {
-        var senses = jdbcTemplate.queryForList("SELECT * FROM jpn.senses");
+        var senses = jdbcOperations.prepareStatement("SELECT * FROM senses", this::getRowsAsMap);
         assertThat(senses).hasSize(12);
         for (var i = 0; i < 12; i++) {
             var sense = senses.get(i);
@@ -208,10 +208,36 @@ class FetchJMDictTest {
     }
 
     private List<Map<String, Object>> fetchGlosses(Language language) {
-        return jdbcTemplate.queryForList("SELECT * FROM " + language.getCode() + ".glosses");
+        return jdbcOperations.prepareStatement("SELECT * FROM glosses g WHERE g.language = ?",
+                statement -> {
+                    statement.setString(1, language.getCode());
+
+                    return getRowsAsMap(statement);
+                });
     }
 
     private static void thenGlossContains(Map<String, Object> actual, String senseSeq, String vocabulary) {
         assertThat(actual).containsEntry("sense_seq", senseSeq).containsEntry("vocabulary", vocabulary);
     }
+
+    @NotNull
+    private List<Map<String, Object>> getRowsAsMap(PreparedStatement statement) throws SQLException {
+        final List<Map<String, Object>> results = new ArrayList<>();
+        final var resultSet = statement.executeQuery();
+        final var metaData = resultSet.getMetaData();
+        final var columnCount = metaData.getColumnCount();
+        Set<String> columnsName = new HashSet<>();
+        for (int i = 0; i < columnCount; i++) {
+            columnsName.add(metaData.getColumnLabel(i + 1));
+        }
+        while (resultSet.next()) {
+            Map<String, Object> row = new HashMap<>();
+            for (String columnName : columnsName) {
+                row.put(columnName, resultSet.getObject(columnName));
+            }
+            results.add(row);
+        }
+        return results;
+    }
+
 }

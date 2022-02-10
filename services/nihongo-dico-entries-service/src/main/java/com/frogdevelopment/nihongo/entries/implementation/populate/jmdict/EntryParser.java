@@ -1,20 +1,22 @@
 package com.frogdevelopment.nihongo.entries.implementation.populate.jmdict;
 
-import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Entry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Scanner;
 import java.util.regex.Pattern;
+import com.frogdevelopment.nihongo.entries.implementation.populate.jmdict.entity.Entry;
+
+import jakarta.inject.Singleton;
 
 import static java.util.regex.Pattern.compile;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+import static org.apache.commons.lang3.ObjectUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.springframework.util.CollectionUtils.isEmpty;
 
 @Slf4j
-@Component
+@Singleton
 @RequiredArgsConstructor
 class EntryParser {
 
@@ -92,7 +94,7 @@ class EntryParser {
     private void applyPosToAllSenses(final Entry entry) {
         entry.getSenses()
                 .stream()
-                .filter(s -> !isEmpty(s.getPos()))
+                .filter(s -> isNotEmpty(s.getPos()))
                 .findFirst()
                 .ifPresent(sense -> {
                     final var pos = sense.getPos();

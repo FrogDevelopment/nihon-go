@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!--    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>-->
+
+    <!--    <springProfile name="console">-->
+    <!--        <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>-->
+
+    <!--        <root level="INFO">-->
+    <!--            <appender-ref ref="CONSOLE"/>-->
+    <!--        </root>-->
+    <!--    </springProfile>-->
+
+    <!--    <springProfile name="!console">-->
+    <!--        <appender name="LOGSTASH" class="ch.qos.logback.core.ConsoleAppender">-->
+    <!--            <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>-->
+    <!--        </appender>-->
+
+    <!--        <root level="INFO">-->
+    <!--            <appender-ref ref="LOGSTASH"/>-->
+    <!--        </root>-->
+    <!--    </springProfile>-->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <!-- encoders are assigned the type
+             ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.micronaut.flyway" level="DEBUG"/>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
