@@ -142,13 +142,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Install npm
-        run: ./gradlew front:${{ matrix.project }}:npmInstall
+        run: ./gradlew web:${{ matrix.project }}:npmInstall
       - name: Build Docker Image
-        run: ./gradlew f:${{ matrix.project }}:buildDockerImage
+        run: ./gradlew web:${{ matrix.project }}:buildDockerImage
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USR }}
           password: ${{ secrets.DOCKER_PSW }}
       - name: Push Docker Image
-        run: ./gradlew front:${{ matrix.project }}:pushDockerImage
+        run: ./gradlew web:${{ matrix.project }}:pushDockerImage
