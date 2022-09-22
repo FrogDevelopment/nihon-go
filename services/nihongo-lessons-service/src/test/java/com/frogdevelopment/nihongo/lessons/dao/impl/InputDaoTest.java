@@ -45,7 +45,7 @@ class InputDaoTest {
         assertThat(enUs.getJapaneseId()).isEqualTo(1);
         assertThat(enUs.getLocale()).isEqualTo("en_US");
         assertThat(enUs.getInput()).isEqualTo("I");
-        assertThat(enUs.getSortLetter()).isEqualTo('I');
+        assertThat(enUs.getSortLetter()).isEqualTo("I");
         assertThat(enUs.getDetails()).isNullOrEmpty();
         assertThat(enUs.getExample()).isNullOrEmpty();
 
@@ -54,7 +54,7 @@ class InputDaoTest {
         assertThat(frFr.getJapaneseId()).isEqualTo(1);
         assertThat(frFr.getLocale()).isEqualTo("fr_FR");
         assertThat(frFr.getInput()).isEqualTo("Je, moi");
-        assertThat(frFr.getSortLetter()).isEqualTo('J');
+        assertThat(frFr.getSortLetter()).isEqualTo("J");
         assertThat(frFr.getDetails()).isNullOrEmpty();
         assertThat(frFr.getExample()).isNullOrEmpty();
     }
