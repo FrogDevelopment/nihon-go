@@ -126,7 +126,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        project: [ 'solae-web', 'solae-admin' ]
+        project: [ 'nihongo-dico-web' ]
     steps:
       - name: Checkout with all branches and tags
         uses: actions/checkout@v2
