@@ -34,3 +34,15 @@ logging:
     root: INFO
     com.frogdevelopment: WARN
     com.frogdevelopment.nihongo: debug
+
+endpoints:
+  all:
+    enabled: true
+    sensitive: false
+    port: 8085
+  env:
+    enabled: true
+  health:
+    details-visible: anonymous
+    discovery-client:
+      enabled: true

@@ -2,6 +2,7 @@ plugins {
     id("io.micronaut.minimal.application")
     id("nihongo.base-convention")
     id("com.google.cloud.tools.jib")
+    id("com.gorylenko.gradle-git-properties")
 }
 
 micronaut {
@@ -24,6 +25,7 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-management")
+    implementation("io.micronaut.jmx:micronaut-jmx")
 
 //    runtimeOnly("io.micronaut.kubernetes:micronaut-kubernetes-discovery-client")
     implementation("io.micronaut.discovery:micronaut-discovery-client")
@@ -48,7 +50,7 @@ dependencies {
 
 jib {
     from {
-        image = "eclipse-temurin:17.0.4.1_1-jre-jammy"
+        image = "frogdevelopment/eclipse-temurin-jre-17-curl:17.0.4.1_1-jre-alpine"
     }
     to {
         image = "frognihongo/${name}"
@@ -60,3 +62,6 @@ jib {
         labels.put("frog.image_base", jib.from.image.toString())
     }
 }
+
+tasks.named("jib").configure { dependsOn(tasks.named("generateGitProperties")) }
+tasks.named("jibDockerBuild").configure { dependsOn(tasks.named("generateGitProperties")) }

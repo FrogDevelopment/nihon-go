@@ -12,4 +12,6 @@ dependencies {
 
     implementation("com.github.node-gradle:gradle-node-plugin:3.1.1")
     implementation("com.google.cloud.tools:jib-gradle-plugin:3.3.0")
+
+    implementation("com.gorylenko.gradle-git-properties:gradle-git-properties:2.4.1")
 }

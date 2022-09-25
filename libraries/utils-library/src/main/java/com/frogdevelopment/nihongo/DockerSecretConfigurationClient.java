@@ -1,6 +1,16 @@
 package com.frogdevelopment.nihongo;
 
+import io.micronaut.context.annotation.BootstrapContextCompatible;
+import io.micronaut.context.annotation.Context;
+import io.micronaut.context.annotation.Requires;
+import io.micronaut.context.env.Environment;
+import io.micronaut.context.env.MapPropertySource;
+import io.micronaut.context.env.PropertySource;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.discovery.config.ConfigurationClient;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,20 +19,9 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import org.reactivestreams.Publisher;
-
-import io.micronaut.context.annotation.BootstrapContextCompatible;
-import io.micronaut.context.annotation.Requires;
-import io.micronaut.context.env.Environment;
-import io.micronaut.context.env.MapPropertySource;
-import io.micronaut.context.env.PropertySource;
-import io.micronaut.core.annotation.NonNull;
-import io.micronaut.discovery.config.ConfigurationClient;
-import jakarta.inject.Singleton;
-import reactor.core.publisher.Mono;
 
 @Slf4j
-@Singleton
+@Context
 @Requires(env = "docker")
 @BootstrapContextCompatible
 public class DockerSecretConfigurationClient implements ConfigurationClient {

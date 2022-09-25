@@ -92,7 +92,7 @@ services:
     ########### SERVICES ###########
   authentication-service:
     hostname: authentication-service
-    image: frognihongo/authentication-service:$NIHON_GO_VERSION
+    image: frognihongo/authentication-service:latest
     healthcheck:
       test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
       interval: 20s
@@ -108,7 +108,7 @@ services:
 
   nihongo-dico-entries-service:
     hostname: nihongo-dico-entries-service
-    image: frognihongo/nihongo-dico-entries-service:$NIHON_GO_VERSION
+    image: frognihongo/nihongo-dico-entries-service:latest
     healthcheck:
       test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
       interval: 20s
@@ -124,7 +124,7 @@ services:
 
   nihongo-dico-sentences-service:
     hostname: nihongo-dico-sentences-service
-    image: frognihongo/nihongo-dico-sentences-service:$NIHON_GO_VERSION
+    image: frognihongo/nihongo-dico-sentences-service:latest
     healthcheck:
       test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
       interval: 20s
@@ -141,16 +141,12 @@ services:
   nihongo-lessons-service:
     hostname: nihongo-lessons-service
     image: frognihongo/nihongo-lessons-service:latest
-    healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
-      interval: 20s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
     environment:
       TZ: Europe/Paris
+      MICRONAUT_ENVIRONMENTS: docker
     ports:
       - "8080:8080"
+      - "8085:8085"
     volumes:
       - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
       - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
