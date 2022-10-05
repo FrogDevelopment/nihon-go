@@ -9,5 +9,4 @@ spring:
   cloud:
     config:
       enabled: true
-      #      uri: http://${docker-secrets.frog_admin_user}:${docker-secrets.frog_admin_password}@support-config-server:8080
-      uri: http://admin:security_is_fun@support-config-server:8080
+      uri: http://${docker-secrets.frog_admin_user}:${docker-secrets.frog_admin_password}@support-config-server:8080

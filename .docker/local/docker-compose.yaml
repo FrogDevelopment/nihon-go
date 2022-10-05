@@ -80,6 +80,7 @@ services:
       TZ: Europe/Paris
       SPRING_PROFILES_ACTIVE: git,secrets,local
       GIT_LABEL: $CONFIG_VERSION
+      SPRING_CLOUD_CONFIG_SERVER_GIT_IGNORELOCALSSHSETTINGS: "false"
     volumes:
       - /home/legall_benoit/.ssh/tmp:/root/.ssh
       - ./secrets/git_uri:/run/secrets/git_uri:ro
@@ -90,34 +91,34 @@ services:
     #      - ./secrets/repository_application-postgres:/run/secrets/repository/application-postgres:ro
 
     ########### SERVICES ###########
-  authentication-service:
-    hostname: authentication-service
-    image: frognihongo/authentication-service:latest
-    healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
-      interval: 20s
-      timeout: 5s
-      retries: 5
-      start_period: 40s
-    environment:
-      TZ: Europe/Paris
-      SPRING_PROFILES_ACTIVE: console
-    volumes:
-      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
-      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
+  #  authentication-service:
+  #    hostname: authentication-service
+  #    image: frognihongo/authentication-service:latest
+  #    healthcheck:
+  #      test: "curl --fail --silent localhost:8085/health | grep UP || exit 1"
+  #      interval: 20s
+  #      timeout: 5s
+  #      retries: 5
+  #      start_period: 40s
+  #    environment:
+  #      TZ: Europe/Paris
+  #      MICRONAUT_ENVIRONMENTS: docker
+  #    volumes:
+  #      - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
+  #      - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
 
   nihongo-dico-entries-service:
     hostname: nihongo-dico-entries-service
     image: frognihongo/nihongo-dico-entries-service:latest
     healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8085/health | grep UP || exit 1"
       interval: 20s
       timeout: 5s
       retries: 5
       start_period: 40s
     environment:
       TZ: Europe/Paris
-      SPRING_PROFILES_ACTIVE: console
+      MICRONAUT_ENVIRONMENTS: docker
     volumes:
       - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
       - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
@@ -126,14 +127,14 @@ services:
     hostname: nihongo-dico-sentences-service
     image: frognihongo/nihongo-dico-sentences-service:latest
     healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8085/health | grep UP || exit 1"
       interval: 20s
       timeout: 5s
       retries: 5
       start_period: 40s
     environment:
       TZ: Europe/Paris
-      SPRING_PROFILES_ACTIVE: console
+      MICRONAUT_ENVIRONMENTS: docker
     volumes:
       - ./secrets/frog_admin_user:/run/secrets/frog_admin_user:ro
       - ./secrets/frog_admin_password:/run/secrets/frog_admin_password:ro
@@ -141,6 +142,12 @@ services:
   nihongo-lessons-service:
     hostname: nihongo-lessons-service
     image: frognihongo/nihongo-lessons-service:latest
+    healthcheck:
+      test: "curl --fail --silent localhost:8085/health | grep UP || exit 1"
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
     environment:
       TZ: Europe/Paris
       MICRONAUT_ENVIRONMENTS: docker

@@ -9,6 +9,8 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut.reactor:micronaut-reactor")
 
+    implementation("io.micronaut.discovery:micronaut-discovery-client")
+
     implementation("org.postgresql:postgresql")
 
 }

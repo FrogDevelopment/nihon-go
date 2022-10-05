@@ -2,7 +2,6 @@ package com.frogdevelopment.nihongo;
 
 import io.micronaut.context.annotation.BootstrapContextCompatible;
 import io.micronaut.context.annotation.Context;
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.context.env.MapPropertySource;
 import io.micronaut.context.env.PropertySource;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Context
-@Requires(env = "docker")
+//@Requires(env = "docker")
 @BootstrapContextCompatible
 public class DockerSecretConfigurationClient implements ConfigurationClient {
 
