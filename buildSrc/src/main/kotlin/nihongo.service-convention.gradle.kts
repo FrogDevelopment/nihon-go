@@ -48,12 +48,16 @@ dependencies {
     testImplementation("org.testcontainers:junit-jupiter")
 }
 
+@Suppress("UNCHECKED_CAST")
+val extraTags = rootProject.extra["tags"] as Set<String>
+
 jib {
     from {
         image = "frogdevelopment/eclipse-temurin-jre-17-curl:17.0.4.1_1-jre-alpine"
     }
     to {
         image = "frognihongo/${name}"
+        tags = extraTags
     }
     container {
         jvmFlags = listOf("-Xmx128m")
